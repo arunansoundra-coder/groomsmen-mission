@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>007 Groomsmen Mission</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Garamond&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family: 'Garamond', serif;
+    background: #0a0a0a;
+    color: #f2f2f2;
+    overflow-x: hidden;
+  }
+  h1,h2,h3{
+    font-family:'Cinzel', serif;
+    margin:0 0 10px 0;
+  }
+  .container{
+    width:90%;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+  }
+  .page{
+    min-height:100vh;
+    padding:50px 20px;
+    opacity:0;
+    transform: translateY(50px);
+    transition: all 1s ease-out;
+  }
+  .page.active{
+    opacity:1;
+    transform: translateY(0);
+  }
+  .top-secret{
+    color:#ff0000;
+    font-weight:bold;
+    font-size:1.5em;
+    animation: fadeIn 2s ease-in;
+  }
+  .puzzle{
+    font-family:'Courier New', monospace;
+    font-size:1.2em;
+    margin:20px 0;
+  }
+  .qr{
+    margin-top:20px;
+    text-align:center;
+  }
+  .button{
+    display:inline-block;
+    background:#ff0000;
+    color:#fff;
+    padding:15px 25px;
+    font-weight:bold;
+    text-decoration:none;
+    margin-top:20px;
+    border-radius:5px;
+  }
+  @keyframes fadeIn{
+    from {opacity:0;}
+    to {opacity:1;}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Slide 1: Classified Cover -->
+  <section class="page active" id="page1">
+    <h1 class="top-secret">TOP SECRET</h1>
+    <h2>BRITISH SECRET SERVICE — SECTION 00</h2>
+    <h3>MISSION CODE NAME: OPERATION FOREVER</h3>
+    <p>FOR AGENT [NAME] ONLY</p>
+    <p style="margin-top:30px;">Scroll down to access your mission dossier...</p>
+  </section>
+
+  <!-- Slide 2: Agent Recruitment -->
+  <section class="page" id="page2">
+    <h2>AGENT RECRUITMENT</h2>
+    <p>Agent [NAME],</p>
+    <p>You have been identified as a highly valued asset with a long history of loyalty, discretion, and exceptional performance in social operations.</p>
+    <p>Primary Agent Arunan Soundranayagam is preparing for the most significant operation of his life: marrying Brooke.</p>
+    <p>This mission requires an elite team capable of maintaining composure, style, and morale during high-intensity celebration.</p>
+    <p>Your presence has been requested.</p>
+    <h3>MISSION ROLE: GROOMSMAN</h3>
+  </section>
+
+  <!-- Slide 3: Encrypted Puzzle -->
+  <section class="page" id="page3">
+    <h2>INTERCEPTED MESSAGE</h2>
+    <p>DECRYPTION REQUIRED</p>
+    <div class="puzzle" id="puzzle"></div>
+    <p>Decode the transmission to reveal the classified question.</p>
+  </section>
+
+  <!-- Slide 4: Agent Profile -->
+  <section class="page" id="page4">
+    <h2>AGENT PROFILE</h2>
+    <p>AGENT NAME: [FRIEND NAME]</p>
+    <p>CLEARANCE LEVEL: INNER CIRCLE</p>
+    <h3>SPECIAL SKILLS:</h3>
+    <ul>
+      <li>Exceptional friendship</li>
+      <li>Legendary storytelling</li>
+      <li>Tactical celebration</li>
+      <li>Maintaining composure under pressure</li>
+    </ul>
+    <h3>MISSION ROLE: GROOMSMAN</h3>
+    <p>DUTIES INCLUDE:</p>
+    <ul>
+      <li>Standing beside the Groom during the ceremony</li>
+      <li>Ensuring celebration levels remain optimal</li>
+      <li>Participating in pre-mission festivities</li>
+      <li>Looking exceptionally sharp in formal attire</li>
+    </ul>
+    <p>DRESS CODE: Suit Required</p>
+    <p>CELEBRATION: Mandatory</p>
+    <p>MEMORIES: Guaranteed</p>
+  </section>
+
+  <!-- Slide 5: Final Authorization -->
+  <section class="page" id="page5">
+    <h2>FINAL AUTHORIZATION</h2>
+    <p>Every great mission requires a trusted team. From the memories we've made to the ones still ahead, it would mean a great deal to have you standing beside me on one of the most important days of my life.</p>
+    <p>Your mission, should you choose to accept it:</p>
+    <h3>Serve as one of my Groomsmen on September 18, 2026.</h3>
+    <p>MISSION OPTIONS:</p>
+    <ul>
+      <li>☐ YES — I'M IN</li>
+      <li>☐ ABSOLUTELY</li>
+      <li>☐ POUR THE WHISKEY</li>
+    </ul>
+    <div class="qr">
+      <p>Scan or click to submit your official response:</p>
+      <a href="[INSERT YOUR RSVP LINK HERE]" class="button" target="_blank">Submit Response</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// Scroll trigger for pages
+const pages = document.querySelectorAll('.page');
+window.addEventListener('scroll', () => {
+  pages.forEach(page => {
+    const rect = page.getBoundingClientRect();
+    if(rect.top < window.innerHeight/1.2){
+      page.classList.add('active');
+    }
+  });
+});
+
+// Typing effect for puzzle
+const puzzleText = "ZLOO BRX EH PB JURRPVPDQ?";
+const puzzleDiv = document.getElementById('puzzle');
+let i=0;
+function typePuzzle(){
+  if(i<puzzleText.length){
+    puzzleDiv.innerHTML += puzzleText.charAt(i);
+    i++;
+    setTimeout(typePuzzle, 100);
+  }
+}
+typePuzzle();
+</script>
+
+</body>
+</html>
