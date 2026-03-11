@@ -5,49 +5,57 @@
   <title>Groomsmen Mission HQ</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Landing page animations */
     body {
-      background-color: black;
-      color: #00ff9c;
-      font-family: 'Courier New', monospace;
-      text-align: center;
       margin: 0;
       padding: 0;
       overflow: hidden;
+      background: black;
+      font-family: 'Courier New', monospace;
+      color: #00ff9c;
+      text-align: center;
     }
 
-    #intro {
+    /* Gun barrel animation container */
+    #gunBarrel {
       position: relative;
-      top: 25%;
-      animation: fadeIn 3s ease-in-out;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, #000 60%, transparent 61%) repeat;
+      background-size: 20px 20px;
+      animation: rotateBarrel 5s linear infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
     }
 
-    .barrel {
-      font-size: 80px;
+    @keyframes rotateBarrel {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .barrel-text {
+      font-size: 70px;
       font-weight: bold;
-      margin-top: 20px;
-      animation: zoom 2s ease-in-out infinite alternate;
+      margin-bottom: 20px;
+      animation: fadeIn 3s ease-in-out forwards;
+      opacity: 0;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
       to { opacity: 1; }
     }
 
-    @keyframes zoom {
-      from { transform: scale(1); }
-      to { transform: scale(1.2); }
-    }
-
-    button {
+    #enterBtn {
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
       background-color: #00ff9c;
       color: black;
       border: none;
-      padding: 15px 30px;
-      cursor: pointer;
-      font-weight: bold;
+      display: none;
       margin-top: 20px;
-      font-size: 18px;
     }
 
     #terminal {
@@ -64,10 +72,10 @@
   Your browser does not support the audio element.
 </audio>
 
-<div id="intro">
-  <div class="barrel">007</div>
-  <h2>Welcome to the Groomsmen Mission HQ</h2>
-  <button id="enter" onclick="enterHQ()">ENTER</button>
+<div id="gunBarrel">
+  <div class="barrel-text">007</div>
+  <div class="barrel-text" style="animation-delay: 1s;">Welcome to the Groomsmen Mission HQ</div>
+  <button id="enterBtn" onclick="enterHQ()">ENTER</button>
 </div>
 
 <div id="terminal">
@@ -84,10 +92,17 @@
 </div>
 
 <script>
-function enterHQ() {
-  document.getElementById('intro').style.display = 'none';
-  document.getElementById('terminal').style.display = 'block';
-}
+  // Fade-in text and show Enter button after animation
+  window.onload = function() {
+    setTimeout(function() {
+      document.getElementById('enterBtn').style.display = 'inline-block';
+    }, 4000); // matches fade-in delay
+  }
+
+  function enterHQ() {
+    document.getElementById('gunBarrel').style.display = 'none';
+    document.getElementById('terminal').style.display = 'block';
+  }
 </script>
 
 </body>
