@@ -52,5 +52,9 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 
+if(agentName.toLowerCase()=="jason"){
+document.getElementById("agentWelcome").innerText=
+"Agent Jason — 00 Clearance Level\nBest Man Assignment Authorized";
+}
 
 
