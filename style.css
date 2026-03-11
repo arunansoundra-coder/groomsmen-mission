@@ -1,0 +1,35 @@
+body {
+  background-color: #000;
+  color: #00ff9c;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.barrel {
+  font-size: 50px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #00ff9c;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 10px;
+}
+
+input {
+  padding: 5px;
+  margin: 10px;
+  width: 200px;
+}
+
+.cards {
+  font-size: 25px;
+  margin: 10px;
+}
