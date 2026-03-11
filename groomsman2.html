@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MI6 Mission - Agent Prathap</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="intro">
+  <div class="barrel">007</div>
+  <h2>MI6 Secure Channel</h2>
+  <button id="enter" onclick="startMission()">ENTER</button>
+</div>
+
+<div id="terminal" data-lines="Initializing MI6 encrypted channel...|Authenticating Agent Prathap credentials...|Loading Montenegro files...|Bond. James Bond.|Poker intelligence verification required..."></div>
+
+<div id="puzzle">
+  <h2>MISSION BRIEFING</h2>
+  <p>During the Montenegro poker game, Bond defeated Le Chiffre.</p>
+  <p>Identify the winning hand:</p>
+  <div class="cards">10♠ J♠ Q♠ K♠ A♠</div>
+  <input id="answer" placeholder="Enter the poker hand">
+  <br>
+  <button onclick="checkPuzzle()">VERIFY</button>
+  <p id="result"></p>
+</div>
+
+<div id="challenge">
+  <h2>HIGH-STAKES POKER CHALLENGE</h2>
+  <p>Before the ceremony, agents must defeat the groom.</p>
+  <p><strong>Time:</strong> 12:00 PM</p>
+  <p><strong>Objective:</strong> Beat the groom in a poker showdown.</p>
+  <p>The winner earns the title: <strong>MI6 Poker Champion</strong></p>
+  <button onclick="acceptMission('Prathap')">ACCEPT MISSION</button>
+  <div id="countdown"></div>
+</div>
+
+<div id="dossier">
+  <h2>MI6 AGENT DOSSIER</h2>
+  <p id="agentName">Agent: Prathap</p>
+  <p>Status: ACTIVE</p>
+  <p>Operation: FOREVER</p>
+  <p>Assignment: Groomsman</p>
+  <p>Secondary Mission: Beat the groom at noon.</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
