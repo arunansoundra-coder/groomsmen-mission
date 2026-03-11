@@ -10,8 +10,13 @@ function checkPuzzle() {
   }
 }
 
-function acceptMission(agent) {
-  alert(agent + ' has accepted the high-stakes poker mission! Good luck!');
+// Handle response
+function acceptMission(button) {
+  const agent = agentName;
+  const response = button.innerText;
+  alert(`Agent ${agent} responded: "${response}". Mission accepted!`);
+  document.getElementById('acceptMissionStage').style.display = 'none';
+  document.getElementById('missionComplete').style.display = 'block';
 }
 
 // Countdown to poker showdown
@@ -31,3 +36,4 @@ function updateCountdown() {
 }
 
 setInterval(updateCountdown, 1000);
+
