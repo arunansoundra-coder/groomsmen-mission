@@ -13,31 +13,36 @@
       margin: 0;
       padding: 0;
     }
+
     .barrel {
       font-size: 70px;
       font-weight: bold;
       margin-top: 20px;
       animation: zoom 2s ease-in-out infinite alternate;
     }
+
     @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.2); } }
+
     h2 { margin-top: 30px; }
     input { padding: 5px; margin: 10px; width: 200px; }
     button { background-color: #00ff9c; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin: 10px; }
     .cards { font-size: 25px; margin: 10px; }
     .stage { display: none; margin-top: 30px; }
     #countdown { font-size: 20px; margin-top: 20px; }
+    .response-btn { display: inline-block; margin: 5px; }
   </style>
 </head>
 <body>
 
-<!-- Bond Music -->
+<!-- Bond Theme Music -->
 <audio id="bondMusic" autoplay loop>
   <source src="bond-theme.mp3" type="audio/mpeg">
 </audio>
 
 <div class="barrel">007</div>
-<h2>Welcome to the MI6 Groomsmen Mission</h2>
+<h2 id="agentWelcome">Welcome Agent</h2>
 
+<!-- Stage 1 -->
 <div id="stage1" class="stage" style="display:block;">
   <h2>Stage 1: Poker Challenge</h2>
   <p>Identify Bond’s winning hand in Montenegro:</p>
@@ -48,9 +53,10 @@
   <p id="stage1Result"></p>
 </div>
 
+<!-- Stage 2 -->
 <div id="stage2" class="stage">
   <h2>Stage 2: Code Phrase</h2>
-  <p>Hidden in this message is your next clue: <br>
+  <p>Hidden in this message is your next clue:<br>
      "The eagle flies at midnight, beneath the seven towers."</p>
   <input id="stage2Answer" placeholder="Enter code phrase">
   <br>
@@ -58,6 +64,7 @@
   <p id="stage2Result"></p>
 </div>
 
+<!-- Stage 3 -->
 <div id="stage3" class="stage">
   <h2>Stage 3: Final Mission</h2>
   <p>Riddle: "I am taken before a bet, and yet I am never lost. What am I?"</p>
@@ -67,16 +74,30 @@
   <p id="stage3Result"></p>
 </div>
 
+<!-- Acceptance Stage -->
+<div id="acceptMissionStage" class="stage">
+  <h2 id="missionPrompt"></h2>
+  <p>Choose your response:</p>
+  <div id="responseButtons">
+    <button class="response-btn" onclick="acceptMission(this)">Yes, I'm in</button>
+    <button class="response-btn" onclick="acceptMission(this)">Absolutely</button>
+    <button class="response-btn" onclick="acceptMission(this)">Pour the whiskey</button>
+  </div>
+</div>
+
+<!-- Mission Complete -->
 <div id="missionComplete" class="stage">
-  <h2>MISSION COMPLETE</h2>
-  <p>Congratulations, Agent! You have unlocked your mission briefing.</p>
+  <h2>MISSION ACCEPTED</h2>
   <p>High-Stakes Poker Game: <strong>September 18, 2026 at 12:00 PM</strong></p>
-  <p>You are now officially an MI6 Poker Champion candidate!</p>
   <div id="countdown"></div>
 </div>
 
 <script>
-  // Countdown
+  // Detect agent name from URL parameter
+  const params = new URLSearchParams(window.location.search);
+  const agentName = params.get('agent') || 'Agent';
+  document.getElementById('agentWelcome').innerText = `Welcome, ${agentName}`;
+
   function updateCountdown() {
     const now = new Date();
     const showdown = new Date('2026-09-18T12:00:00');
@@ -123,12 +144,22 @@
     const answer = document.getElementById('stage3Answer').value.trim().toLowerCase();
     const result = document.getElementById('stage3Result');
     if (answer === 'ante') {
-      result.innerText = 'Mission Complete!';
+      result.innerText = 'Stage 3 complete!';
       document.getElementById('stage3').style.display = 'none';
-      document.getElementById('missionComplete').style.display = 'block';
+      document.getElementById('acceptMissionStage').style.display = 'block';
+      document.getElementById('missionPrompt').innerText = `Agent ${agentName}, will you accept the mission to be part of the wedding crew?`;
     } else {
       result.innerText = 'Incorrect. Solve the riddle carefully.';
     }
+  }
+
+  // Handle response
+  function acceptMission(button) {
+    const agent = agentName;
+    const response = button.innerText;
+    alert(`Agent ${agent} responded: "${response}". Mission accepted!`);
+    document.getElementById('acceptMissionStage').style.display = 'none';
+    document.getElementById('missionComplete').style.display = 'block';
   }
 </script>
 
