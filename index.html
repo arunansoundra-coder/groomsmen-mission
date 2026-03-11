@@ -1,107 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Groomsmen Mission HQ</title>
+  <title>MI6 Groomsmen Mission</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body {
+      background-color: black;
+      color: #00ff9c;
+      font-family: 'Courier New', monospace;
+      text-align: center;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: black;
-      font-family: 'Courier New', monospace;
-      color: #00ff9c;
-      text-align: center;
     }
-
-    /* Gun barrel animation container */
-    #gunBarrel {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at center, #000 60%, transparent 61%) repeat;
-      background-size: 20px 20px;
-      animation: rotateBarrel 5s linear infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
-    @keyframes rotateBarrel {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .barrel-text {
+    .barrel {
       font-size: 70px;
       font-weight: bold;
-      margin-bottom: 20px;
-      animation: fadeIn 3s ease-in-out forwards;
-      opacity: 0;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
-    #enterBtn {
-      padding: 15px 30px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      background-color: #00ff9c;
-      color: black;
-      border: none;
-      display: none;
       margin-top: 20px;
+      animation: zoom 2s ease-in-out infinite alternate;
     }
-
-    #terminal {
-      display: none;
-      padding-top: 50px;
-    }
+    @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.2); } }
+    h2 { margin-top: 30px; }
+    input { padding: 5px; margin: 10px; width: 200px; }
+    button { background-color: #00ff9c; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin: 10px; }
+    .cards { font-size: 25px; margin: 10px; }
+    .stage { display: none; margin-top: 30px; }
+    #countdown { font-size: 20px; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-<!-- Bond Theme Audio -->
+<!-- Bond Music -->
 <audio id="bondMusic" autoplay loop>
   <source src="bond-theme.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
 </audio>
 
-<div id="gunBarrel">
-  <div class="barrel-text">007</div>
-  <div class="barrel-text" style="animation-delay: 1s;">Welcome to the Groomsmen Mission HQ</div>
-  <button id="enterBtn" onclick="enterHQ()">ENTER</button>
+<div class="barrel">007</div>
+<h2>Welcome to the MI6 Groomsmen Mission</h2>
+
+<div id="stage1" class="stage" style="display:block;">
+  <h2>Stage 1: Poker Challenge</h2>
+  <p>Identify Bond’s winning hand in Montenegro:</p>
+  <div class="cards">10♠ J♠ Q♠ K♠ A♠</div>
+  <input id="stage1Answer" placeholder="Enter the poker hand">
+  <br>
+  <button onclick="checkStage1()">Submit Stage 1</button>
+  <p id="stage1Result"></p>
 </div>
 
-<div id="terminal">
-  <h2>Agent Portal</h2>
-  <p>Select your mission briefing below:</p>
-  <ul style="list-style:none; padding:0; font-size:20px;">
-    <li><a href="bestman.html" style="color:#00ff9c;">Best Man: Jason</a></li>
-    <li><a href="groomsman1.html" style="color:#00ff9c;">Agent Gill</a></li>
-    <li><a href="groomsman2.html" style="color:#00ff9c;">Agent Prathap</a></li>
-    <li><a href="groomsman3.html" style="color:#00ff9c;">Agent Taylor</a></li>
-    <li><a href="groomsman4.html" style="color:#00ff9c;">Agent Duran</a></li>
-    <li><a href="groomsman5.html" style="color:#00ff9c;">Agent Josh</a></li>
-  </ul>
+<div id="stage2" class="stage">
+  <h2>Stage 2: Code Phrase</h2>
+  <p>Hidden in this message is your next clue: <br>
+     "The eagle flies at midnight, beneath the seven towers."</p>
+  <input id="stage2Answer" placeholder="Enter code phrase">
+  <br>
+  <button onclick="checkStage2()">Submit Stage 2</button>
+  <p id="stage2Result"></p>
+</div>
+
+<div id="stage3" class="stage">
+  <h2>Stage 3: Final Mission</h2>
+  <p>Riddle: "I am taken before a bet, and yet I am never lost. What am I?"</p>
+  <input id="stage3Answer" placeholder="Enter final answer">
+  <br>
+  <button onclick="checkStage3()">Submit Final Stage</button>
+  <p id="stage3Result"></p>
+</div>
+
+<div id="missionComplete" class="stage">
+  <h2>MISSION COMPLETE</h2>
+  <p>Congratulations, Agent! You have unlocked your mission briefing.</p>
+  <p>High-Stakes Poker Game: <strong>September 18, 2026 at 12:00 PM</strong></p>
+  <p>You are now officially an MI6 Poker Champion candidate!</p>
+  <div id="countdown"></div>
 </div>
 
 <script>
-  // Fade-in text and show Enter button after animation
-  window.onload = function() {
-    setTimeout(function() {
-      document.getElementById('enterBtn').style.display = 'inline-block';
-    }, 4000); // matches fade-in delay
+  // Countdown
+  function updateCountdown() {
+    const now = new Date();
+    const showdown = new Date('2026-09-18T12:00:00');
+    const diff = showdown - now;
+    if (diff < 0) {
+      document.getElementById('countdown').innerText = "Mission time reached!";
+      return;
+    }
+    const hours = Math.floor(diff / (1000*60*60));
+    const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('countdown').innerText = `Time until high-stakes poker: ${hours}h ${minutes}m ${seconds}s`;
+  }
+  setInterval(updateCountdown, 1000);
+
+  // Stage 1: Poker
+  function checkStage1() {
+    const answer = document.getElementById('stage1Answer').value.trim().toLowerCase();
+    const result = document.getElementById('stage1Result');
+    if (answer === 'royal flush' || answer === 'royal flush in spades') {
+      result.innerText = 'Stage 1 complete!';
+      document.getElementById('stage1').style.display = 'none';
+      document.getElementById('stage2').style.display = 'block';
+    } else {
+      result.innerText = 'Incorrect. Try again.';
+    }
   }
 
-  function enterHQ() {
-    document.getElementById('gunBarrel').style.display = 'none';
-    document.getElementById('terminal').style.display = 'block';
+  // Stage 2: Code Phrase
+  function checkStage2() {
+    const answer = document.getElementById('stage2Answer').value.trim().toLowerCase();
+    const result = document.getElementById('stage2Result');
+    if (answer === 'midnight eagle') {
+      result.innerText = 'Stage 2 complete!';
+      document.getElementById('stage2').style.display = 'none';
+      document.getElementById('stage3').style.display = 'block';
+    } else {
+      result.innerText = 'Incorrect. Focus on the hidden clue.';
+    }
+  }
+
+  // Stage 3: Final Riddle
+  function checkStage3() {
+    const answer = document.getElementById('stage3Answer').value.trim().toLowerCase();
+    const result = document.getElementById('stage3Result');
+    if (answer === 'ante') {
+      result.innerText = 'Mission Complete!';
+      document.getElementById('stage3').style.display = 'none';
+      document.getElementById('missionComplete').style.display = 'block';
+    } else {
+      result.innerText = 'Incorrect. Solve the riddle carefully.';
+    }
   }
 </script>
 
