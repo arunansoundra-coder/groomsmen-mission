@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Groomsmen Mission HQ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="intro">
+  <div class="barrel">007</div>
+  <h2>Welcome to the Groomsmen Mission HQ</h2>
+  <button id="enter" onclick="enterHQ()">ENTER</button>
+</div>
+
+<div id="terminal" style="display:none; padding-top:50px;">
+  <h2>Agent Portal</h2>
+  <p>Select your mission briefing below:</p>
+  <ul style="list-style:none; padding:0; font-size:20px;">
+    <li><a href="bestman.html" style="color:#00ff9c;">Best Man: Jason</a></li>
+    <li><a href="groomsman1.html" style="color:#00ff9c;">Agent Gill</a></li>
+    <li><a href="groomsman2.html" style="color:#00ff9c;">Agent Prathap</a></li>
+    <li><a href="groomsman3.html" style="color:#00ff9c;">Agent Taylor</a></li>
+    <li><a href="groomsman4.html" style="color:#00ff9c;">Agent Duran</a></li>
+    <li><a href="groomsman5.html" style="color:#00ff9c;">Agent Josh</a></li>
+  </ul>
+</div>
+
+<script>
+function enterHQ() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('terminal').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
