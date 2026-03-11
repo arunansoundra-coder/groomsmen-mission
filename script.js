@@ -1,7 +1,4 @@
-function startMission() {
-  document.getElementById('intro').style.display = 'none';
-  document.getElementById('terminal').style.display = 'block';
-}
+// script.js
 
 function checkPuzzle() {
   const answer = document.getElementById('answer').value.trim().toLowerCase();
@@ -17,18 +14,20 @@ function acceptMission(agent) {
   alert(agent + ' has accepted the high-stakes poker mission! Good luck!');
 }
 
-// Simple countdown for poker showdown at 12:00 PM
+// Countdown to poker showdown
 function updateCountdown() {
   const now = new Date();
-  const nextNoon = new Date();
-  nextNoon.setHours(12,0,0,0);
-  if (now > nextNoon) nextNoon.setDate(now.getDate() + 1);
-  const diff = nextNoon - now;
+  const showdown = new Date('2026-09-18T12:00:00'); // September 18, 2026, 12:00 PM
+  const diff = showdown - now;
+  if (diff < 0) {
+    document.getElementById('countdown').innerText = "Mission time reached!";
+    return;
+  }
   const hours = Math.floor(diff / (1000*60*60));
   const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
   const seconds = Math.floor((diff % (1000*60)) / 1000);
   const countdown = document.getElementById('countdown');
-  if(countdown) countdown.innerText = `Time until poker showdown: ${hours}h ${minutes}m ${seconds}s`;
+  if(countdown) countdown.innerText = `Time until high-stakes poker: ${hours}h ${minutes}m ${seconds}s`;
 }
 
 setInterval(updateCountdown, 1000);
