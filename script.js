@@ -57,4 +57,37 @@ document.getElementById("agentWelcome").innerText=
 "Agent Jason — 00 Clearance Level\nBest Man Assignment Authorized";
 }
 
+let startTime=Date.now();
+
+function recordScore(){
+
+let endTime=Date.now();
+
+let seconds=Math.floor((endTime-startTime)/1000);
+
+let scores=JSON.parse(localStorage.getItem("mi6scores"))||[];
+
+scores.push({agent:agentName,time:seconds});
+
+scores.sort((a,b)=>a.time-b.time);
+
+localStorage.setItem("mi6scores",JSON.stringify(scores));
+
+displayLeaderboard();
+
+}
+
+function displayLeaderboard(){
+
+let scores=JSON.parse(localStorage.getItem("mi6scores"))||[];
+
+let html="<h3>Agent Leaderboard</h3>";
+
+scores.slice(0,5).forEach(s=>{
+html+=s.agent+" — "+s.time+"s<br>";
+});
+
+document.getElementById("leaderboard").innerHTML=html;
+
+}
 
