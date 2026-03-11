@@ -12,11 +12,26 @@ function checkPuzzle() {
 
 // Handle response
 function acceptMission(button) {
-  const agent = agentName;
+
   const response = button.innerText;
-  alert(`Agent ${agent} responded: "${response}". Mission accepted!`);
+
+  const formURL =
+  "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse";
+
+  const agentField = "entry.111111111";
+  const responseField = "entry.222222222";
+  const codeField = "entry.333333333";
+
+  const missionCode = Math.random().toString(36).substring(2,8).toUpperCase();
+
+  fetch(`${formURL}?${agentField}=${agentName}&${responseField}=${response}&${codeField}=${missionCode}`, {
+    method: "POST",
+    mode: "no-cors"
+  });
+
   document.getElementById('acceptMissionStage').style.display = 'none';
   document.getElementById('missionComplete').style.display = 'block';
+
 }
 
 // Countdown to poker showdown
@@ -36,4 +51,5 @@ function updateCountdown() {
 }
 
 setInterval(updateCountdown, 1000);
+
 
