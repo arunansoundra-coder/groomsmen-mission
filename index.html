@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MI6 Groomsmen Mission</title>
+
+<style>
+
+body{
+background:black;
+color:#00ff9c;
+font-family:Courier New;
+text-align:center;
+margin:0;
+}
+
+/* Gun barrel intro */
+
+#intro{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.barrel{
+width:320px;
+height:320px;
+border-radius:50%;
+border:8px solid white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:48px;
+color:white;
+}
+
+#enter{
+margin-top:25px;
+padding:14px 35px;
+font-size:20px;
+background:red;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+/* terminal */
+
+#terminal{
+display:none;
+padding-top:80px;
+font-size:20px;
+}
+
+/* puzzle */
+
+#puzzle{
+display:none;
+margin-top:40px;
+}
+
+.cards{
+font-size:32px;
+letter-spacing:8px;
+color:#ff4444;
+}
+
+/* poker challenge */
+
+#challenge{
+display:none;
+margin-top:40px;
+border:2px solid #00ff9c;
+padding:30px;
+width:420px;
+margin-left:auto;
+margin-right:auto;
+}
+
+/* dossier */
+
+#dossier{
+display:none;
+margin-top:40px;
+border:2px solid #00ff9c;
+padding:30px;
+width:420px;
+margin-left:auto;
+margin-right:auto;
+}
+
+input{
+padding:10px;
+font-size:18px;
+margin-top:20px;
+}
+
+button{
+padding:12px 25px;
+font-size:18px;
+margin-top:15px;
+background:#ff0033;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+
+<div class="barrel">007</div>
+
+<h2>MI6 Secure Channel</h2>
+
+<button id="enter" onclick="startMission()">ENTER</button>
+
+</div>
+
+<div id="terminal"></div>
+
+<div id="puzzle">
+
+<h2>MISSION BRIEFING</h2>
+
+<p>During the Montenegro poker game, Bond defeated Le Chiffre.</p>
+
+<p>Identify the winning hand:</p>
+
+<div class="cards">
+
+10♠ J♠ Q♠ K♠ A♠
+
+</div>
+
+<input id="answer" placeholder="Enter the poker hand">
+
+<br>
+
+<button onclick="check()">VERIFY</button>
+
+<p id="result"></p>
+
+</div>
+
+<div id="challenge">
+
+<h2>HIGH-STAKES POKER CHALLENGE</h2>
+
+<p>Before the ceremony, agents must defeat the groom.</p>
+
+<p><strong>Time:</strong> 12:00 PM</p>
+
+<p><strong>Objective:</strong> Beat the groom in a poker showdown.</p>
+
+<p>The winner earns the title:</p>
+
+<p><strong>MI6 Poker Champion</strong></p>
+
+<button onclick="accept()">ACCEPT MISSION</button>
+
+</div>
+
+<div id="dossier">
+
+<h2>MI6 AGENT DOSSIER</h2>
+
+<p id="agentName"></p>
+
+<p>Status: ACTIVE</p>
+
+<p>Operation: FOREVER</p>
+
+<p>Assignment: Groomsman</p>
+
+<p>Secondary Mission: Defeat the groom at noon.</p>
+
+</div>
+
+<script>
+
+function startMission(){
+document.getElementById("intro").style.display="none";
+document.getElementById("terminal").style.display="block";
+typeTerminal();
+}
+
+const lines=[
+"Initializing MI6 encrypted channel...",
+"Authenticating agent credentials...",
+"Opening Montenegro incident file...",
+"Bond. James Bond.",
+"Poker intelligence verification required..."
+]
+
+let line=0
+let char=0
+
+function typeTerminal(){
+
+if(line < lines.length){
+
+document.getElementById("terminal").innerHTML += lines[line].charAt(char)
+
+char++
+
+if(char < lines[line].length){
+
+setTimeout(typeTerminal,40)
+
+}else{
+
+document.getElementById("terminal").innerHTML+="<br>"
+char=0
+line++
+setTimeout(typeTerminal,400)
+
+}
+
+}else{
+
+document.getElementById("puzzle").style.display="block"
+
+}
+
+}
+
+function check(){
+
+let ans=document.getElementById("answer").value.toLowerCase()
+
+if(ans==="royal flush"){
+
+document.getElementById("result").innerHTML="ACCESS GRANTED"
+
+document.getElementById("challenge").style.display="block"
+
+}else{
+
+document.getElementById("result").innerHTML="ACCESS DENIED"
+
+}
+
+}
+
+function accept(){
+
+let name=prompt("Enter Agent Name")
+
+document.getElementById("challenge").style.display="none"
+
+document.getElementById("dossier").style.display="block"
+
+document.getElementById("agentName").innerHTML="Agent: "+name
+
+}
+
+</script>
+
+</body>
+</html>
