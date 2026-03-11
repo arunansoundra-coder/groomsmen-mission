@@ -31,7 +31,7 @@ function acceptMission(button) {
 
   document.getElementById('acceptMissionStage').style.display = 'none';
   document.getElementById('missionComplete').style.display = 'block';
-
+  recordScore();
 }
 
 // Countdown to poker showdown
@@ -90,4 +90,5 @@ html+=s.agent+" — "+s.time+"s<br>";
 document.getElementById("leaderboard").innerHTML=html;
 
 }
+
 
