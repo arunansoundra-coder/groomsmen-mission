@@ -40,7 +40,7 @@ function updateCountdown() {
   const showdown = new Date('2026-09-18T12:00:00'); // September 18, 2026, 12:00 PM
   const diff = showdown - now;
   if (diff < 0) {
-    document.getElementById('countdown').innerText = "Mission time reached!";
+    document.getElementById("missionCode").innerText = missionCode;
     return;
   }
   const hours = Math.floor(diff / (1000*60*60));
@@ -51,5 +51,6 @@ function updateCountdown() {
 }
 
 setInterval(updateCountdown, 1000);
+
 
 
