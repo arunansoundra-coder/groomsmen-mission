@@ -1,16 +1,35 @@
 body {
-  background-color: #000;
-  color: #00ff9c;
-  font-family: 'Courier New', monospace;
-  text-align: center;
-  margin: 0;
-  padding: 0;
+background: radial-gradient(circle at center,#0b3d2e,#000000);
+color:#00ff9c;
+font-family:Courier New, monospace;
 }
 
-.barrel {
-  font-size: 50px;
-  font-weight: bold;
-  margin-top: 20px;
+#gunbarrel{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+animation:barrelFade 4s forwards;
+z-index:999;
+}
+
+.circle{
+width:200px;
+height:200px;
+border:8px solid white;
+border-radius:50%;
+}
+
+@keyframes barrelFade{
+0%{opacity:1}
+80%{opacity:1}
+100%{opacity:0;visibility:hidden}
+}
 }
 
 button {
@@ -33,3 +52,4 @@ input {
   font-size: 25px;
   margin: 10px;
 }
+
