@@ -1,94 +1,53 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MI6 Mission – Best Man Jason</title>
-
+<title>MI6 Mission – Agent Jason</title>
 <link rel="stylesheet" href="bestman.css">
-
 </head>
-
 <body>
 
-<!-- INTRO SCREEN -->
-
+<!-- 007 Gun Barrel Intro -->
 <section id="intro">
-
-<div class="gunbarrel">007</div>
-
-<h1>MI6 Secure Channel</h1>
-
-<h2>Agent Authentication Required</h2>
-
-<button onclick="startMission()">ENTER</button>
-
+  <div class="gunbarrel">007</div>
+  <h1>MI6 Secure Channel</h1>
+  <h2>Agent Authentication Required</h2>
+  <button onclick="startMission()">ENTER</button>
 </section>
 
-
-<!-- TERMINAL OUTPUT -->
-
+<!-- Terminal Output -->
 <section id="terminal"></section>
 
-
-<!-- PUZZLE -->
-
+<!-- Poker Puzzle -->
 <section id="puzzle" class="hidden">
-
-<h2>MISSION PUZZLE</h2>
-
-<p>During the Montenegro poker game, Bond defeated Le Chiffre.</p>
-
-<p>Select the winning hand:</p>
-
-<div class="cards">
-
-<button onclick="selectCard('pair')">Pair</button>
-
-<button onclick="selectCard('straight')">Straight</button>
-
-<button onclick="selectCard('royal')">Royal Flush</button>
-
-</div>
-
-<p id="result"></p>
-
+  <h2>MISSION PUZZLE</h2>
+  <p>During the Montenegro poker game, Bond defeated Le Chiffre.</p>
+  <p>Select the winning hand:</p>
+  <div class="cards">
+    <button onclick="selectCard('pair')">Pair</button>
+    <button onclick="selectCard('straight')">Straight</button>
+    <button onclick="selectCard('royal')">Royal Flush</button>
+  </div>
+  <p id="result"></p>
 </section>
 
-
-<!-- FINAL MISSION -->
-
+<!-- Final Mission / Agent Dossier -->
 <section id="challenge" class="hidden">
-
-<h2>FINAL MISSION BRIEFING</h2>
-
-<p id="agentName">Agent Jason</p>
-
-<p>You have been assigned as the <strong>Best Man</strong>.</p>
-
-<p>Your secondary mission is to defeat the groom in poker.</p>
-
-<p><strong>Showdown Time:</strong> 12:00 PM</p>
-
-<p class="champion">
-
-Winner earns the title: MI6 Poker Champion
-
-</p>
-
-<button onclick="startCountdown()">ACCEPT MISSION</button>
-
-<div id="countdown"></div>
-
+  <h2>FINAL MISSION BRIEFING</h2>
+  <p id="agentName">Agent Jason</p>
+  <p>Role: <strong>Best Man</strong></p>
+  <p>Secondary mission: Defeat the groom in poker at 12:00 PM</p>
+  <p class="champion">Winner earns the title: MI6 Poker Champion</p>
+  <button onclick="startCountdown()">ACCEPT MISSION</button>
+  <div id="countdown"></div>
 </section>
+
+<!-- Bond Theme Music -->
+<audio id="bondTheme">
+  <source src="bond-theme.mp3" type="audio/mpeg">
+</audio>
 
 <script src="bestman.js"></script>
-
 </body>
-
 </html>
-```
