@@ -18,18 +18,47 @@ function startMission(){
     }else{
       document.getElementById("puzzle").classList.remove("hidden");
       document.getElementById("bondTheme").play();
+      initDragDrop();
     }
   }
   typeLine();
 }
 
-// Poker Puzzle Selection
-function selectCard(choice){
-  if(choice==="royal"){
-    document.getElementById("result").innerHTML="Correct Agent.";
+// Initialize Drag & Drop
+function initDragDrop(){
+  const cards = document.querySelectorAll('.card');
+  const dropzone = document.getElementById('dropzone');
+  
+  cards.forEach(card=>{
+    card.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text', card.dataset.hand);
+    });
+  });
+  
+  dropzone.addEventListener('dragover', e=>{
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+  
+  dropzone.addEventListener('dragleave', e=>{
+    dropzone.classList.remove('dragover');
+  });
+  
+  dropzone.addEventListener('drop', e=>{
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    const hand = e.dataTransfer.getData('text');
+    checkHand(hand);
+  });
+}
+
+// Check poker hand
+function checkHand(hand){
+  if(hand==="royal"){
+    document.getElementById('result').innerHTML="Correct Agent.";
     document.getElementById("challenge").classList.remove("hidden");
   }else{
-    document.getElementById("result").innerHTML="Incorrect. Try again.";
+    document.getElementById('result').innerHTML="Incorrect. Try again.";
   }
 }
 
