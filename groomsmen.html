@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MI6 Mission – Groomsmen</title>
+
+<link rel="stylesheet" href="groomsmen.css">
+
+</head>
+
+<body>
+
+<!-- INTRO -->
+
+<section id="intro">
+
+<div class="gunbarrel">007</div>
+
+<h1>MI6 Secure Channel</h1>
+
+<button onclick="startMission()">ENTER</button>
+
+</section>
+
+
+<!-- TERMINAL -->
+
+<section id="terminal"></section>
+
+
+<!-- PUZZLE -->
+
+<section id="puzzle" class="hidden">
+
+<h2>MISSION VERIFICATION</h2>
+
+<p>Complete Bond's famous phrase:</p>
+
+<div class="quote">
+
+Shaken, not ______
+
+</div>
+
+<input id="answer" placeholder="Enter the missing word">
+
+<br>
+
+<button onclick="checkAnswer()">VERIFY</button>
+
+<p id="result"></p>
+
+</section>
+
+
+<!-- AGENT DOSSIER -->
+
+<section id="mission" class="hidden">
+
+<h2 id="agentName">Agent</h2>
+
+<h3>MI6 ASSIGNMENT</h3>
+
+<ul>
+
+<li>Protect the wedding rings</li>
+<li>Ensure the groom arrives on time</li>
+<li>Celebrate Operation: FOREVER</li>
+
+</ul>
+
+<p class="final">
+
+Status: ACTIVE
+
+</p>
+
+</section>
+
+<script src="groomsmen.js"></script>
+
+</body>
+
+</html>
