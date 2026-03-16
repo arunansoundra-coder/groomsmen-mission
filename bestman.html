@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MI6 Secure Channel</title>
 
 <link rel="stylesheet" href="./bestman.css">
@@ -22,24 +23,79 @@
 
 </section>
 
+
 <section id="terminal"></section>
 
-<script>
 
-function startMission() {
+<!-- PUZZLE 1 -->
+<section id="puzzle1" class="hidden">
 
-alert("Button works — JS is running");
+<h2>Authentication 1</h2>
 
-document.getElementById("intro").style.display="none";
+<p>What is James Bond's famous drink?</p>
 
-document.getElementById("terminal").innerHTML =
-"Initializing MI6 secure channel...";
+<button onclick="checkPuzzle1('wrong')">
+Vodka Martini - Stirred
+</button>
 
-}
+<button onclick="checkPuzzle1('correct')">
+Vodka Martini - Shaken Not Stirred
+</button>
 
-</script>
+<button onclick="checkPuzzle1('wrong')">
+Whiskey Neat
+</button>
+
+<p id="p1result"></p>
+
+</section>
+
+
+
+<!-- PUZZLE 2 -->
+<section id="puzzle2" class="hidden">
+
+<h2>Authentication 2</h2>
+
+<p>006 + 001 = ?</p>
+
+<input id="mathAnswer" placeholder="Enter code">
+
+<button onclick="checkPuzzle2()">Verify</button>
+
+<p id="p2result"></p>
+
+</section>
+
+
+
+<!-- PUZZLE 3 -->
+<section id="puzzle3" class="hidden">
+
+<h2>Final Authentication</h2>
+
+<p>Which poker hand beats almost everything?</p>
+
+<button onclick="checkPoker('wrong')">Pair</button>
+<button onclick="checkPoker('wrong')">Straight</button>
+<button onclick="checkPoker('correct')">Royal Flush</button>
+
+<p id="p3result"></p>
+
+</section>
+
+
+
+<section id="verified" class="hidden">
+
+<h1 id="welcomeAgent"></h1>
+<h2>Identity Confirmed</h2>
+
+</section>
+
+
+<script src="./bestman.js"></script>
 
 </body>
-
 </html>
 ```
