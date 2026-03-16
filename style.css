@@ -1,0 +1,47 @@
+body {
+    background:black;
+    color:#00ff9c;
+    font-family:Courier New, monospace;
+    text-align:center;
+    padding:40px;
+}
+h1 {
+    letter-spacing:3px;
+}
+.container {
+    max-width:800px;
+    margin:auto;
+}
+button {
+    background:black;
+    color:#00ff9c;
+    border:1px solid #00ff9c;
+    padding:12px 20px;
+    margin:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+button:hover {
+    background:#00ff9c;
+    color:black;
+}
+.hidden {
+    display:none;
+}
+.question {
+    margin-top:30px;
+}
+.countdown {
+    font-size:28px;
+    margin-top:20px;
+}
+a {
+    color:#00ff9c;
+    font-size:18px;
+}
+input {
+    padding:8px;
+    font-size:16px;
+    margin-top:10px;
+    width:200px;
+}
