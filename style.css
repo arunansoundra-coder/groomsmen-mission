@@ -43,7 +43,7 @@ button:hover {
     display: none;
 }
 
-#puzzle, #security, #welcome, #mission, #countdown {
+#verification, #security, #welcome, #mission, #countdown {
     margin-top: 20px;
 }
 
