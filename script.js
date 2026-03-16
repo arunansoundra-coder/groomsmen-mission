@@ -1,39 +1,47 @@
-// BEST MAN
-const startBtn = document.getElementById("startBtn");
-const terminal = document.getElementById("terminal");
-const terminalOutput = document.getElementById("terminalOutput");
+// Tab functionality
+const tabButtons = document.querySelectorAll(".tabBtn");
+const tabContents = document.querySelectorAll(".tabContent");
 
-startBtn?.addEventListener("click", () => startMission("bestman"));
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tabButtons.forEach(b => b.classList.remove("active"));
+    tabContents.forEach(c => c.classList.add("hidden"));
 
-// GROOMSMEN
-const startBtnGroomsmen = document.getElementById("startBtnGroomsmen");
-const terminalOutputGroomsmen = document.getElementById("terminalOutputGroomsmen");
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.target).classList.remove("hidden");
+  });
+});
 
-startBtnGroomsmen?.addEventListener("click", () => startMission("groomsmen"));
+// Start mission functionality
+const startButtons = document.querySelectorAll(".startBtn");
 
-function startMission(type) {
-  const output = type === "bestman" ? terminalOutput : terminalOutputGroomsmen;
-  terminal.classList.remove("hidden");
-  output.innerHTML = "";
+startButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+    const nameInput = document.getElementById(`${type}Name`);
+    const name = nameInput.value.trim() || "Agent";
 
-  const lines = [
-    "Initializing MI6 secure channel...",
-    "Scanning agent registry...",
-    "Identity requires multi-factor authentication...",
-    "3 verification challenges detected..."
-  ];
+    const terminal = document.getElementById(type === "bestman" ? "terminalBestman" : "terminalGroomsmen");
+    terminal.classList.remove("hidden");
+    terminal.innerHTML = "";
 
-  let index = 0;
+    const lines = [
+      "Initializing MI6 secure channel...",
+      "Scanning agent registry...",
+      `Verifying identity for ${name}...`,
+      "3 verification challenges detected..."
+    ];
 
-  function showNextLine() {
-    if (index < lines.length) {
-      output.innerHTML += `<p>${lines[index]}</p>`;
-      index++;
-      setTimeout(showNextLine, 1000);
-    } else {
-      output.innerHTML += `<p>Access granted. Welcome, Agent.</p>`;
+    let index = 0;
+    function showNextLine() {
+      if (index < lines.length) {
+        terminal.innerHTML += `<p>${lines[index]}</p>`;
+        index++;
+        setTimeout(showNextLine, 1000);
+      } else {
+        terminal.innerHTML += `<p>Access granted. Welcome, ${name}.</p>`;
+      }
     }
-  }
-
-  showNextLine();
-}
+    showNextLine();
+  });
+});
