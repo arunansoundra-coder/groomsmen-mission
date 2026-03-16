@@ -1,101 +1,28 @@
-body {
-  font-family: 'Courier New', monospace;
-  background-color: #0b0c10;
-  color: #66fcf1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MI6 Secure Channel - Best Man</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<h1>MI6 Secure Channel</h1>
+<p>Agent Authentication Required</p>
 
-.container {
-  width: 90%;
-  max-width: 650px;
-  text-align: center;
-  background-color: #1f2833;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 25px #45a29e;
-  border: 2px solid #45a29e;
-}
+<div id="intro">
+<p>Enter Agent Name</p>
+<input id="agentName" placeholder="Agent Name"><br><br>
+<button onclick="startMission('bestman')">ENTER</button>
+</div>
 
-h1, h2 {
-  text-shadow: 0 0 5px #45a29e, 0 0 10px #45a29e;
-}
+<div id="quiz" class="hidden"></div>
+<div id="security" class="hidden"></div>
+<div id="mission" class="hidden"></div>
+<div id="poker" class="hidden"></div>
+</div>
 
-p {
-  line-height: 1.5;
-}
-
-button {
-  background-color: #45a29e;
-  border: none;
-  padding: 12px 25px;
-  margin-top: 10px;
-  color: #0b0c10;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 5px;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 0 10px #45a29e;
-}
-
-button:hover {
-  background-color: #66fcf1;
-  box-shadow: 0 0 15px #66fcf1, 0 0 30px #45a29e;
-  transform: scale(1.05);
-}
-
-input[type="text"] {
-  padding: 10px;
-  width: 80%;
-  margin-top: 10px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-  background-color: #0b0c10;
-  color: #66fcf1;
-  box-shadow: 0 0 5px #45a29e inset;
-}
-
-input[type="text"]::placeholder {
-  color: #45a29e;
-  opacity: 0.7;
-}
-
-.terminal p {
-  margin: 15px 0 5px 0;
-}
-
-#countdown {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ff6f61;
-  text-shadow: 0 0 10px #ff6f61, 0 0 20px #ff6f61;
-  margin-top: 15px;
-}
-
-h2 {
-  margin-top: 20px;
-  margin-bottom: 15px;
-}
-
-a button {
-  width: 220px;
-  font-size: 1rem;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.buttons h2 {
-  margin: 15px 0 5px 0;
-  color: #45a29e;
-}
+<script src="script.js"></script>
+</body>
+</html>
