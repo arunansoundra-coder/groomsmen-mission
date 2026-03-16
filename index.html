@@ -1,38 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MI6 Agent Channel</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MI6 Secure Channel</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="tabs">
-    <button class="tabBtn active" data-target="bestmanSection">Best Man</button>
-    <button class="tabBtn" data-target="groomsmenSection">Groomsmen</button>
-  </div>
+<div class="container">
+    <h1>MI6 Secure Channel</h1>
+    <p>Agent Authentication Required</p>
 
-  <!-- BEST MAN SECTION -->
-  <section id="bestmanSection" class="tabContent">
-    <h1>MI6 Secure Channel - Best Man</h1>
-    <label for="bestmanName">Enter your agent name:</label>
-    <input type="text" id="bestmanName" placeholder="Agent Name">
-    <button class="startBtn" data-type="bestman">ENTER</button>
-    <div class="terminal hidden" id="terminalBestman"></div>
-  </section>
+    <div id="intro">
+        <p>Enter Agent Name</p>
+        <input id="agentName" placeholder="Agent Name"><br><br>
+        <p>Select your role:</p>
+        <button onclick="startMission('Best Man')">Best Man</button>
+        <button onclick="startMission('Groomsmen')">Groomsmen</button>
+    </div>
 
-  <!-- GROOMSMEN SECTION -->
-  <section id="groomsmenSection" class="tabContent hidden">
-    <h1>MI6 Secure Channel - Groomsmen</h1>
-    <label for="groomsmenName">Enter your agent name:</label>
-    <input type="text" id="groomsmenName" placeholder="Agent Name">
-    <button class="startBtn" data-type="groomsmen">ENTER</button>
-    <div class="terminal hidden" id="terminalGroomsmen"></div>
-  </section>
+    <div id="puzzle" class="hidden"></div>
+    <div id="security" class="hidden"></div>
+    <div id="welcome" class="hidden"></div>
+    <div id="mission" class="hidden"></div>
+    <div id="countdown" class="hidden"></div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
-
 </html>
