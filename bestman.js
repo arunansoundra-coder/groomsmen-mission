@@ -1,116 +1,79 @@
-// Start MI6 Mission
-function startMission(){
-  document.getElementById("intro").style.display="none";
-  let terminal=document.getElementById("terminal");
-  let lines=[
-    "Initializing MI6 secure channel...",
-    "Authenticating Agent Jason...",
-    "Accessing classified wedding operation...",
-    "Codename: OPERATION FOREVER...",
-    "Verification required..."
-  ];
-  let i=0;
-  function typeLine(){
-    if(i<lines.length){
-      terminal.innerHTML += lines[i] + "\n";
-      i++;
-      setTimeout(typeLine,900);
-    }else{
-      document.getElementById("puzzle").classList.remove("hidden");
-      document.getElementById("bondTheme").play();
-      initDragDrop();
+// Secret codename for the Best Man
+const BEST_MAN_CODENAME = "brooke"; // change to actual codename
+
+const answers = {
+  1: "royal flush",
+  2: "194",
+  3: "piano"
+};
+
+let agentName = "";
+
+// Start authentication after agent name
+function startAuthentication() {
+  const inputName = document.getElementById("agentName").value.trim().toLowerCase();
+  const nameResult = document.getElementById("nameResult");
+
+  if(inputName === ""){
+    nameResult.textContent = "❌ Please enter your codename!";
+    nameResult.style.color = "red";
+    return;
+  }
+
+  if(inputName !== BEST_MAN_CODENAME){
+    nameResult.textContent = "🚫 Access Denied. You are not authorized!";
+    nameResult.style.color = "red";
+    return;
+  }
+
+  agentName = inputName;
+
+  // Hide name input, show first puzzle
+  document.getElementById("agentNameScreen").classList.add("hidden");
+  document.getElementById("puzzle1").classList.remove("hidden");
+}
+
+// Check answer for each puzzle
+function checkAnswer(puzzleNumber){
+  const input = document.getElementById(`answer${puzzleNumber}`).value.trim().toLowerCase();
+  const resultEl = document.getElementById(`result${puzzleNumber}`);
+
+  if(input === answers[puzzleNumber]){
+    resultEl.textContent = "✅ Verified!";
+    resultEl.style.color = "gold";
+
+    // Show next authentication puzzle
+    const nextPuzzle = document.getElementById(`puzzle${puzzleNumber + 1}`);
+    if(nextPuzzle){
+      nextPuzzle.classList.remove("hidden");
+    } else {
+      // All puzzles complete
+      showWelcomeMessage();
     }
-  }
-  typeLine();
-}
 
-// Initialize Drag & Drop
-function initDragDrop(){
-  const cards = document.querySelectorAll('.card');
-  const dropzone = document.getElementById('dropzone');
-  
-  cards.forEach(card=>{
-    card.addEventListener('dragstart', e=>{
-      e.dataTransfer.setData('text', card.dataset.hand);
-    });
-  });
-  
-  dropzone.addEventListener('dragover', e=>{
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  });
-  
-  dropzone.addEventListener('dragleave', e=>{
-    dropzone.classList.remove('dragover');
-  });
-  
-  dropzone.addEventListener('drop', e=>{
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-    const hand = e.dataTransfer.getData('text');
-    checkHand(hand);
-  });
-}
-
-// Check poker hand
-function checkHand(hand){
-  if(hand==="royal"){
-    document.getElementById('result').innerHTML="Correct Agent.";
-    document.getElementById("challenge").classList.remove("hidden");
-  }else{
-    document.getElementById('result').innerHTML="Incorrect. Try again.";
+  } else {
+    resultEl.textContent = "❌ Invalid code. Try again!";
+    resultEl.style.color = "red";
   }
 }
 
-// Countdown Timer for Poker Showdown
-function startCountdown(){
-  let countdown=document.getElementById("countdown");
-  setInterval(function(){
-    let now=new Date();
-    let noon=new Date();
-    noon.setHours(12,0,0,0);
-    let diff=noon-now;
-    let h=Math.floor(diff/1000/60/60);
-    let m=Math.floor(diff/1000/60)%60;
-    let s=Math.floor(diff/1000)%60;
-    countdown.innerHTML = h+"h "+m+"m "+s+"s until showdown";
-  },1000);
-}
+// Show welcome message and followup
+function showWelcomeMessage(){
+  const championEl = document.getElementById("champion");
+  championEl.textContent = `🎉 Welcome Agent ${agentName.toUpperCase()}! You are officially the Best Man! 🥳`;
+  championEl.classList.remove("hidden");
 
-// Get agent name from localStorage
-const agentName = localStorage.getItem("bestManName") || "Agent";
-
-const missionText = document.getElementById("missionText");
-const missionButtons = document.getElementById("missionButtons");
-const missionResult = document.getElementById("missionResult");
-const followup = document.getElementById("followup");
-const countdownEl = document.getElementById("countdown");
-
-// Show initial mission text
-setTimeout(() => {
-  missionText.textContent = `Agent ${agentName.toUpperCase()}, will you be my Best Man?`;
-  missionButtons.classList.remove("hidden");
-}, 1000);
-
-function acceptMission(){
-  missionResult.textContent = "🎉 Mission Accepted! You are officially the Best Man! 🥳";
-  missionButtons.classList.add("hidden");
-
-  // Show further instructions after short delay
+  // Show further instructions and countdown
   setTimeout(() => {
-    followup.classList.remove("hidden");
+    document.getElementById("followup").classList.remove("hidden");
     startCountdown();
   }, 1500);
-}
-
-function declineMission(){
-  missionResult.textContent = "💀 Mission Failed... But the secret mission lives on.";
-  missionButtons.classList.add("hidden");
 }
 
 // Countdown to September 18, 2026 at noon
 function startCountdown(){
   const targetDate = new Date("September 18, 2026 12:00:00").getTime();
+  const countdownEl = document.getElementById("countdown");
 
   const interval = setInterval(() => {
     const now = new Date().getTime();
