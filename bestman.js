@@ -5,7 +5,7 @@ function startMission(){
 const intro = document.getElementById("intro");
 const terminal = document.getElementById("terminal");
 
-intro.style.display = "none";
+if(intro) intro.style.display = "none";
 
 let lines = [
 "Initializing MI6 secure channel...",
@@ -23,11 +23,15 @@ if(i < lines.length){
 terminal.innerHTML += lines[i] + "<br>";
 i++;
 
-setTimeout(typeLine,800);
+setTimeout(typeLine,900);
 
 }else{
 
-document.getElementById("puzzle1").classList.remove("hidden");
+const p1 = document.getElementById("puzzle1");
+
+if(p1){
+p1.classList.remove("hidden");
+}
 
 }
 
@@ -43,11 +47,17 @@ function checkPuzzle1(answer){
 
 const result = document.getElementById("p1result");
 
+if(!result) return;
+
 if(answer === "correct"){
 
 result.innerHTML = "Authentication 1 Passed";
 
-document.getElementById("puzzle2").classList.remove("hidden");
+const p2 = document.getElementById("puzzle2");
+
+if(p2){
+p2.classList.remove("hidden");
+}
 
 }else{
 
@@ -61,19 +71,25 @@ result.innerHTML = "Incorrect Agent";
 
 function checkPuzzle2(){
 
-const answer = document.getElementById("mathAnswer").value;
+const input = document.getElementById("mathAnswer");
+const result = document.getElementById("p2result");
 
-if(answer === "7"){
+if(!input || !result) return;
 
-document.getElementById("p2result").innerHTML = "Authentication 2 Passed";
+if(input.value === "7"){
 
-document.getElementById("puzzle3").classList.remove("hidden");
+result.innerHTML = "Authentication 2 Passed";
 
+const p3 = document.getElementById("puzzle3");
+
+if(p3){
+p3.classList.remove("hidden");
 initDragDrop();
+}
 
 }else{
 
-document.getElementById("p2result").innerHTML = "Access Denied";
+result.innerHTML = "Access Denied";
 
 }
 
@@ -86,6 +102,8 @@ function initDragDrop(){
 const cards = document.querySelectorAll(".card");
 const dropzone = document.getElementById("dropzone");
 
+if(!cards || !dropzone) return;
+
 cards.forEach(card => {
 
 card.addEventListener("dragstart", e => {
@@ -97,9 +115,7 @@ e.dataTransfer.setData("text", card.dataset.hand);
 });
 
 dropzone.addEventListener("dragover", e => {
-
 e.preventDefault();
-
 });
 
 dropzone.addEventListener("drop", e => {
@@ -110,13 +126,21 @@ const hand = e.dataTransfer.getData("text");
 
 if(hand === "royal"){
 
-document.getElementById("p3result").innerHTML = "Authentication Complete";
+const result = document.getElementById("p3result");
+
+if(result){
+result.innerHTML = "Authentication Complete";
+}
 
 verifyAgent();
 
 }else{
 
-document.getElementById("p3result").innerHTML = "Incorrect Hand";
+const result = document.getElementById("p3result");
+
+if(result){
+result.innerHTML = "Incorrect Hand";
+}
 
 }
 
@@ -128,10 +152,14 @@ document.getElementById("p3result").innerHTML = "Incorrect Hand";
 
 function verifyAgent(){
 
-document.getElementById("verified").classList.remove("hidden");
+const verified = document.getElementById("verified");
+const welcome = document.getElementById("welcomeAgent");
 
-document.getElementById("welcomeAgent").innerHTML =
-"Welcome Agent " + agentName;
+if(verified) verified.classList.remove("hidden");
+
+if(welcome){
+welcome.innerHTML = "Welcome Agent " + agentName;
+}
 
 }
 
@@ -141,10 +169,11 @@ function startCountdown(){
 
 const countdown = document.getElementById("countdown");
 
+if(!countdown) return;
+
 setInterval(function(){
 
 const now = new Date();
-
 const noon = new Date();
 
 noon.setHours(12,0,0,0);
