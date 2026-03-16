@@ -1,101 +1,151 @@
-let agentName = "Agent";
+   let agent = "";
+let role = "";
+let qIndex = 0;
+let sIndex = 0;
 
-const bondQuestions = [
-  { question: "What poker hand did James Bond win in Montenegro?", answer: "royal flush" },
-  { question: "What is James Bond's favorite drink?", answer: "vodka martini" }
+// Agent Roles
+const roles = {
+    "Jason": "Best Man",
+    "Gill": "Groomsman",
+    "Prathap": "Groomsman",
+    "Duran": "Groomsman",
+    "Taylor": "Groomsman",
+    "Josh": "Groomsman"
+};
+
+// Quiz Questions
+const questions = [
+    { q:"What poker hand did James Bond win with in Montenegro?", options:["Royal Flush","Straight Flush","Full House","Four of a Kind"], correct:1 },
+    { q:"What is James Bond's favorite drink?", options:["Martini – shaken, not stirred","Whiskey on the rocks","Scotch neat","Champagne"], correct:0 },
+    { q:"Who are Bond's love interests?", options:["Vesper Lynd, Madeleine Swann, Tracy Bond","Moneypenny, Judy Dench, Vesper Lynd","Vesper Lynd, Tiffany Case, Domino","Tracy Bond, Honey Ryder, Octopussy"], correct:0 }
 ];
 
-const clearanceQuestions = [
-  { question: "What was the name of Arunan's horse?", answer: "maya" },
-  { question: "Arunan had a 2023 BMW 330i Grey. What was his name?", answer: "arunan" },
-  { question: "Fill in the blank: Blood makes us related and loyalty makes us family and family is ________", answer: "forever" }
+// Security Verification
+const security = [
+    { q:"What was the name of the horse that Arunan had?", options:["Bella","Storm","Maya","Spirit"], correct:2 },
+    { q:"Arunan had a 2023 BMW 330i. What was its name?", options:["Ghost","Cloud","Shadow","Nova"], correct:1 },
+    { q:"Complete the phrase:<br><br>Blood makes us related, loyalty makes us family and ____ is forever.", options:["friendship","family","honor","legacy"], correct:1 }
 ];
 
-const missionType = window.location.href.includes("bestman.html") ? "Best Man" : "Groomsman";
-
-function startMission() {
-  const intro = document.getElementById("intro");
-  const terminal = document.getElementById("terminal");
-  intro.style.display = "none";
-  terminal.innerHTML = "";
-
-  let stage = 0;
-  let questionIndex = 0;
-
-  function askQuestion() {
-    let currentQ = stage === 0 ? bondQuestions[questionIndex] : clearanceQuestions[questionIndex];
-    terminal.innerHTML = `
-      <p>${currentQ.question}</p>
-      <input type="text" id="answerInput" placeholder="Your answer here">
-      <button onclick="checkAnswer()">SUBMIT</button>
-      <p id="feedback"></p>
-    `;
-    document.getElementById("answerInput").focus();
-  }
-
-  window.checkAnswer = function() {
-    const input = document.getElementById("answerInput").value.trim().toLowerCase();
-    let currentQ = stage === 0 ? bondQuestions[questionIndex] : clearanceQuestions[questionIndex];
-    const feedback = document.getElementById("feedback");
-
-    if (input === currentQ.answer.toLowerCase()) {
-      questionIndex++;
-      if (stage === 0 && questionIndex >= bondQuestions.length) {
-        stage = 1;
-        questionIndex = 0;
-        feedback.innerHTML = "<p>Agent verified! Proceeding to security clearance...</p>";
-        setTimeout(askQuestion, 1500);
-      } else if (stage === 1 && questionIndex >= clearanceQuestions.length) {
-        stage = 2;
-        feedback.innerHTML = "<p>Security clearance granted!</p>";
-        setTimeout(missionBriefing, 1500);
-      } else {
-        feedback.innerHTML = "<p>Correct! Next question...</p>";
-        setTimeout(askQuestion, 1000);
-      }
-    } else {
-      feedback.innerHTML = "<p>Incorrect. Try again.</p>";
+function startMission(page){
+    const inputName = document.getElementById("agentName").value.trim();
+    if(!roles[inputName]){
+        alert("Unauthorized Agent. Access Denied.");
+        return;
     }
-  };
+    agent = inputName;
+    role = roles[agent];
+    document.getElementById("intro").classList.add("hidden");
+    qIndex=0; sIndex=0;
+    showQuestion();
+}
 
-  function missionBriefing() {
-    const pokerDate = new Date("September 18, 2026 12:00:00").getTime();
-
-    terminal.innerHTML = `
-      <h2>Mission: ${missionType}</h2>
-      <p>Congratulations, Agent ${agentName}. You have successfully passed verification and security clearance.</p>
-      <p>Your mission is to serve as the <strong>${missionType}</strong>. Accept this mission?</p>
-      <button id="acceptMission">ACCEPT MISSION</button>
-    `;
-
-    document.getElementById("acceptMission").addEventListener("click", () => {
-      terminal.innerHTML = `
-        <h2>Mission Accepted</h2>
-        <p>Await further information on suits and apparel.</p>
-        <p>Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA 52404. Contact the groom in advance to confirm if accommodations are required.</p>
-        <p>The mission begins at the Midnight Gem's Bachelor Lounge with a high stakes poker game to beat the groom.</p>
-        <p>Countdown to poker game:</p>
-        <p id="countdown" style="font-weight:bold; font-size:1.2rem;"></p>
-      `;
-
-      const countdownEl = document.getElementById("countdown");
-      const timer = setInterval(() => {
-        const now = new Date().getTime();
-        const distance = pokerDate - now;
-
-        if (distance < 0) {
-          clearInterval(timer);
-          countdownEl.innerHTML = "Mission in progress! Poker game has started!";
-        } else {
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }
-      }, 1000);
+function showQuestion(){
+    let quiz = document.getElementById("quiz");
+    quiz.classList.remove("hidden");
+    let q = questions[qIndex];
+    quiz.innerHTML = `<div class='question'><h2>Security Clearance Level ${qIndex+1}</h2><p>${q.q}</p></div>`;
+    q.options.forEach((opt,i)=>{
+        quiz.innerHTML += `<button onclick='answer(${i})'>${opt}</button><br>`;
     });
-  }
+}
 
-  askQuestion();
+function answer(i){
+    if(i===questions[qIndex].correct){
+        qIndex++;
+        if(qIndex<questions.length){ showQuestion(); } 
+        else { document.getElementById("quiz").classList.add("hidden"); showSecurity(); }
+    } else { alert("Access Denied Agent."); }
+}
+
+function showSecurity(){
+    let sec = document.getElementById("security");
+    sec.classList.remove("hidden");
+    let s = security[sIndex];
+    sec.innerHTML = `<div class='question'><h2>Personal Security Verification</h2><p>${s.q}</p></div>`;
+    s.options.forEach((opt,i)=>{
+        sec.innerHTML += `<button onclick='secAnswer(${i})'>${opt}</button><br>`;
+    });
+}
+
+function secAnswer(i){
+    if(i===security[sIndex].correct){
+        sIndex++;
+        if(sIndex<security.length){ showSecurity(); } 
+        else { document.getElementById("security").classList.add("hidden"); showMission(); }
+    } else { alert("Security clearance failed."); }
+}
+
+function showMission(){
+    let m = document.getElementById("mission");
+    m.classList.remove("hidden");
+    m.innerHTML = `
+    <h2>Welcome Agent ${agent} – ${role}</h2>
+    <p>Identity confirmed.</p>
+    <h3>MISSION BRIEFING</h3>
+    <p>Operation Forever</p>
+    <p>You have been selected to assist the groom as a <b>${role}</b>.</p>
+    <p>Are you up for the task?</p>
+    <button onclick="accept()">Pour the whiskey.</button>
+    <button onclick="accept()">For King and country.</button>
+    <button onclick="accept()">The name's Bond… let's do it.</button>
+    <button onclick="accept()">I never miss a mission.</button>
+    `;
+}
+
+function accept(){
+    let m = document.getElementById("mission");
+    m.innerHTML = `
+    <h2>Mission Accepted</h2>
+    <p>The mission will begin at <b>Noon on September 18, 2026</b>.</p>
+    <p>A high‑stakes poker game will determine the MI6 Poker Champion.</p>
+    <p>The winner will defeat the groom and claim the title.</p>
+    <h3>Countdown to Mission Start</h3>
+    <div class="countdown" id="countdown"></div>
+    <p>Await further instructions regarding suits and apparel.</p>
+    <p><b>Safe House Instructions:</b><br>
+    The safe house address is:<br>
+    <b>6233 Muirfield Dr SW, Cedar Rapids, IA 52404</b>.<br>
+    Agents are welcome to stay for the duration of the mission.<br>
+    Please inform ahead to ensure the safe house has everything you need.</p>
+    <button onclick="playPoker()">Open Poker Game</button>
+    <div id="poker" class="hidden"></div>
+    <br>
+    <a href="https://theknot.com/arunanandbrooke" target="_blank">RSVP HERE</a>
+    `;
+    startCountdown();
+}
+
+function startCountdown(){
+    let target = new Date("Sept 18, 2026 12:00:00").getTime();
+    setInterval(()=>{
+        let now = new Date().getTime();
+        let diff = target - now;
+        if(diff<0) diff=0;
+        let d = Math.floor(diff/(1000*60*60*24));
+        let h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+        let m = Math.floor((diff%(1000*60*60))/(1000*60));
+        let s = Math.floor((diff%(1000*60))/1000);
+        document.getElementById("countdown").innerHTML = d+"d "+h+"h "+m+"m "+s+"s";
+    },1000);
+}
+
+// Poker game logic
+function playPoker(){
+    let pokerDiv = document.getElementById("poker");
+    pokerDiv.classList.remove("hidden");
+    const cards = ["A♠","K♠","Q♠","J♠","10♠","9♠","8♠","7♠","6♠","5♠","4♠","3♠","2♠",
+                   "A♥","K♥","Q♥","J♥","10♥","9♥","8♥","7♥","6♥","5♥","4♥","3♥","2♥",
+                   "A♦","K♦","Q♦","J♦","10♦","9♦","8♦","7♦","6♦","5♦","4♦","3♦","2♦",
+                   "A♣","K♣","Q♣","J♣","10♣","9♣","8♣","7♣","6♣","5♣","4♣","3♣","2♣"];
+    shuffleArray(cards);
+    pokerDiv.innerHTML = `<h3>Your Poker Hand</h3><p class="poker-hand">${cards.slice(0,5).join(" ")}</p>`;
+}
+
+// Fisher-Yates shuffle
+function shuffleArray(array){
+    for(let i=array.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+    }
 }
