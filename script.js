@@ -50,12 +50,27 @@ correct:1
 }
 ];
 
+// Auto-detect agent from URL
+window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    const urlAgent = params.get("agent");
+    if(urlAgent && roles[urlAgent]) {
+        agent = urlAgent;
+        document.getElementById("intro").style.display = "none";
+        showQuestion();
+    }
+};
+
 function startMission(){
-    agent = document.getElementById("agentName").value.trim();
+    // Use URL agent or manual input
+    const inputName = document.getElementById("agentName").value.trim();
+    if(!agent) agent = inputName;
+
     if(agent==="") {
         alert("Enter your agent name to proceed.");
         return;
     }
+
     document.getElementById("intro").classList.add("hidden");
     showQuestion();
 }
