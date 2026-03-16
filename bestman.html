@@ -1,55 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 Mission – Agent Jason</title>
-<link rel="stylesheet" href="bestman.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Man Authentication</title>
+  <link rel="stylesheet" href="bestman.css">
 </head>
 <body>
+  <h1>Top Secret Best Man Access</h1>
+  
+  <div id="terminal">
+    <!-- Agent Name Input -->
+    <div class="puzzle" id="agentNameScreen">
+      <h2>Enter Your Codename</h2>
+      <input type="text" id="agentName" placeholder="Best Man Codename">
+      <button onclick="startAuthentication()">Proceed</button>
+      <p class="result" id="nameResult"></p>
+    </div>
 
-<!-- 007 Gun Barrel Intro -->
-<section id="intro">
-  <div class="gunbarrel">007</div>
-  <h1>MI6 Secure Channel</h1>
-  <h2>Agent Authentication Required</h2>
-  <button onclick="startMission()">ENTER</button>
-</section>
+    <!-- Puzzle 1 -->
+    <div class="puzzle hidden" id="puzzle1">
+      <h2>Authentication 1</h2>
+      <p>Code Challenge: What hand in poker beats all others?</p>
+      <input type="text" id="answer1" placeholder="Your answer">
+      <button onclick="checkAnswer(1)">Submit</button>
+      <p class="result" id="result1"></p>
+    </div>
 
-<!-- Terminal Output -->
-<section id="terminal"></section>
+    <!-- Puzzle 2 -->
+    <div class="puzzle hidden" id="puzzle2">
+      <h2>Authentication 2</h2>
+      <p>Code Challenge: I am a three-digit number. My tens digit is five more than my ones digit, and my hundreds digit is eight less than my tens digit. What number am I?</p>
+      <input type="text" id="answer2" placeholder="Your answer">
+      <button onclick="checkAnswer(2)">Submit</button>
+      <p class="result" id="result2"></p>
+    </div>
 
-<!-- Interactive Poker Puzzle -->
-<section id="puzzle" class="hidden">
-  <h2>MISSION PUZZLE</h2>
-  <p>During the Montenegro poker game, Bond defeated Le Chiffre.</p>
-  <p>Drag the correct hand to the target box:</p>
+    <!-- Puzzle 3 -->
+    <div class="puzzle hidden" id="puzzle3">
+      <h2>Authentication 3</h2>
+      <p>Code Challenge: What has keys but can't open locks?</p>
+      <input type="text" id="answer3" placeholder="Your answer">
+      <button onclick="checkAnswer(3)">Submit</button>
+      <p class="result" id="result3"></p>
+    </div>
 
-  <div id="cards">
-    <div class="card" draggable="true" data-hand="pair">Pair: 2♠ 2♦</div>
-    <div class="card" draggable="true" data-hand="straight">Straight: 6♣ 7♣ 8♣ 9♣ 10♣</div>
-    <div class="card" draggable="true" data-hand="royal">Royal Flush: 10♠ J♠ Q♠ K♠ A♠</div>
+    <!-- Welcome / Mission -->
+    <p class="champion hidden" id="champion"></p>
+
+    <!-- Further instructions after acceptance -->
+    <div id="followup" class="hidden">
+      <p>📧 Standby for further instructions regarding your suit apparel via email.</p>
+      <p>♠️ You are invited to a poker game to try and beat the groom at noon on September 18, 2026.</p>
+      <p id="countdown"></p>
+    </div>
   </div>
 
-  <div id="dropzone">DROP HERE</div>
-  <p id="result"></p>
-</section>
-
-<!-- Final Mission / Agent Dossier -->
-<section id="challenge" class="hidden">
-  <h2>FINAL MISSION BRIEFING</h2>
-  <p id="agentName">Agent Jason</p>
-  <p>Role: <strong>Best Man</strong></p>
-  <p>Secondary mission: Defeat the groom in poker at 12:00 PM</p>
-  <p class="champion">Winner earns the title: MI6 Poker Champion</p>
-  <button onclick="startCountdown()">ACCEPT MISSION</button>
-  <div id="countdown"></div>
-</section>
-
-<audio id="bondTheme">
-  <source src="bond-theme.mp3" type="audio/mpeg">
-</audio>
-
-<script src="bestman.js"></script>
+  <script src="bestman.js"></script>
 </body>
 </html>
