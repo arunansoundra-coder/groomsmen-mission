@@ -50,21 +50,21 @@ correct:1
 }
 ];
 
-// Auto-detect agent from URL
+// Auto-detect agent from URL (using 'name' parameter)
 window.onload = () => {
     const params = new URLSearchParams(window.location.search);
-    const urlAgent = params.get("agent");
-    if(urlAgent && roles[urlAgent]) {
-        agent = urlAgent;
+    const urlName = params.get("name"); // 'name' parameter for groomsmen
+    if(urlName && roles[urlName]) {
+        agent = urlName;
         document.getElementById("intro").style.display = "none";
         showQuestion();
     }
 };
 
 function startMission(){
-    // Use URL agent or manual input
-    const inputName = document.getElementById("agentName").value.trim();
-    if(!agent) agent = inputName;
+    // If not auto-detected, get from input
+    const inputName = document.getElementById("agentName")?.value.trim();
+    if(!agent && inputName) agent = inputName;
 
     if(agent==="") {
         alert("Enter your agent name to proceed.");
