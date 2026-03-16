@@ -1,91 +1,82 @@
 let agentName = "Best Man";
 
+// Start the mission sequence
 function startMission() {
+    const intro = document.getElementById("intro");
+    const terminal = document.getElementById("terminal");
 
-const intro = document.getElementById("intro");
-const terminal = document.getElementById("terminal");
+    if (!intro || !terminal) return;
 
-intro.style.display = "none";
+    intro.style.display = "none";
+    terminal.innerHTML = "";
 
-const lines = [
-"Initializing MI6 secure channel...",
-"Scanning agent registry...",
-"Identity requires multi-factor authentication...",
-"3 verification challenges detected..."
-];
+    const lines = [
+        "Initializing MI6 secure channel...",
+        "Scanning agent registry...",
+        "Identity requires multi-factor authentication...",
+        "3 verification challenges detected..."
+    ];
 
-terminal.innerHTML = "";
+    let index = 0;
 
-let index = 0;
+    function showNextLine() {
+        if (index < lines.length) {
+            terminal.innerHTML += lines[index] + "<br>";
+            index++;
+            setTimeout(showNextLine, 800);
+        } else {
+            showPuzzle(1);
+        }
+    }
 
-function showNextLine() {
-
-if (index < lines.length) {
-
-terminal.innerHTML += lines[index] + "<br>";
-index++;
-
-setTimeout(showNextLine, 800);
-
-} else {
-
-const puzzle1 = document.getElementById("puzzle1");
-if (puzzle1) puzzle1.style.display = "block";
-
+    showNextLine();
 }
 
+// Generic function to show a puzzle by number
+function showPuzzle(num) {
+    const puzzle = document.getElementById(`puzzle${num}`);
+    if (puzzle) puzzle.style.display = "block";
 }
 
-showNextLine();
+// Generic function to check puzzle answers
+function checkPuzzle(num, answer = null) {
+    const result = document.getElementById(`p${num}result`);
+    if (!result) return;
+
+    let correct = false;
+
+    switch (num) {
+        case 1:
+            // Puzzle 1: text answer
+            if (answer && answer.trim().toLowerCase() === "correct") {
+                correct = true;
+            }
+            break;
+        case 2:
+            // Puzzle 2: math answer
+            const val = document.getElementById("mathAnswer")?.value;
+            if (parseInt(val) === 7) correct = true;
+            break;
+        case 3:
+            // Puzzle 3: final verification (drag/drop or button)
+            correct = true; // Assume verified by user action
+            break;
+    }
+
+    if (correct) {
+        result.innerHTML = `Authentication ${num} Passed`;
+        if (num < 3) showPuzzle(num + 1);
+        else verifyAgent();
+    } else {
+        result.innerHTML = "Access Denied";
+    }
 }
 
-
-
-function checkPuzzle1(answer) {
-
-const result = document.getElementById("p1result");
-
-if (answer === "correct") {
-
-result.innerHTML = "Authentication 1 Passed";
-
-document.getElementById("puzzle2").style.display = "block";
-
-} else {
-
-result.innerHTML = "Incorrect Agent";
-
-}
-
-}
-
-
-
-function checkPuzzle2() {
-
-const value = document.getElementById("mathAnswer").value;
-
-if (value === "7") {
-
-document.getElementById("p2result").innerHTML = "Authentication 2 Passed";
-
-document.getElementById("puzzle3").style.display = "block";
-
-} else {
-
-document.getElementById("p2result").innerHTML = "Access Denied";
-
-}
-
-}
-
-
-
+// Final agent verification
 function verifyAgent() {
+    const verified = document.getElementById("verified");
+    const welcome = document.getElementById("welcomeAgent");
 
-document.getElementById("verified").style.display = "block";
-
-document.getElementById("welcomeAgent").innerHTML =
-"Welcome Agent " + agentName;
-
+    if (verified) verified.style.display = "block";
+    if (welcome) welcome.innerHTML = `Welcome Agent ${agentName}`;
 }
