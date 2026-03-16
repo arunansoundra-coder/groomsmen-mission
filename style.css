@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 700px;
     margin: auto;
     background-color: #111;
     padding: 30px;
@@ -43,6 +43,18 @@ button:hover {
     display: none;
 }
 
-#quiz, #security, #mission, #poker {
+#puzzle, #security, #welcome, #mission, #countdown {
     margin-top: 20px;
+}
+
+.countdown-time {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+a.rsvp {
+    color: #00ff99;
+    font-weight: bold;
+    text-decoration: underline;
 }
