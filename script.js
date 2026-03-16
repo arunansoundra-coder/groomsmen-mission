@@ -1,9 +1,9 @@
 let agentName;
 let role;
-let puzzleIndex = 0;
+let verificationIndex = 0;
 let securityIndex = 0;
 
-const puzzles = [
+const verificationQuestions = [
     {
         question: "What poker hand did James Bond win in Montenegro?",
         choices: ["Full House", "Royal Flush", "Straight", "Two Pair"],
@@ -35,28 +35,28 @@ function startMission(selectedRole) {
     }
     role = selectedRole;
     document.getElementById("intro").classList.add("hidden");
-    showPuzzle();
+    showVerification();
 }
 
-function showPuzzle() {
-    if (puzzleIndex >= puzzles.length) {
-        document.getElementById("puzzle").classList.add("hidden");
+function showVerification() {
+    if (verificationIndex >= verificationQuestions.length) {
+        document.getElementById("verification").classList.add("hidden");
         showSecurity();
         return;
     }
-    const puzzleDiv = document.getElementById("puzzle");
-    puzzleDiv.classList.remove("hidden");
-    const puzzle = puzzles[puzzleIndex];
-    puzzleDiv.innerHTML = `<h2>Puzzle Level ${puzzleIndex + 1}</h2>
-        <p>${puzzle.question}</p>
-        ${puzzle.choices.map(c => `<button onclick="checkPuzzle('${c}')">${c}</button>`).join('<br><br>')}
-    `;
+    const ver = verificationQuestions[verificationIndex];
+    const verDiv = document.getElementById("verification");
+    verDiv.classList.remove("hidden");
+    verDiv.innerHTML = `<h2>Authentication Verification ${verificationIndex + 1}</h2>
+        <p>${ver.question}</p>
+        ${ver.choices.map(c => `<button onclick="checkVerification('${c}')">${c}</button>`).join('<br><br>')}`;
 }
 
-function checkPuzzle(choice) {
-    if (choice === puzzles[puzzleIndex].answer) {
-        puzzleIndex++;
-        showPuzzle();
+function checkVerification(choice) {
+    const ver = verificationQuestions[verificationIndex];
+    if (choice === ver.answer) {
+        verificationIndex++;
+        showVerification();
     } else {
         alert("Incorrect. Try again!");
     }
@@ -71,11 +71,18 @@ function showSecurity() {
     const sec = securityQuestions[securityIndex];
     const securityDiv = document.getElementById("security");
     securityDiv.classList.remove("hidden");
-    securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
-        <p>${sec.question}</p>
-        <input id="secAnswer" placeholder="Answer"><br><br>
-        <button onclick="checkSecurity()">Submit</button>
-    `;
+
+    if (securityIndex < 2) {
+        securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
+            <p>${sec.question}</p>
+            <input id="secAnswer" placeholder="Answer"><br><br>
+            <button onclick="checkSecurity()">Submit</button>`;
+    } else {
+        securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
+            <p>${sec.question}</p>
+            <input id="secAnswer" placeholder="Fill in the blank"><br><br>
+            <button onclick="checkSecurity()">Submit</button>`;
+    }
 }
 
 function checkSecurity() {
@@ -93,8 +100,7 @@ function showWelcome() {
     welcomeDiv.classList.remove("hidden");
     welcomeDiv.innerHTML = `<h2>Welcome Agent ${agentName}</h2>
         <p>You have successfully passed authentication and security clearance.</p>
-        <button onclick="showMission()">Proceed to Mission Briefing</button>
-    `;
+        <button onclick="showMission()">Proceed to Mission Briefing</button>`;
 }
 
 function showMission() {
@@ -107,8 +113,7 @@ function showMission() {
         <button onclick="missionResponse('Yes, ready for action')">Yes, ready for action</button>
         <button onclick="missionResponse('Pour the whiskey')">Pour the whiskey</button>
         <button onclick="missionResponse('Always on standby')">Always on standby</button>
-        <button onclick="missionResponse('Leave it to Bond')">Leave it to Bond</button>
-    `;
+        <button onclick="missionResponse('Leave it to Bond')">Leave it to Bond</button>`;
 }
 
 function missionResponse(response) {
@@ -118,8 +123,7 @@ function missionResponse(response) {
         <p>The winner will claim the title: MI6 Poker Champion.</p>
         <div id="countdown" class="countdown-time hidden"></div>
         <p>Await further instructions regarding suits and apparel.</p>
-        <p><a href="https://theknot.com/arunanandbrooke" target="_blank" class="rsvp">RSVP for the occasion</a></p>
-    `;
+        <p><a href="https://theknot.com/arunanandbrooke" target="_blank" class="rsvp">RSVP for the occasion</a></p>`;
     document.getElementById("countdown").classList.remove("hidden");
     startCountdown(new Date("September 18, 2026 12:00:00").getTime());
 }
