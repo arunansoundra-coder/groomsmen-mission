@@ -76,3 +76,57 @@ function startCountdown(){
     countdown.innerHTML = h+"h "+m+"m "+s+"s until showdown";
   },1000);
 }
+
+// Get agent name from localStorage
+const agentName = localStorage.getItem("bestManName") || "Agent";
+
+const missionText = document.getElementById("missionText");
+const missionButtons = document.getElementById("missionButtons");
+const missionResult = document.getElementById("missionResult");
+const followup = document.getElementById("followup");
+const countdownEl = document.getElementById("countdown");
+
+// Show initial mission text
+setTimeout(() => {
+  missionText.textContent = `Agent ${agentName.toUpperCase()}, will you be my Best Man?`;
+  missionButtons.classList.remove("hidden");
+}, 1000);
+
+function acceptMission(){
+  missionResult.textContent = "🎉 Mission Accepted! You are officially the Best Man! 🥳";
+  missionButtons.classList.add("hidden");
+
+  // Show further instructions after short delay
+  setTimeout(() => {
+    followup.classList.remove("hidden");
+    startCountdown();
+  }, 1500);
+}
+
+function declineMission(){
+  missionResult.textContent = "💀 Mission Failed... But the secret mission lives on.";
+  missionButtons.classList.add("hidden");
+}
+
+// Countdown to September 18, 2026 at noon
+function startCountdown(){
+  const targetDate = new Date("September 18, 2026 12:00:00").getTime();
+
+  const interval = setInterval(() => {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance < 0){
+      clearInterval(interval);
+      countdownEl.textContent = "⏰ The poker game is happening now!";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    countdownEl.textContent = `⏳ Time until poker showdown: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }, 1000);
+}
