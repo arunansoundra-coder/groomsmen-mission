@@ -11,27 +11,41 @@ body {
 
 .container {
   width: 90%;
-  max-width: 600px;
+  max-width: 650px;
   text-align: center;
   background-color: #1f2833;
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 0 15px #45a29e;
+  box-shadow: 0 0 25px #45a29e;
+  border: 2px solid #45a29e;
+}
+
+h1, h2 {
+  text-shadow: 0 0 5px #45a29e, 0 0 10px #45a29e;
+}
+
+p {
+  line-height: 1.5;
 }
 
 button {
   background-color: #45a29e;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 25px;
   margin-top: 10px;
   color: #0b0c10;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 10px #45a29e;
 }
 
 button:hover {
   background-color: #66fcf1;
+  box-shadow: 0 0 15px #66fcf1, 0 0 30px #45a29e;
+  transform: scale(1.05);
 }
 
 input[type="text"] {
@@ -40,10 +54,37 @@ input[type="text"] {
   margin-top: 10px;
   border-radius: 5px;
   border: none;
+  outline: none;
+  background-color: #0b0c10;
+  color: #66fcf1;
+  box-shadow: 0 0 5px #45a29e inset;
+}
+
+input[type="text"]::placeholder {
+  color: #45a29e;
+  opacity: 0.7;
 }
 
 .terminal p {
   margin: 15px 0 5px 0;
+}
+
+#countdown {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff6f61;
+  text-shadow: 0 0 10px #ff6f61, 0 0 20px #ff6f61;
+  margin-top: 15px;
+}
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+a button {
+  width: 220px;
+  font-size: 1rem;
 }
 
 .buttons {
@@ -57,9 +98,4 @@ input[type="text"] {
 .buttons h2 {
   margin: 15px 0 5px 0;
   color: #45a29e;
-}
-
-.buttons a button {
-  width: 200px;
-  font-size: 1rem;
 }
