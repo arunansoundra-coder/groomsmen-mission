@@ -20,5 +20,11 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+// Set agent name dynamically from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const agentParam = urlParams.get('agent') || "Jason";
+agentName = agentParam;
+</script>
 </body>
 </html>
