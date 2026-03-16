@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MI6 Agent Authentication</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="intro">
+    <h1>MI6 Secure Channel</h1>
+    <h2 id="agentWelcome"></h2>
+    <p id="briefingText"></p>
+    <button onclick="startMission()">BEGIN AUTHENTICATION</button>
+</div>
+
+<!-- Puzzle 1 -->
+<div id="puzzle1" class="stage">
+<h2>Puzzle 1 – Poker Hand Verification</h2>
+<p>Identify the hand:</p>
+<div class="cards">10♠ J♠ Q♠ K♠ A♠</div>
+<input id="puzzle1Answer" placeholder="Enter the hand name">
+<button onclick="checkPuzzle1()">Submit</button>
+<p id="puzzle1Result"></p>
+</div>
+
+<!-- Puzzle 2 -->
+<div id="puzzle2" class="stage">
+<h2>Puzzle 2 – Secret Phrase</h2>
+<p>Enter the famous James Bond phrase:</p>
+<input id="puzzle2Answer" placeholder="Enter phrase">
+<button onclick="checkPuzzle2()">Submit</button>
+<p id
