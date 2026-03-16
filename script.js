@@ -71,19 +71,11 @@ function showSecurity() {
     const sec = securityQuestions[securityIndex];
     const securityDiv = document.getElementById("security");
     securityDiv.classList.remove("hidden");
-    if (securityIndex < 2) { // multiple choice
-        securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
-            <p>${sec.question}</p>
-            <input id="secAnswer" placeholder="Answer"><br><br>
-            <button onclick="checkSecurity()">Submit</button>
-        `;
-    } else { // fill in the blank
-        securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
-            <p>${sec.question}</p>
-            <input id="secAnswer" placeholder="Fill in the blank"><br><br>
-            <button onclick="checkSecurity()">Submit</button>
-        `;
-    }
+    securityDiv.innerHTML = `<h2>Security Clearance ${securityIndex + 1}</h2>
+        <p>${sec.question}</p>
+        <input id="secAnswer" placeholder="Answer"><br><br>
+        <button onclick="checkSecurity()">Submit</button>
+    `;
 }
 
 function checkSecurity() {
