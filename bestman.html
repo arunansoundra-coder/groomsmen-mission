@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 Secure Channel - Best Man</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Man MI6 Channel</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="container">
-<h1>MI6 Secure Channel</h1>
-<p>Agent Authentication Required</p>
+  <section id="intro">
+    <h1>MI6 Secure Channel</h1>
+    <h2>Agent Authentication Required</h2>
+    <button id="startBtn">ENTER</button>
+  </section>
 
-<div id="intro">
-<p>Enter Agent Name</p>
-<input id="agentName" placeholder="Agent Name"><br><br>
-<button onclick="startMission()">ENTER</button>
-</div>
+  <section id="terminal" class="hidden">
+    <div id="terminalOutput"></div>
+  </section>
 
-<div id="quiz" class="hidden"></div>
-<div id="security" class="hidden"></div>
-<div id="mission" class="hidden"></div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
+
 </html>
