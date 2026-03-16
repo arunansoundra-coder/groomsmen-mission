@@ -1,30 +1,18 @@
-let agentName = "Best Man";
+let agentName = "Agent";
 
 const bondQuestions = [
-  {
-    question: "What poker hand did James Bond win in Montenegro?",
-    answer: "royal flush"
-  },
-  {
-    question: "What is James Bond's favorite drink?",
-    answer: "vodka martini"
-  }
+  { question: "What poker hand did James Bond win in Montenegro?", answer: "royal flush" },
+  { question: "What is James Bond's favorite drink?", answer: "vodka martini" }
 ];
 
 const clearanceQuestions = [
-  {
-    question: "What was the name of Arunan's horse?",
-    answer: "maya"
-  },
-  {
-    question: "Arunan had a 2023 BMW 330i Grey. What was his name?",
-    answer: "arunan"
-  },
-  {
-    question: "Fill in the blank: Blood makes us related and loyalty makes us family and family is ________",
-    answer: "forever"
-  }
+  { question: "What was the name of Arunan's horse?", answer: "maya" },
+  { question: "Arunan had a 2023 BMW 330i Grey. What was his name?", answer: "arunan" },
+  { question: "Fill in the blank: Blood makes us related and loyalty makes us family and family is ________", answer: "forever" }
 ];
+
+// Determine mission type based on page
+const missionType = window.location.href.includes("bestman.html") ? "Best Man" : "Groomsman";
 
 function startMission() {
   const intro = document.getElementById("intro");
@@ -32,7 +20,7 @@ function startMission() {
   intro.style.display = "none";
   terminal.innerHTML = "";
 
-  let stage = 0; // 0 = bond questions, 1 = clearance questions
+  let stage = 0; // 0 = Bond questions, 1 = Clearance, 2 = Mission briefing
   let questionIndex = 0;
 
   function askQuestion() {
@@ -59,7 +47,9 @@ function startMission() {
         feedback.innerHTML = "<p>Agent verified! Proceeding to security clearance...</p>";
         setTimeout(askQuestion, 1500);
       } else if (stage === 1 && questionIndex >= clearanceQuestions.length) {
-        terminal.innerHTML = `<p>Access granted! Welcome, Agent ${agentName}.</p>`;
+        stage = 2;
+        feedback.innerHTML = "<p>Security clearance granted!</p>";
+        setTimeout(missionBriefing, 1500);
       } else {
         feedback.innerHTML = "<p>Correct! Next question...</p>";
         setTimeout(askQuestion, 1000);
@@ -68,6 +58,45 @@ function startMission() {
       feedback.innerHTML = "<p>Incorrect. Try again.</p>";
     }
   };
+
+  function missionBriefing() {
+    const pokerDate = new Date("September 18, 2026 12:00:00").getTime();
+
+    terminal.innerHTML = `
+      <h2>Mission: ${missionType}</h2>
+      <p>Congratulations, Agent ${agentName}. You have successfully passed verification and security clearance.</p>
+      <p>Your mission is to serve as the <strong>${missionType}</strong>. Accept this mission?</p>
+      <button id="acceptMission">ACCEPT MISSION</button>
+    `;
+
+    document.getElementById("acceptMission").addEventListener("click", () => {
+      terminal.innerHTML = `
+        <h2>Mission Accepted</h2>
+        <p>Await further information on suits and apparel.</p>
+        <p>Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA 52404. Contact the groom in advance to confirm if accommodations are required.</p>
+        <p>The mission begins at the Midnight Gem's Bachelor Lounge with a high stakes poker game to beat the groom.</p>
+        <p>Countdown to poker game:</p>
+        <p id="countdown" style="font-weight:bold; font-size:1.2rem;"></p>
+      `;
+
+      const countdownEl = document.getElementById("countdown");
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = pokerDate - now;
+
+        if (distance < 0) {
+          clearInterval(timer);
+          countdownEl.innerHTML = "Mission in progress! Poker game has started!";
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+      }, 1000);
+    });
+  }
 
   askQuestion();
 }
