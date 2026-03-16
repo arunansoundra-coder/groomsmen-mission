@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Groomsmen MI6 Channel</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MI6 Secure Channel - Groomsmen</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <section id="intro">
-    <h1>MI6 Groomsmen Access</h1>
-    <h2>Verify Your Agent Identity</h2>
-    <button id="startBtnGroomsmen">ENTER</button>
-  </section>
+<div class="container">
+    <h1>MI6 Secure Channel</h1>
+    <p>Agent Authentication Required</p>
 
-  <section id="terminal" class="hidden">
-    <div id="terminalOutputGroomsmen"></div>
-  </section>
+    <div id="intro">
+        <p>Enter Agent Name</p>
+        <input id="agentName" placeholder="Agent Name"><br><br>
+        <button onclick="startMission('groomsmen')">ENTER</button>
+    </div>
 
-  <script src="script.js"></script>
+    <div id="quiz" class="hidden"></div>
+    <div id="security" class="hidden"></div>
+    <div id="mission" class="hidden"></div>
+    <div id="poker" class="hidden"></div>
+</div>
+
+<script src="script.js"></script>
 </body>
-
 </html>
