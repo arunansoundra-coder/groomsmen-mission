@@ -11,7 +11,6 @@ const clearanceQuestions = [
   { question: "Fill in the blank: Blood makes us related and loyalty makes us family and family is ________", answer: "forever" }
 ];
 
-// Determine mission type based on page
 const missionType = window.location.href.includes("bestman.html") ? "Best Man" : "Groomsman";
 
 function startMission() {
@@ -20,7 +19,7 @@ function startMission() {
   intro.style.display = "none";
   terminal.innerHTML = "";
 
-  let stage = 0; // 0 = Bond questions, 1 = Clearance, 2 = Mission briefing
+  let stage = 0;
   let questionIndex = 0;
 
   function askQuestion() {
