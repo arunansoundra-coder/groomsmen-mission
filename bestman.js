@@ -1,65 +1,57 @@
 let agentName = "Best Man";
 
-function startMission(){
+function startMission() {
 
 const intro = document.getElementById("intro");
 const terminal = document.getElementById("terminal");
 
-if(intro) intro.style.display = "none";
+intro.style.display = "none";
 
-let lines = [
+const lines = [
 "Initializing MI6 secure channel...",
 "Scanning agent registry...",
 "Identity requires multi-factor authentication...",
 "3 verification challenges detected..."
 ];
 
-let i = 0;
+terminal.innerHTML = "";
 
-function typeLine(){
+let index = 0;
 
-if(i < lines.length){
+function showNextLine() {
 
-terminal.innerHTML += lines[i] + "<br>";
-i++;
+if (index < lines.length) {
 
-setTimeout(typeLine,900);
+terminal.innerHTML += lines[index] + "<br>";
+index++;
 
-}else{
+setTimeout(showNextLine, 800);
 
-const p1 = document.getElementById("puzzle1");
+} else {
 
-if(p1){
-p1.classList.remove("hidden");
-}
-
-}
+const puzzle1 = document.getElementById("puzzle1");
+if (puzzle1) puzzle1.style.display = "block";
 
 }
 
-typeLine();
+}
 
+showNextLine();
 }
 
 
 
-function checkPuzzle1(answer){
+function checkPuzzle1(answer) {
 
 const result = document.getElementById("p1result");
 
-if(!result) return;
-
-if(answer === "correct"){
+if (answer === "correct") {
 
 result.innerHTML = "Authentication 1 Passed";
 
-const p2 = document.getElementById("puzzle2");
+document.getElementById("puzzle2").style.display = "block";
 
-if(p2){
-p2.classList.remove("hidden");
-}
-
-}else{
+} else {
 
 result.innerHTML = "Incorrect Agent";
 
@@ -69,27 +61,19 @@ result.innerHTML = "Incorrect Agent";
 
 
 
-function checkPuzzle2(){
+function checkPuzzle2() {
 
-const input = document.getElementById("mathAnswer");
-const result = document.getElementById("p2result");
+const value = document.getElementById("mathAnswer").value;
 
-if(!input || !result) return;
+if (value === "7") {
 
-if(input.value === "7"){
+document.getElementById("p2result").innerHTML = "Authentication 2 Passed";
 
-result.innerHTML = "Authentication 2 Passed";
+document.getElementById("puzzle3").style.display = "block";
 
-const p3 = document.getElementById("puzzle3");
+} else {
 
-if(p3){
-p3.classList.remove("hidden");
-initDragDrop();
-}
-
-}else{
-
-result.innerHTML = "Access Denied";
+document.getElementById("p2result").innerHTML = "Access Denied";
 
 }
 
@@ -97,96 +81,11 @@ result.innerHTML = "Access Denied";
 
 
 
-function initDragDrop(){
+function verifyAgent() {
 
-const cards = document.querySelectorAll(".card");
-const dropzone = document.getElementById("dropzone");
+document.getElementById("verified").style.display = "block";
 
-if(!cards || !dropzone) return;
-
-cards.forEach(card => {
-
-card.addEventListener("dragstart", e => {
-
-e.dataTransfer.setData("text", card.dataset.hand);
-
-});
-
-});
-
-dropzone.addEventListener("dragover", e => {
-e.preventDefault();
-});
-
-dropzone.addEventListener("drop", e => {
-
-e.preventDefault();
-
-const hand = e.dataTransfer.getData("text");
-
-if(hand === "royal"){
-
-const result = document.getElementById("p3result");
-
-if(result){
-result.innerHTML = "Authentication Complete";
-}
-
-verifyAgent();
-
-}else{
-
-const result = document.getElementById("p3result");
-
-if(result){
-result.innerHTML = "Incorrect Hand";
-}
-
-}
-
-});
-
-}
-
-
-
-function verifyAgent(){
-
-const verified = document.getElementById("verified");
-const welcome = document.getElementById("welcomeAgent");
-
-if(verified) verified.classList.remove("hidden");
-
-if(welcome){
-welcome.innerHTML = "Welcome Agent " + agentName;
-}
-
-}
-
-
-
-function startCountdown(){
-
-const countdown = document.getElementById("countdown");
-
-if(!countdown) return;
-
-setInterval(function(){
-
-const now = new Date();
-const noon = new Date();
-
-noon.setHours(12,0,0,0);
-
-const diff = noon - now;
-
-const h = Math.floor(diff/1000/60/60);
-const m = Math.floor(diff/1000/60)%60;
-const s = Math.floor(diff/1000)%60;
-
-countdown.innerHTML =
-h + "h " + m + "m " + s + "s until showdown";
-
-},1000);
+document.getElementById("welcomeAgent").innerHTML =
+"Welcome Agent " + agentName;
 
 }
