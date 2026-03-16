@@ -1,80 +1,139 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MI6 Secure Channel</title>
+
 <link rel="stylesheet" href="bestman.css">
+
 </head>
+
 
 <body>
 
+<!-- INTRO SCREEN -->
 <section id="intro">
-  <div class="gunbarrel">007</div>
-  <h1>MI6 Secure Channel</h1>
-  <h2>Agent Authentication Required</h2>
-  <button onclick="startMission()">ENTER</button>
+
+<div class="gunbarrel">007</div>
+
+<h1>MI6 Secure Channel</h1>
+<h2>Agent Authentication Required</h2>
+
+<button onclick="startMission()">ENTER</button>
+
 </section>
 
+
+
+<!-- TERMINAL TEXT -->
 <section id="terminal"></section>
+
+
 
 <!-- PUZZLE 1 -->
 <section id="puzzle1" class="hidden">
+
 <h2>AUTHENTICATION 1</h2>
+
 <p>What is Bond's famous drink?</p>
 
-<button onclick="checkPuzzle1('wrong')">Vodka Martini – Stirred</button>
-<button onclick="checkPuzzle1('correct')">Vodka Martini – Shaken Not Stirred</button>
-<button onclick="checkPuzzle1('wrong')">Whiskey Neat</button>
+<button onclick="checkPuzzle1('wrong')">
+Vodka Martini – Stirred
+</button>
+
+<button onclick="checkPuzzle1('correct')">
+Vodka Martini – Shaken Not Stirred
+</button>
+
+<button onclick="checkPuzzle1('wrong')">
+Whiskey Neat
+</button>
 
 <p id="p1result"></p>
+
 </section>
+
+
 
 <!-- PUZZLE 2 -->
 <section id="puzzle2" class="hidden">
+
 <h2>AUTHENTICATION 2</h2>
+
 <p>Decode the agent number:</p>
 <p><strong>006 + 001 = ?</strong></p>
 
 <input id="mathAnswer" placeholder="Enter code">
+
 <button onclick="checkPuzzle2()">VERIFY</button>
 
 <p id="p2result"></p>
+
 </section>
 
-<!-- PUZZLE 3 (POKER DRAG) -->
+
+
+<!-- PUZZLE 3 -->
 <section id="puzzle3" class="hidden">
 
 <h2>FINAL AUTHENTICATION</h2>
+
 <p>Select Bond's winning poker hand.</p>
 
 <div id="cards">
-  <div class="card" draggable="true" data-hand="pair">Pair</div>
-  <div class="card" draggable="true" data-hand="straight">Straight</div>
-  <div class="card" draggable="true" data-hand="royal">Royal Flush</div>
+
+<div class="card" draggable="true" data-hand="pair">
+Pair
 </div>
 
-<div id="dropzone">DROP HERE</div>
+<div class="card" draggable="true" data-hand="straight">
+Straight
+</div>
+
+<div class="card" draggable="true" data-hand="royal">
+Royal Flush
+</div>
+
+</div>
+
+<div id="dropzone">
+DROP HERE
+</div>
+
 <p id="p3result"></p>
 
 </section>
 
-<!-- FINAL VERIFICATION -->
+
+
+<!-- VERIFIED SCREEN -->
 <section id="verified" class="hidden">
 
 <h1 id="welcomeAgent"></h1>
+
 <h2>Identity Confirmed</h2>
 
 <p>Role: <strong>Best Man</strong></p>
 <p>Mission: Support the Groom at all costs.</p>
 
-<button onclick="startCountdown()">ACCEPT MISSION</button>
+<button onclick="startCountdown()">
+ACCEPT MISSION
+</button>
 
 <div id="countdown"></div>
 
 </section>
 
+
+
+<!-- LOAD JS LAST SO BUTTON WORKS -->
 <script src="bestman.js"></script>
 
 </body>
+
 </html>
+```
