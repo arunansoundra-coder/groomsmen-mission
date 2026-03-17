@@ -140,13 +140,21 @@ function q2(){
 }
 
 function q3(){
-  render(`<p>Level 3/3</p>
-  <p>Name all of James Bond's love interests.</p>
-  <button onclick="welcome()">Vesper Lynd, Tracy Bond, Madeleine Swann</button>
-  <button onclick="wrong()">Others</button>
-  <div id="err"></div>`);
-}
+  render(`
+    <p>Level 3/3</p>
+    <p>Name all of James Bond's love interests.</p>
 
+    <button onclick="welcome()">Vesper Lynd, Tracy Bond, Madeleine Swann</button>
+
+    <button onclick="wrong()">Domino, Tiffany Case, Natalya Simonova</button>
+
+    <button onclick="wrong()">Honey Ryder, Kissy Suzuki, Wai Lin</button>
+
+    <button onclick="wrong()">Solitaire, Natalya Simonova, Camille Montes</button>
+
+    <div id="err"></div>
+  `);
+}
 /* SECURITY */
 function welcome(){
   render(`<h2>Welcome Agent ${agentName}</h2>
