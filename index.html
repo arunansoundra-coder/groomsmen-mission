@@ -44,8 +44,8 @@ button {
 /* TABLE */
 .table-wrapper {
   position:relative;
-  width:400px;
-  height:250px;
+  width:300px;   /* was 400px */
+  height:188px;  /* was 250px (maintains ratio) */
   margin:20px auto;
 }
 
@@ -201,7 +201,7 @@ function mission(){
 /* TABLE */
 function eventScreen(){
 
-  const w=400,h=250,cx=w/2,cy=h/2;
+  const w=300,h=188,cx=w/2,cy=h/2;
 
   render(`
     <h2>Mission Accepted</h2>
