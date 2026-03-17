@@ -202,6 +202,7 @@ function eventScreen() {
         top:${y}px; 
         transform:translate(-50%, -50%);
         text-align:center;
+        z-index:2;
       ">
         <div style="
           width:40px; 
@@ -318,6 +319,19 @@ function eventScreen() {
       }, i*800 + j*400);
     }
   });
+
+  // Community cards (center of table, not covering agents)
+  const communityCards = ["A♠","K♥","Q♣","J♦","10♠"];
+  communityCards.forEach((value, i) => {
+    const card = createCard(value);
+    setTimeout(() => {
+      card.style.left = `${centerX - 100 + i*50}px`; // spread horizontally
+      card.style.top = `${centerY - 30}px`; // slightly above center
+      card.style.transform = 'translate(-50%, -50%) rotateY(0deg)';
+      card.style.zIndex = 1; // behind agents
+    }, players.length*2*800 + i*800);
+  });
+
 }
 
 function startTimer(){
