@@ -309,7 +309,16 @@ function finalScreen(){
 function wrong(){
   document.getElementById('err').innerText="Access Denied";
 }
+function missionComplete(){
+  render(`
+    <div style="padding:40px;">
+      <h1 style="color:#ffd700;">MISSION COMPLETE</h1>
+      <p>Agent ${agentName}, your presence has been confirmed.</p>
+    </div>
+  `);
 
+  setTimeout(finalScreen, 2500);
+}
 start();
 </script>
 </body>
