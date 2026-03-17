@@ -24,6 +24,8 @@ body {
   border-radius:12px; 
   text-align:center; 
   box-shadow:0 0 20px rgba(0,255,200,0.2); 
+  position:relative;
+  z-index:5;
 }
 h1 { font-size:1.5rem; margin-bottom:10px; }
 button { 
@@ -36,13 +38,18 @@ button {
   background:#45a29e; 
   color:white; 
   cursor:pointer; 
+  z-index:5;
 }
 button:hover { opacity:0.9; }
 input { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:none; }
-.timer { font-size:1.2rem; margin:10px 0; color:#ffd700; font-weight:bold; }
+.timer { font-size:1.2rem; margin:10px 0; color:#ffd700; font-weight:bold; z-index:5; position:relative; }
 .progress { font-size:0.9rem; margin-bottom:10px; color:#c5c6c7; }
 .error { color:#ff4d4d; margin-top:10px; }
-@media (max-width:600px){ h1{font-size:1.2rem;} }
+@media (max-width:600px){
+  h1{font-size:1.2rem;} 
+  .container{padding:15px;}
+  .card { width:20px; height:30px; font-size:0.6rem; }
+}
 .card {
   position:absolute;
   width:30px;
@@ -126,22 +133,22 @@ function eventScreen(){
            </div>`;
   }).join("");
 
-  // Dealer in center
   const dealerHTML=`<div id="dealer" style="position:absolute;left:${centerX}px;top:${centerY}px;transform:translate(-50%,-50%);width:60px;height:40px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.7);z-index:3;">Dealer</div>`;
 
-  const tableHTML=`<div style="width:100%;height:100%;border-radius:50% / 50%;background:#006400;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px;background-position:0 0,10px 10px;border:3px solid #45a29e;position:relative;"></div>`;
+  const tableHTML=`<div style="width:100%;height:100%;border-radius:50% / 50%;background:#006400;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px;background-position:0 0,10px 10px;border:3px solid #45a29e;position:relative;z-index:1;"></div>`;
 
-  render(`<h2>Mission Accepted</h2>
-          <p>The mission will begin at noon on September 18, 2026.</p>
-          <p>High Stakes Poker Game<br>Objective: Defeat the Groom<br>Prize: MI6 Poker Champion</p>
-          <div id="table-container" style="position:relative;width:${tableWidth}px;height:${tableHeight}px;margin:20px auto;">
+  render(`<h2 style="position:relative; z-index:5;">Mission Accepted</h2>
+          <p style="position:relative; z-index:5;">The mission will begin at noon on September 18, 2026.</p>
+          <p style="position:relative; z-index:5;">High Stakes Poker Game<br>Objective: Defeat the Groom<br>Prize: MI6 Poker Champion</p>
+          <div id="table-wrapper" style="position:relative;width:${tableWidth}px;height:${tableHeight}px;margin:20px auto; z-index:1;">
             ${tableHTML}${seatElements}${dealerHTML}
           </div>
           <div class="timer" id="timer"></div>
-          <button onclick="finalScreen()">Continue</button>`);
+          <button style="position:relative; z-index:5;" onclick="finalScreen()">Continue</button>`);
 
   startTimer();
-  const container=document.getElementById('table-container');
+
+  const container=document.getElementById('table-wrapper');
   const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦","6♣","5♥","4♠","3♦","2♣"];
   let cardIndex=0;
 
@@ -179,11 +186,19 @@ function eventScreen(){
   });
 }
 
-function startTimer(){ const target=new Date('September 18, 2026 12:00:00').getTime();
-  setInterval(()=>{ const now=new Date().getTime(); const diff=target-now;
-  const d=Math.floor(diff/(1000*60*60*24)); const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-  const m=Math.floor((diff%(1000*60*60))/(1000*60)); const s=Math.floor((diff%(1000*60))/1000);
-  const timer=document.getElementById('timer'); if(timer) timer.innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`; },1000); }
+function startTimer(){ 
+  const target=new Date('September 18, 2026 12:00:00').getTime();
+  setInterval(()=>{ 
+    const now=new Date().getTime(); 
+    const diff=target-now;
+    const d=Math.floor(diff/(1000*60*60*24)); 
+    const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const m=Math.floor((diff%(1000*60*60))/(1000*60)); 
+    const s=Math.floor((diff%(1000*60))/1000);
+    const timer=document.getElementById('timer'); 
+    if(timer) timer.innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`; 
+  },1000); 
+}
 
 function finalScreen(){ render(`<p>Await further instructions regarding apparel.</p><p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p><p>Beds are available.</p><button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>`); }
 function showError(){ const err=document.getElementById('err'); if(err) err.innerText="Access Denied. Try again."; }
