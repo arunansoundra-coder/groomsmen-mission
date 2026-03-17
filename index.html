@@ -12,12 +12,13 @@ body {
   color:#66fcf1; 
   display:flex; 
   justify-content:center; 
-  align-items:center; 
+  align-items:flex-start; 
   min-height:100vh; 
+  padding-top:20px;
 }
 .container { 
   width:95%; 
-  max-width:650px; 
+  max-width:700px; 
   background:#1f2833; 
   padding:20px; 
   border-radius:12px; 
@@ -27,7 +28,7 @@ body {
 h1 { font-size:1.5rem; margin-bottom:10px; }
 button { 
   width:100%; 
-  padding:14px; 
+  padding:12px; 
   margin:8px 0; 
   font-size:1rem; 
   border:none; 
@@ -37,22 +38,23 @@ button {
   cursor:pointer; 
 }
 button:hover { opacity:0.9; }
-input { width:100%; padding:12px; margin:10px 0; border-radius:8px; border:none; }
-.timer { font-size:1.2rem; margin-top:15px; }
+input { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:none; }
+.timer { font-size:1.2rem; margin:10px 0; color:#ffd700; font-weight:bold; }
 .progress { font-size:0.9rem; margin-bottom:10px; color:#c5c6c7; }
 .error { color:#ff4d4d; margin-top:10px; }
 @media (max-width:600px){ h1{font-size:1.2rem;} }
 .card {
   position:absolute;
-  width:40px;
-  height:60px;
+  width:30px;
+  height:45px;
   background:white;
-  border-radius:5px;
-  box-shadow:0 4px 8px rgba(0,0,0,0.5);
+  border-radius:4px;
+  box-shadow:0 3px 6px rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:bold;
+  font-size:0.7rem;
   transform:translate(-50%,-50%) rotateY(90deg);
   transition: all 0.7s ease-in-out;
 }
@@ -77,14 +79,15 @@ const roles = {
   "Duran":"Groomsman",
   "Josh":"Groomsman"
 };
-
 const role = roles[agentName] || "Groomsman";
 const players = ["Jason","Prathap","Gill","Taylor","Duran","Josh","Arunan"];
 
 function render(html){ app.innerHTML = html; }
 
 function start(){
-  typeText("Agent, proceed with identity authentication...", ()=>{ setTimeout(()=>render(`<button onclick="q1()">Begin</button>`),500); });
+  typeText("Agent, proceed with identity authentication...", ()=>{
+    setTimeout(()=>render(`<button onclick="q1()">Begin</button>`),500);
+  });
 }
 
 function typeText(text,callback){
@@ -108,24 +111,24 @@ function mission(){ render(`<h2>Operation Forever</h2><p>Agent ${agentName}, wil
 function eventScreen(){
   const tableWidth=400, tableHeight=250, centerX=tableWidth/2, centerY=tableHeight/2;
 
-  // seats around the table
   const seatElements = players.map((p,i)=>{
     const angle=(i/players.length)*2*Math.PI-Math.PI/2;
     const x=centerX+(tableWidth/2-20)*Math.cos(angle);
     const y=centerY+(tableHeight/2-20)*Math.sin(angle);
     const highlight = p.toLowerCase()===agentName.toLowerCase()?"color:#ffd700;font-weight:bold;":"color:#66fcf1;";
     return `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%);text-align:center;z-index:2;">
-            <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);box-shadow:0 0 10px rgba(0,255,200,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:5px;"></div>
-            <span style="${highlight};text-shadow:1px 1px 3px #000;">${p}</span>
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.1);box-shadow:0 0 8px rgba(0,255,200,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:3px;"></div>
+            <span style="${highlight};text-shadow:1px 1px 3px #000;font-size:0.8rem;">${p}</span>
            </div>`;
   }).join("");
 
-  const dealerHTML=`<div id="dealer" style="position:absolute;top:5%;left:50%;transform:translateX(-50%);width:60px;height:30px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.5);z-index:2;">Dealer</div>`;
+  // Dealer machine in center
+  const dealerHTML=`<div id="dealer" style="position:absolute;left:${centerX}px;top:${centerY}px;transform:translate(-50%,-50%);width:60px;height:40px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.7);z-index:3;">Dealer Machine</div>`;
+
   const tableHTML=`<div style="width:100%;height:100%;border-radius:50% / 50%;background:#006400;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px;background-position:0 0,10px 10px;border:3px solid #45a29e;position:relative;"></div>`;
 
   render(`<h2>Mission Accepted</h2>
           <p>The mission will begin at noon on September 18, 2026.</p>
-          <p>High Stakes Poker Game<br>Objective: Defeat Arunan<br>Prize: MI6 Poker Champion</p>
           <div id="table-container" style="position:relative;width:${tableWidth}px;height:${tableHeight}px;margin:20px auto;">
             ${tableHTML}${seatElements}${dealerHTML}
           </div>
@@ -146,15 +149,15 @@ function eventScreen(){
   players.forEach((player,i)=>{
     for(let j=0;j<2;j++){
       const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-      const x=centerX + (tableWidth/2 + 50)*Math.cos(angle); // outside the table
-      const y=centerY + (tableHeight/2 + 50)*Math.sin(angle);
+      const x=centerX + (tableWidth/2 + 40)*Math.cos(angle);
+      const y=centerY + (tableHeight/2 + 40)*Math.sin(angle);
       const card=createCard(deck[cardIndex % deck.length]); cardIndex++;
       setTimeout(()=>{
-        if(player==="Arunan") card.style.boxShadow="0 0 15px 3px rgba(255,215,0,0.7)";
-        card.style.left=`${x + j*15}px`;
-        card.style.top=`${y}px`;
+        if(player==="Arunan") card.style.boxShadow="0 0 12px 2px rgba(255,215,0,0.7)";
+        card.style.left=`${x + j*12}px`;
+        card.style.top=`${y + j*3}px`;
         card.style.transform='translate(-50%,-50%) rotateY(0deg)';
-      }, i*800+j*400);
+      }, i*600+j*300);
     }
   });
 
@@ -163,11 +166,11 @@ function eventScreen(){
   communityCards.forEach((value,i)=>{
     const card=createCard(value);
     setTimeout(()=>{
-      card.style.left=`${centerX - 100 + i*50}px`;
+      card.style.left=`${centerX - 60 + i*30}px`;
       card.style.top=`${centerY}px`;
       card.style.transform='translate(-50%,-50%) rotateY(0deg)';
-      card.style.zIndex=1;
-    }, players.length*2*800 + i*600);
+      card.style.zIndex=2;
+    }, players.length*2*600 + i*400);
   });
 }
 
@@ -175,7 +178,7 @@ function startTimer(){ const target=new Date('September 18, 2026 12:00:00').getT
   setInterval(()=>{ const now=new Date().getTime(); const diff=target-now;
   const d=Math.floor(diff/(1000*60*60*24)); const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
   const m=Math.floor((diff%(1000*60*60))/(1000*60)); const s=Math.floor((diff%(1000*60))/1000);
-  const timer=document.getElementById('timer'); if(timer) timer.innerText=`${d}d ${h}h ${m}m ${s}s`; },1000); }
+  const timer=document.getElementById('timer'); if(timer) timer.innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`; },1000); }
 
 function finalScreen(){ render(`<p>Await further instructions regarding apparel.</p><p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p><p>Beds are available.</p><button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>`); }
 function showError(){ const err=document.getElementById('err'); if(err) err.innerText="Access Denied. Try again."; }
