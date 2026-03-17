@@ -42,6 +42,20 @@ input { width:100%; padding:12px; margin:10px 0; border-radius:8px; border:none;
 .progress { font-size:0.9rem; margin-bottom:10px; color:#c5c6c7; }
 .error { color:#ff4d4d; margin-top:10px; }
 @media (max-width:600px){ h1{font-size:1.2rem;} }
+.card {
+  position:absolute;
+  width:40px;
+  height:60px;
+  background:white;
+  border-radius:5px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  transform:translate(-50%,-50%) rotateY(90deg);
+  transition: all 0.7s ease-in-out;
+}
 </style>
 </head>
 <body>
@@ -69,299 +83,102 @@ const players = ["Jason","Prathap","Gill","Taylor","Duran","Josh","Arunan"];
 
 function render(html){ app.innerHTML = html; }
 
-function typeText(text, callback){
-  let i = 0;
-  const speed = 25;
-  app.innerHTML = "";
-  const el = document.createElement("div");
-  app.appendChild(el);
-  function typing(){
-    if(i < text.length){
-      el.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
-    } else if(callback){ callback(); }
-  }
+function start(){
+  typeText("Agent, proceed with identity authentication...", ()=>{ setTimeout(()=>render(`<button onclick="q1()">Begin</button>`),500); });
+}
+
+function typeText(text,callback){
+  let i=0; const speed=25; app.innerHTML="";
+  const el=document.createElement("div"); app.appendChild(el);
+  function typing(){ if(i<text.length){ el.innerHTML+=text.charAt(i); i++; setTimeout(typing,speed); } else if(callback){callback();} }
   typing();
 }
 
-function start(){
-  typeText("Agent, proceed with identity authentication...", () => {
-    setTimeout(()=>{ render(`<button onclick="q1()">Begin</button>`); },500);
-  });
-}
+function q1(){ render(`<div class="progress">Level 1/3</div><p>What poker hand did James Bond win with in Montenegro?</p><button onclick="q2()">Straight Flush</button><button onclick="wrong()">Royal Flush</button><button onclick="wrong()">Full House</button><div class="error" id="err"></div>`); }
+function q2(){ render(`<div class="progress">Level 2/3</div><p>What is James Bond's favorite drink?</p><button onclick="q3()">Vodka Martini — Shaken, not stirred</button><button onclick="wrong()">Scotch Neat</button><button onclick="wrong()">Old Fashioned</button><button onclick="wrong()">Gin and Tonic</button><div class="error" id="err"></div>`); }
+function q3(){ render(`<div class="progress">Level 3/3</div><p>Name all of James Bond's love interests.</p><button onclick="welcome()">Vesper Lynd, Tracy Bond, Madeleine Swann</button><button onclick="wrong()">Domino, Tiffany Case, Natalya Simonova</button><button onclick="wrong()">Honey Ryder, Kissy Suzuki, Wai Lin</button><button onclick="wrong()">Solitaire, Natalya Simonova, Camille Montes</button><div class="error" id="err"></div>`); }
 
-function q1(){
-render(`
-<div class="progress">Level 1/3</div>
-<p>What poker hand did James Bond win with in Montenegro?</p>
-<button onclick="q2()">Straight Flush</button>
-<button onclick="wrong()">Royal Flush</button>
-<button onclick="wrong()">Full House</button>
-<div class="error" id="err"></div>
-`);
-}
+function welcome(){ render(`<h2>Welcome Agent ${agentName}</h2><button onclick="sec1()">Proceed to Security Clearance</button>`); }
+function sec1(){ render(`<p>Agent ${agentName}, confirm security clearance.</p><p>What was the name of the horse?</p><button onclick="sec2()">Maya</button><button onclick="wrong()">Luna</button><button onclick="wrong()">Bella</button><button onclick="wrong()">Shadow</button><div class="error" id="err"></div>`); }
+function sec2(){ render(`<p>What was the BMW's name?</p><button onclick="sec3()">Cloud</button><button onclick="wrong()">Frost</button><button onclick="wrong()">Phantom</button><button onclick="wrong()">Glacier</button><div class="error" id="err"></div>`); }
+function sec3(){ render(`<p>Complete the phrase:</p><p><i>Blood makes us related, loyalty makes us family, and family is ____.</i></p><input id="phrase" placeholder="Enter answer" /><button onclick="checkPhrase()">Submit</button><div class="error" id="err"></div>`); }
+function checkPhrase(){ const val=document.getElementById('phrase').value.toLowerCase(); if(val.includes('forever')) mission(); else showError(); }
+function mission(){ render(`<h2>Operation Forever</h2><p>Agent ${agentName}, will you assist the groom as ${role}?</p><button onclick="eventScreen()">Proceed</button>`); }
 
-function q2(){
-render(`
-<div class="progress">Level 2/3</div>
-<p>What is James Bond's favorite drink?</p>
-<button onclick="q3()">Vodka Martini — Shaken, not stirred</button>
-<button onclick="wrong()">Scotch Neat</button>
-<button onclick="wrong()">Old Fashioned</button>
-<button onclick="wrong()">Gin and Tonic</button>
-<div class="error" id="err"></div>
-`);
-}
+function eventScreen(){
+  const tableWidth=400, tableHeight=250, centerX=tableWidth/2, centerY=tableHeight/2;
 
-function q3(){
-render(`
-<div class="progress">Level 3/3</div>
-<p>Name all of James Bond's love interests.</p>
-<button onclick="welcome()">Vesper Lynd, Tracy Bond, Madeleine Swann</button>
-<button onclick="wrong()">Domino, Tiffany Case, Natalya Simonova</button>
-<button onclick="wrong()">Honey Ryder, Kissy Suzuki, Wai Lin</button>
-<button onclick="wrong()">Solitaire, Natalya Simonova, Camille Montes</button>
-<div class="error" id="err"></div>
-`);
-}
-
-function welcome(){
-render(`
-<h2>Welcome Agent ${agentName}</h2>
-<button onclick="sec1()">Proceed to Security Clearance</button>
-`);
-}
-
-function sec1(){
-render(`
-<p>Agent ${agentName}, confirm security clearance.</p>
-<p>What was the name of the horse?</p>
-<button onclick="sec2()">Maya</button>
-<button onclick="wrong()">Luna</button>
-<button onclick="wrong()">Bella</button>
-<button onclick="wrong()">Shadow</button>
-<div class="error" id="err"></div>
-`);
-}
-
-function sec2(){
-render(`
-<p>What was the BMW's name?</p>
-<button onclick="sec3()">Cloud</button>
-<button onclick="wrong()">Frost</button>
-<button onclick="wrong()">Phantom</button>
-<button onclick="wrong()">Glacier</button>
-<div class="error" id="err"></div>
-`);
-}
-
-function sec3(){
-render(`
-<p>Complete the phrase:</p>
-<p><i>Blood makes us related, loyalty makes us family, and family is ____.</i></p>
-<input id="phrase" placeholder="Enter answer" />
-<button onclick="checkPhrase()">Submit</button>
-<div class="error" id="err"></div>
-`);
-}
-
-function checkPhrase(){
-const val = document.getElementById('phrase').value.toLowerCase();
-if(val.includes('forever')) mission(); else showError();
-}
-
-function mission(){
-render(`
-<h2>Operation Forever</h2>
-<p>Agent ${agentName}, will you assist the groom as ${role}?</p>
-<button onclick="eventScreen()">Proceed</button>
-`);
-}
-
-function eventScreen() {
-  const tableWidth = 400;
-  const tableHeight = 250;
-  const centerX = tableWidth / 2;
-  const centerY = tableHeight / 2;
-
-  // Seat elements
-  const seatElements = players.map((p, i) => {
-    const angle = (i / players.length) * 2 * Math.PI - Math.PI/2;
-    const x = centerX + (tableWidth/2 - 20) * Math.cos(angle);
-    const y = centerY + (tableHeight/2 - 20) * Math.sin(angle);
-
-    const highlight = p.toLowerCase() === agentName.toLowerCase() 
-      ? "color:#ffd700; font-weight:bold;" 
-      : "color:#66fcf1;";
-
-    return `
-      <div style="
-        position:absolute; 
-        left:${x}px; 
-        top:${y}px; 
-        transform:translate(-50%, -50%);
-        text-align:center;
-        z-index:2;
-      ">
-        <div style="
-          width:40px; 
-          height:40px; 
-          border-radius:50%; 
-          background:rgba(255,255,255,0.1); 
-          box-shadow: 0 0 10px rgba(0,255,200,0.4);
-          display:flex; 
-          align-items:center; 
-          justify-content:center;
-          margin-bottom:5px;
-        "></div>
-        <span style="${highlight}; text-shadow: 1px 1px 3px #000;">${p}</span>
-      </div>
-    `;
+  // seats around the table
+  const seatElements = players.map((p,i)=>{
+    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
+    const x=centerX+(tableWidth/2-20)*Math.cos(angle);
+    const y=centerY+(tableHeight/2-20)*Math.sin(angle);
+    const highlight = p.toLowerCase()===agentName.toLowerCase()?"color:#ffd700;font-weight:bold;":"color:#66fcf1;";
+    return `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%);text-align:center;z-index:2;">
+            <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);box-shadow:0 0 10px rgba(0,255,200,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:5px;"></div>
+            <span style="${highlight};text-shadow:1px 1px 3px #000;">${p}</span>
+           </div>`;
   }).join("");
 
-  const dealerHTML = `
-    <div id="dealer" style="
-      position:absolute;
-      top:5%;
-      left:50%;
-      transform:translateX(-50%);
-      width:60px;
-      height:30px;
-      background:#ff4d4d;
-      color:white;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:5px;
-      font-size:0.8rem;
-      box-shadow:0 0 8px rgba(0,0,0,0.5);
-      z-index:2;
-    ">Dealer</div>
-  `;
+  const dealerHTML=`<div id="dealer" style="position:absolute;top:5%;left:50%;transform:translateX(-50%);width:60px;height:30px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.5);z-index:2;">Dealer</div>`;
+  const tableHTML=`<div style="width:100%;height:100%;border-radius:50% / 50%;background:#006400;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px;background-position:0 0,10px 10px;border:3px solid #45a29e;position:relative;"></div>`;
 
-  const tableHTML = `
-    <div style="
-      width:100%;
-      height:100%;
-      border-radius:50% / 50%;
-      background: #006400;
-      background-image: 
-        radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
-      border:3px solid #45a29e;
-      position:relative;
-    "></div>
-  `;
-
-  render(`
-    <h2>Mission Accepted</h2>
-    <p>The mission will begin at noon on September 18, 2026.</p>
-    <p>High Stakes Poker Game<br>Objective: Defeat Arunan<br>Prize: MI6 Poker Champion</p>
-
-    <div id="table-container" style="position:relative; width:${tableWidth}px; height:${tableHeight}px; margin:20px auto;">
-      ${tableHTML}
-      ${seatElements}
-      ${dealerHTML}
-    </div>
-
-    <div class="timer" id="timer"></div>
-    <button onclick="finalScreen()">Continue</button>
-  `);
+  render(`<h2>Mission Accepted</h2>
+          <p>The mission will begin at noon on September 18, 2026.</p>
+          <p>High Stakes Poker Game<br>Objective: Defeat Arunan<br>Prize: MI6 Poker Champion</p>
+          <div id="table-container" style="position:relative;width:${tableWidth}px;height:${tableHeight}px;margin:20px auto;">
+            ${tableHTML}${seatElements}${dealerHTML}
+          </div>
+          <div class="timer" id="timer"></div>
+          <button onclick="finalScreen()">Continue</button>`);
 
   startTimer();
+  const container=document.getElementById('table-container');
+  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦","6♣","5♥","4♠","3♦","2♣"];
+  let cardIndex=0;
 
-  const container = document.getElementById('table-container');
-  const deck = ["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦","6♣","5♥","4♠","3♦","2♣"];
-  let cardIndex = 0;
-
-  function createCard(value) {
-    const card = document.createElement('div');
-    card.innerText = value;
-    card.style.cssText = `
-      position:absolute;
-      width:40px;
-      height:60px;
-      background:white;
-      border-radius:5px;
-      box-shadow:0 4px 8px rgba(0,0,0,0.5);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:bold;
-      left:50%;
-      top:0;
-      transform:translate(-50%, 0) rotateY(90deg);
-      z-index:3;
-      transition: all 0.7s ease-in-out;
-    `;
-    container.appendChild(card);
-    return card;
+  function createCard(value){
+    const card=document.createElement('div'); card.className='card'; card.innerText=value;
+    container.appendChild(card); return card;
   }
 
-  // Deal 2 cards per player
-  players.forEach((player, i) => {
-    for (let j = 0; j < 2; j++) {
-      const angle = (i / players.length) * 2 * Math.PI - Math.PI/2;
-      const targetX = centerX + (tableWidth/2 - 20) * Math.cos(angle);
-      const targetY = centerY + (tableHeight/2 - 20) * Math.sin(angle);
-
-      const card = createCard(deck[cardIndex % deck.length]);
-      cardIndex++;
-
-      setTimeout(() => {
-        if (player === "Arunan") card.style.boxShadow = "0 0 15px 3px rgba(255,215,0,0.7)";
-        card.style.left = `${targetX + j*10 - 5}px`;
-        card.style.top = `${targetY}px`;
-        card.style.transform = 'translate(-50%, -50%) rotateY(0deg)';
-      }, i*800 + j*400);
+  // Player hands outside table
+  players.forEach((player,i)=>{
+    for(let j=0;j<2;j++){
+      const angle=(i/players.length)*2*Math.PI-Math.PI/2;
+      const x=centerX + (tableWidth/2 + 50)*Math.cos(angle); // outside the table
+      const y=centerY + (tableHeight/2 + 50)*Math.sin(angle);
+      const card=createCard(deck[cardIndex % deck.length]); cardIndex++;
+      setTimeout(()=>{
+        if(player==="Arunan") card.style.boxShadow="0 0 15px 3px rgba(255,215,0,0.7)";
+        card.style.left=`${x + j*15}px`;
+        card.style.top=`${y}px`;
+        card.style.transform='translate(-50%,-50%) rotateY(0deg)';
+      }, i*800+j*400);
     }
   });
 
-  // Community cards (center of table, not covering agents)
-  const communityCards = ["A♠","K♥","Q♣","J♦","10♠"];
-  communityCards.forEach((value, i) => {
-    const card = createCard(value);
-    setTimeout(() => {
-      card.style.left = `${centerX - 100 + i*50}px`; // spread horizontally
-      card.style.top = `${centerY - 30}px`; // slightly above center
-      card.style.transform = 'translate(-50%, -50%) rotateY(0deg)';
-      card.style.zIndex = 1; // behind agents
-    }, players.length*2*800 + i*800);
+  // Community cards in center of table
+  const communityCards=["A♠","K♥","Q♣","J♦","10♠"];
+  communityCards.forEach((value,i)=>{
+    const card=createCard(value);
+    setTimeout(()=>{
+      card.style.left=`${centerX - 100 + i*50}px`;
+      card.style.top=`${centerY}px`;
+      card.style.transform='translate(-50%,-50%) rotateY(0deg)';
+      card.style.zIndex=1;
+    }, players.length*2*800 + i*600);
   });
-
 }
 
-function startTimer(){
-const target = new Date('September 18, 2026 12:00:00').getTime();
-setInterval(()=>{
-const now = new Date().getTime();
-const diff = target - now;
-const d = Math.floor(diff/(1000*60*60*24));
-const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-const m = Math.floor((diff%(1000*60*60))/(1000*60));
-const s = Math.floor((diff%(1000*60))/1000);
-const timer = document.getElementById('timer');
-if(timer) timer.innerText = `${d}d ${h}h ${m}m ${s}s`;
-},1000);
-}
+function startTimer(){ const target=new Date('September 18, 2026 12:00:00').getTime();
+  setInterval(()=>{ const now=new Date().getTime(); const diff=target-now;
+  const d=Math.floor(diff/(1000*60*60*24)); const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const m=Math.floor((diff%(1000*60*60))/(1000*60)); const s=Math.floor((diff%(1000*60))/1000);
+  const timer=document.getElementById('timer'); if(timer) timer.innerText=`${d}d ${h}h ${m}m ${s}s`; },1000); }
 
-function finalScreen(){
-render(`
-<p>Await further instructions regarding apparel.</p>
-<p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-<p>Beds are available.</p>
-<button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
-`);
-}
-
-function showError(){
-const err = document.getElementById('err');
-if(err) err.innerText = "Access Denied. Try again.";
-}
-
+function finalScreen(){ render(`<p>Await further instructions regarding apparel.</p><p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p><p>Beds are available.</p><button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>`); }
+function showError(){ const err=document.getElementById('err'); if(err) err.innerText="Access Denied. Try again."; }
 function wrong(){ showError(); }
 
 start();
