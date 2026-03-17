@@ -71,16 +71,20 @@ const app = document.getElementById('app');
 const urlParams = new URLSearchParams(window.location.search);
 const agentName = urlParams.get('agent') || 'Agent';
 
+// Switch Arunan and Jason
+let players = ["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
+
 const roles = {
-  "Jason":"Best Man",
+  "Arunan":"Best Man",
   "Prathap":"Groomsman",
   "Gill":"Groomsman",
   "Taylor":"Groomsman",
   "Duran":"Groomsman",
-  "Josh":"Groomsman"
+  "Josh":"Groomsman",
+  "Jason":"Groomsman"
 };
+
 const role = roles[agentName] || "Groomsman";
-const players = ["Jason","Prathap","Gill","Taylor","Duran","Josh","Arunan"];
 
 function render(html){ app.innerHTML = html; }
 
@@ -122,13 +126,14 @@ function eventScreen(){
            </div>`;
   }).join("");
 
-  // Dealer machine in center
-  const dealerHTML=`<div id="dealer" style="position:absolute;left:${centerX}px;top:${centerY}px;transform:translate(-50%,-50%);width:60px;height:40px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.7);z-index:3;">Dealer Machine</div>`;
+  // Dealer in center
+  const dealerHTML=`<div id="dealer" style="position:absolute;left:${centerX}px;top:${centerY}px;transform:translate(-50%,-50%);width:60px;height:40px;background:#ff4d4d;color:white;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:0.8rem;box-shadow:0 0 8px rgba(0,0,0,0.7);z-index:3;">Dealer</div>`;
 
   const tableHTML=`<div style="width:100%;height:100%;border-radius:50% / 50%;background:#006400;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px;background-position:0 0,10px 10px;border:3px solid #45a29e;position:relative;"></div>`;
 
   render(`<h2>Mission Accepted</h2>
           <p>The mission will begin at noon on September 18, 2026.</p>
+          <p>High Stakes Poker Game<br>Objective: Defeat the Groom<br>Prize: MI6 Poker Champion</p>
           <div id="table-container" style="position:relative;width:${tableWidth}px;height:${tableHeight}px;margin:20px auto;">
             ${tableHTML}${seatElements}${dealerHTML}
           </div>
@@ -161,7 +166,7 @@ function eventScreen(){
     }
   });
 
-  // Community cards in center of table
+  // Community cards in center
   const communityCards=["A♠","K♥","Q♣","J♦","10♠"];
   communityCards.forEach((value,i)=>{
     const card=createCard(value);
