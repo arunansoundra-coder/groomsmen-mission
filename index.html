@@ -213,14 +213,14 @@ function eventScreen(){
 
     <div class="timer" id="timer"></div>
 
-    <button onclick="finalScreen()">Continue</button>
+    <button onclick="missionComplete()">Continue</button>
   `);
 
   startTimer();
 
   const container=document.getElementById('table');
-  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦"];
 
+  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦"];
   let index=0;
 
   function createCard(val){
@@ -231,35 +231,54 @@ function eventScreen(){
     return c;
   }
 
-  // PLAYER CARDS
+  /* PLAYER CARDS */
   players.forEach((p,i)=>{
     for(let j=0;j<2;j++){
       const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-      const x=cx+(w/2+30)*Math.cos(angle);
-      const y=cy+(h/2+30)*Math.sin(angle);
+      const x=cx+(w/2+20)*Math.cos(angle);
+      const y=cy+(h/2+20)*Math.sin(angle);
 
       const card=createCard(deck[index++%deck.length]);
 
       setTimeout(()=>{
         if(p==="Arunan") card.style.boxShadow="0 0 10px gold";
-        card.style.left=(x+j*10)+"px";
+        card.style.left=(x+j*8)+"px";
         card.style.top=(y+j*3)+"px";
         card.style.transform='translate(-50%,-50%) rotateY(0)';
       },i*400+j*200);
     }
   });
 
-  // COMMUNITY CARDS
+  /* COMMUNITY CARDS (RE-CENTERED) */
   ["A♠","K♥","Q♣","J♦","10♠"].forEach((v,i)=>{
     const c=createCard(v);
     setTimeout(()=>{
-      c.style.left=(cx-60+i*30)+"px";
+      c.style.left=(cx-50+i*25)+"px";  // tighter spacing
       c.style.top=cy+"px";
       c.style.transform='translate(-50%,-50%) rotateY(0)';
     },players.length*800+i*300);
   });
-}
 
+  /* CHIP STACKS */
+  function createChips(x,y){
+    for(let i=0;i<3;i++){
+      const chip=document.createElement('div');
+      chip.style.position='absolute';
+      chip.style.width='14px';
+      chip.style.height='14px';
+      chip.style.borderRadius='50%';
+      chip.style.background=i%2===0?'#ff4d4d':'#ffd700';
+      chip.style.left=x+'px';
+      chip.style.top=(y - i*3)+'px';
+      chip.style.boxShadow='0 0 4px black';
+      container.appendChild(chip);
+    }
+  }
+
+  createChips(cx-30,cy+30);
+  createChips(cx+20,cy+35);
+}
+  
 /* TIMER */
 function startTimer(){
   const target=new Date('September 18, 2026 12:00:00').getTime();
