@@ -41,12 +41,13 @@ button {
   color:#ffd700; 
 }
 
-/* TABLE */
+.success { color:#00ff9f; margin-top:10px; }
+
 .table-wrapper {
   position:relative;
   width:300px;
   height:188px;
-  margin:40px auto 20px auto; /* PUSHED DOWN */
+  margin:40px auto 20px auto;
 }
 
 .table {
@@ -71,7 +72,6 @@ button {
   transition:0.6s;
 }
 
-/* PLAYER NAME */
 .player-name {
   position:absolute;
   font-size:0.65rem;
@@ -79,7 +79,6 @@ button {
   white-space:nowrap;
 }
 
-/* CHIP */
 .chip {
   position:absolute;
   width:14px;
@@ -88,7 +87,6 @@ button {
   box-shadow:0 0 4px black;
 }
 
-/* MOBILE */
 @media (max-width:600px){
   .table-wrapper {
     transform:scale(0.75);
@@ -122,7 +120,6 @@ const roles={
 };
 
 const role=roles[agentName]||"Groomsman";
-
 function render(html){ app.innerHTML=html; }
 
 /* START */
@@ -131,7 +128,6 @@ function start(){
   <button onclick="q1()">Begin</button>`);
 }
 
-/* QUESTIONS */
 function q1(){
   render(`<p>Level 1/3</p>
   <p>What poker hand did James Bond win with in Montenegro?</p>
@@ -165,7 +161,6 @@ function q3(){
   `);
 }
 
-/* SECURITY */
 function welcome(){
   render(`<h2>Welcome Agent ${agentName}</h2>
   <button onclick="sec1()">Proceed</button>`);
@@ -201,14 +196,12 @@ function checkPhrase(){
   if(val.includes('forever')) mission(); else wrong();
 }
 
-/* MISSION */
 function mission(){
   render(`<h2>Operation Forever</h2>
   <p>Agent ${agentName}, will you assist as ${role}?</p>
   <button onclick="eventScreen()">Accept Mission</button>`);
 }
 
-/* TABLE SCREEN */
 function eventScreen(){
 
   const w=300,h=188,cx=w/2,cy=h/2;
@@ -230,17 +223,6 @@ function eventScreen(){
   startTimer();
   const container=document.getElementById('table');
 
-  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦"];
-  let index=0;
-
-  function createCard(val){
-    const c=document.createElement('div');
-    c.className='card';
-    c.innerText=val;
-    container.appendChild(c);
-    return c;
-  }
-
   function createChips(x,y){
     for(let i=0;i<3;i++){
       const chip=document.createElement('div');
@@ -252,13 +234,11 @@ function eventScreen(){
     }
   }
 
-  /* PLAYERS */
   players.forEach((p,i)=>{
     const angle=(i/players.length)*2*Math.PI-Math.PI/2;
     const px=cx+(w/2+30)*Math.cos(angle);
     const py=cy+(h/2+30)*Math.sin(angle);
 
-    /* NAME */
     const name=document.createElement('div');
     name.className='player-name';
     name.innerText=p;
@@ -266,33 +246,10 @@ function eventScreen(){
     name.style.top=py+"px";
     container.appendChild(name);
 
-    /* CHIPS */
     createChips(px+10,py+10);
-
-    /* CARDS */
-    for(let j=0;j<2;j++){
-      const card=createCard(deck[index++%deck.length]);
-      setTimeout(()=>{
-        if(p==="Arunan") card.style.boxShadow="0 0 10px gold";
-        card.style.left=(px+j*8)+"px";
-        card.style.top=(py+j*3)+"px";
-        card.style.transform='translate(-50%,-50%) rotateY(0)';
-      },i*400+j*200);
-    }
-  });
-
-  /* COMMUNITY */
-  ["A♠","K♥","Q♣","J♦","10♠"].forEach((v,i)=>{
-    const c=createCard(v);
-    setTimeout(()=>{
-      c.style.left=(cx-50+i*25)+"px";
-      c.style.top=cy+"px";
-      c.style.transform='translate(-50%,-50%) rotateY(0)';
-    },players.length*800+i*300);
   });
 }
 
-/* TIMER */
 function startTimer(){
   const target=new Date('September 18, 2026 12:00:00').getTime();
   setInterval(()=>{
@@ -309,18 +266,53 @@ function startTimer(){
   },1000);
 }
 
-/* FINAL */
 function finalScreen(){
   render(`
     <p>Await further instructions for apparel.</p>
     <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-    <p>Confirm with groom if safe house has everything you need.</p>
+    <p>Confirm safe house attendance:</p>
+
+    <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
+    <button onclick="emailGroom()">Send via Email</button>
+    <button onclick="openForm()">Log Response (Backup)</button>
+    <button onclick="declineSafehouse()">Not Staying</button>
+
+    <div id="status" class="success"></div>
+
+    <br><br>
     <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
   `);
 }
 
-function wrong(){
-  document.getElementById('err').innerText="Access Denied";
+function notifyGroom(){
+  const msg = encodeURIComponent(`Agent ${agentName}: Staying at safe house.`);
+  window.location.href = `sms:+14694262300?body=${msg}`;
+  showStatus("✔ Transmission Sent");
+}
+
+function emailGroom(){
+  const subject = encodeURIComponent("Safe House Confirmation");
+  const body = encodeURIComponent(`Agent ${agentName} staying at safe house.`);
+  window.location.href = `mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`;
+  showStatus("✔ Email Prepared");
+}
+
+function openForm(){
+  const name = encodeURIComponent(agentName);
+  const stay = encodeURIComponent("Yes");
+  const r    = encodeURIComponent(role);
+
+  window.open(
+    `https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${r}`
+  );
+}
+
+function declineSafehouse(){
+  showStatus("✔ Logged: Not Staying");
+}
+
+function showStatus(msg){
+  document.getElementById('status').innerText = msg;
 }
 
 function missionComplete(){
@@ -330,8 +322,11 @@ function missionComplete(){
       <p>Agent ${agentName}, your presence has been confirmed.</p>
     </div>
   `);
-
   setTimeout(finalScreen, 2500);
+}
+
+function wrong(){
+  document.getElementById('err').innerText="Access Denied";
 }
 
 start();
