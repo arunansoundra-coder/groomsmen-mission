@@ -44,9 +44,9 @@ button {
 /* TABLE */
 .table-wrapper {
   position:relative;
-  width:300px;   /* was 400px */
-  height:188px;  /* was 250px (maintains ratio) */
-  margin:20px auto;
+  width:300px;
+  height:188px;
+  margin:40px auto 20px auto; /* PUSHED DOWN */
 }
 
 .table {
@@ -71,16 +71,28 @@ button {
   transition:0.6s;
 }
 
+/* PLAYER NAME */
+.player-name {
+  position:absolute;
+  font-size:0.65rem;
+  transform:translate(-50%, -50%);
+  white-space:nowrap;
+}
+
+/* CHIP */
+.chip {
+  position:absolute;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  box-shadow:0 0 4px black;
+}
+
 /* MOBILE */
 @media (max-width:600px){
   .table-wrapper {
     transform:scale(0.75);
     transform-origin:top center;
-  }
-  .card {
-    width:22px;
-    height:32px;
-    font-size:0.6rem;
   }
 }
 </style>
@@ -145,16 +157,14 @@ function q3(){
     <p>Name all of James Bond's love interests.</p>
 
     <button onclick="welcome()">Vesper Lynd, Tracy Bond, Madeleine Swann</button>
-
     <button onclick="wrong()">Domino, Tiffany Case, Natalya Simonova</button>
-
     <button onclick="wrong()">Honey Ryder, Kissy Suzuki, Wai Lin</button>
-
     <button onclick="wrong()">Solitaire, Natalya Simonova, Camille Montes</button>
 
     <div id="err"></div>
   `);
 }
+
 /* SECURITY */
 function welcome(){
   render(`<h2>Welcome Agent ${agentName}</h2>
@@ -198,13 +208,14 @@ function mission(){
   <button onclick="eventScreen()">Accept Mission</button>`);
 }
 
-/* TABLE */
+/* TABLE SCREEN */
 function eventScreen(){
 
   const w=300,h=188,cx=w/2,cy=h/2;
 
   render(`
-    <h2>Mission Accepted</h2>
+    <h2 style="color:#ffd700;">Operation Forever</h2>
+    <p>Mission Accepted</p>
     <p>The mission begins September 18, 2026 at 12:00 PM</p>
 
     <div class="table-wrapper" id="table">
@@ -217,7 +228,6 @@ function eventScreen(){
   `);
 
   startTimer();
-
   const container=document.getElementById('table');
 
   const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦"];
@@ -231,54 +241,57 @@ function eventScreen(){
     return c;
   }
 
-  /* PLAYER CARDS */
+  function createChips(x,y){
+    for(let i=0;i<3;i++){
+      const chip=document.createElement('div');
+      chip.className='chip';
+      chip.style.background=i%2===0?'#ff4d4d':'#ffd700';
+      chip.style.left=x+'px';
+      chip.style.top=(y - i*3)+'px';
+      container.appendChild(chip);
+    }
+  }
+
+  /* PLAYERS */
   players.forEach((p,i)=>{
+    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
+    const px=cx+(w/2+30)*Math.cos(angle);
+    const py=cy+(h/2+30)*Math.sin(angle);
+
+    /* NAME */
+    const name=document.createElement('div');
+    name.className='player-name';
+    name.innerText=p;
+    name.style.left=px+"px";
+    name.style.top=py+"px";
+    container.appendChild(name);
+
+    /* CHIPS */
+    createChips(px+10,py+10);
+
+    /* CARDS */
     for(let j=0;j<2;j++){
-      const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-      const x=cx+(w/2+20)*Math.cos(angle);
-      const y=cy+(h/2+20)*Math.sin(angle);
-
       const card=createCard(deck[index++%deck.length]);
-
       setTimeout(()=>{
         if(p==="Arunan") card.style.boxShadow="0 0 10px gold";
-        card.style.left=(x+j*8)+"px";
-        card.style.top=(y+j*3)+"px";
+        card.style.left=(px+j*8)+"px";
+        card.style.top=(py+j*3)+"px";
         card.style.transform='translate(-50%,-50%) rotateY(0)';
       },i*400+j*200);
     }
   });
 
-  /* COMMUNITY CARDS (RE-CENTERED) */
+  /* COMMUNITY */
   ["A♠","K♥","Q♣","J♦","10♠"].forEach((v,i)=>{
     const c=createCard(v);
     setTimeout(()=>{
-      c.style.left=(cx-50+i*25)+"px";  // tighter spacing
+      c.style.left=(cx-50+i*25)+"px";
       c.style.top=cy+"px";
       c.style.transform='translate(-50%,-50%) rotateY(0)';
     },players.length*800+i*300);
   });
-
-  /* CHIP STACKS */
-  function createChips(x,y){
-    for(let i=0;i<3;i++){
-      const chip=document.createElement('div');
-      chip.style.position='absolute';
-      chip.style.width='14px';
-      chip.style.height='14px';
-      chip.style.borderRadius='50%';
-      chip.style.background=i%2===0?'#ff4d4d':'#ffd700';
-      chip.style.left=x+'px';
-      chip.style.top=(y - i*3)+'px';
-      chip.style.boxShadow='0 0 4px black';
-      container.appendChild(chip);
-    }
-  }
-
-  createChips(cx-30,cy+30);
-  createChips(cx+20,cy+35);
 }
-  
+
 /* TIMER */
 function startTimer(){
   const target=new Date('September 18, 2026 12:00:00').getTime();
@@ -309,6 +322,7 @@ function finalScreen(){
 function wrong(){
   document.getElementById('err').innerText="Access Denied";
 }
+
 function missionComplete(){
   render(`
     <div style="padding:40px;">
@@ -319,6 +333,7 @@ function missionComplete(){
 
   setTimeout(finalScreen, 2500);
 }
+
 start();
 </script>
 </body>
