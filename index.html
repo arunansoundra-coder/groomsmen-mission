@@ -157,10 +157,37 @@ render(`
 }
 
 function eventScreen(){
+const players = ["Jason","Prathap","Gill","Taylor","Duran","Josh","Groom"];
+
+const seats = players.map(p => {
+  const highlight = p.toLowerCase() === agentName.toLowerCase() ? "style='color:#ffd700; font-weight:bold;'" : "";
+  return `<span ${highlight}>${p}${p==="Jason"?" (Best Man)":""}</span>`;
+}).join(" • ");
+
 render(`
 <h2>Mission Accepted</h2>
 <p>The mission will begin at noon on September 18, 2026.</p>
 <p>High Stakes Poker Game<br>Objective: Defeat the Groom<br>Prize: MI6 Poker Champion</p>
+
+<div style="margin-top:15px; position:relative;">
+  <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" 
+       alt="Poker Table" 
+       style="width:100%; border-radius:12px;" />
+
+  <div style="position:absolute; top:10%; left:50%; transform:translateX(-50%); font-size:0.8rem;">${players[0]}</div>
+  <div style="position:absolute; top:30%; left:10%; font-size:0.8rem;">${players[1]}</div>
+  <div style="position:absolute; top:70%; left:10%; font-size:0.8rem;">${players[2]}</div>
+  <div style="position:absolute; bottom:10%; left:50%; transform:translateX(-50%); font-size:0.8rem;">${players[3]}</div>
+  <div style="position:absolute; top:70%; right:10%; font-size:0.8rem;">${players[4]}</div>
+  <div style="position:absolute; top:30%; right:10%; font-size:0.8rem;">${players[5]}</div>
+  <div style="position:absolute; top:5%; left:5%; font-size:0.8rem;">${players[6]}</div>
+</div>
+
+<div style="margin-top:10px; font-size:0.9rem; line-height:1.6;">
+  <p><strong>Table Seating:</strong></p>
+  <p>${seats}</p>
+</div>
+
 <div class="timer" id="timer"></div>
 <button onclick="finalScreen()">Continue</button>
 `);
