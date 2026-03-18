@@ -1,90 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MI6 Secure Terminal</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background: #0b0c10;
-      color: #66fcf1;
-      display: flex;
-      justify-content: center;
-      padding-top: 20px;
-      overflow-x: hidden;
-    }
-    .container {
-      width: 95%;
-      max-width: 700px;
-      background: #1f2833;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      min-height: 400px;
-      position: relative;
-      overflow: hidden;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      background: #45a29e;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover { background: #66fcf1; color: #1f2833; }
-    .timer {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-    .success {
-      color: #00ff9f;
-      margin-top: 10px;
-    }
-    .table-wrapper {
-      position: relative;
-      width: 300px;
-      height: 188px;
-      margin: 40px auto 20px auto;
-    }
-    .table {
-      width: 100%;
-      height: 100%;
-      border-radius: 50% / 50%;
-      background: #006400;
-      border: 3px solid #45a29e;
-      transition: transform 1s ease-in-out;
-    }
-    .player-name {
-      position: absolute;
-      font-size: 0.65rem;
-      transform: translate(-50%, -50%);
-      white-space: nowrap;
-    }
-    .chip {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      box-shadow: 0 0 4px black;
-    }
-    .fade-in {
-      animation: fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @media (max-width: 600px) {
-      .table-wrapper { transform: scale(0.75); transform-origin: top center; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MI6 Secure Terminal</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: #0b0c10;
+    color: #66fcf1;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    overflow-x: hidden;
+  }
+  .container {
+    width: 95%;
+    max-width: 700px;
+    background: #1f2833;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background: #45a29e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background: #66fcf1; color: #1f2833; }
+  .success { color: #00ff9f; margin-top: 10px; }
+  .table-wrapper {
+    position: relative;
+    width: 300px;
+    height: 188px;
+    margin: 40px auto 20px auto;
+  }
+  .table {
+    width: 100%;
+    height: 100%;
+    border-radius: 50% / 50%;
+    background: #006400;
+    border: 3px solid #45a29e;
+    box-shadow: 0 0 20px #45a29e inset;
+    transition: transform 1s ease-in-out;
+  }
+  .player-name {
+    position: absolute;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    cursor: default;
+  }
+  .chip {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px black;
+  }
+  .fade-in {
+    animation: fadeIn 1s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    color: #00ff9f;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  @media (max-width: 600px) {
+    .table-wrapper { transform: scale(0.75); transform-origin: top center; }
+  }
+</style>
 </head>
 <body>
 <div class="container">
@@ -97,10 +104,18 @@
 const app = document.getElementById('app');
 const urlParams = new URLSearchParams(window.location.search);
 const agentName = urlParams.get('agent') || 'Agent';
-const codenames = { "Arunan":"Alpha","Jason":"Viper","Gill":"Architect","Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage" };
+const codenameMap = {
+  "Arunan":["Ghost","Covert Infiltration Specialist"],
+  "Jason":["Viper","Precision Strike Operative"],
+  "Taylor":["Shadow","Surveillance & Intelligence"],
+  "Gill":["Architect","Operational Commander"],
+  "Duran":["Anomaly","Unpredictable Wildcard"],
+  "Josh":["Mirage","Disguise & Deception Expert"],
+  "Prathap":["Midnight","Timing & Extraction Specialist"]
+};
 const roles = { "Arunan":"Best Man","Prathap":"Groomsman","Gill":"Groomsman","Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman","Jason":"Groomsman" };
 const role = roles[agentName] || "Groomsman";
-const codename = codenames[agentName] || "Agent";
+const [codename, codenameDesc] = codenameMap[agentName] || ["Agent","Specialist"];
 
 // Inner Circle Questions
 const innerCircle = [
@@ -112,9 +127,6 @@ const innerCircle = [
 
 // Global Access Code
 const globalCode = "007";
-
-// Timer
-let timerInterval, timeLeft = 15;
 
 // Easter Egg
 let titleClicks = 0;
@@ -132,7 +144,7 @@ function render(html){
 // Start
 function start(){
   render(`
-    <p>Agent ${agentName} – Codename: ${codename}, proceed with authentication...</p>
+    <p>Agent ${agentName} – Codename: ${codename} (${codenameDesc}), proceed with authentication...</p>
     <button onclick="authCode()">Begin Authentication</button>
   `);
 }
@@ -150,38 +162,29 @@ function checkCode(){
   else { document.getElementById('err').innerText="Access Denied"; }
 }
 
-// Inner Circle Questions
+// Inner Circle Questions (No Timer)
 function nextInnerCircle(index){
   if(index>=innerCircle.length) return mission();
   let q=innerCircle[index];
-  timeLeft=15;
   render(`<p>Level ${q.level} Clearance</p>
           <p>${q.q}</p>
           ${q.options.map(o=>`<button onclick="checkAnswer('${o}',${index})">${o}</button>`).join('')}
-          <div id="timer" class="timer"></div>
           <div id="err"></div>`);
-  startQuestionTimer(index);
-}
-function startQuestionTimer(index){
-  clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
-    timeLeft--;
-    if(timeLeft < 0){ clearInterval(timerInterval); document.getElementById('err').innerText="Time Expired! Retry."; setTimeout(()=>nextInnerCircle(index),1000);}
-  },1000);
 }
 function checkAnswer(answer,index){
-  clearInterval(timerInterval);
   if(answer===innerCircle[index].answer){ nextInnerCircle(index+1);}
   else { document.getElementById('err').innerText="Access Denied"; setTimeout(()=>nextInnerCircle(index),1000);}
 }
 
-// Combined Mission Accepted + Safehouse
+// Combined Mission + Safehouse
 function mission(){
   const w=300,h=188,cx=w/2,cy=h/2;
-  render(`<p>Operation Forever – Agent ${agentName} (${codename})</p>
+  render(`<p>Operation Forever</p>
+          <p>Agent ${agentName}</p>
+          <p>Codename: ${codename}</p>
+          <p>${codenameDesc}</p>
           <p>Role: ${role}</p>
-          <p>The mission begins September 18, 2026 at 12:00 PM</p>
+          <p>Mission begins September 18, 2026 at 12:00 PM</p>
           <div class="table-wrapper" id="table"><div class="table"></div></div>
           <div class="timer" id="timer"></div>
           <div id="safehouse" style="margin-top:20px;">
@@ -198,18 +201,33 @@ function mission(){
           </div>`);
   startTimer();
 
+  // Poker Table Players
   const container=document.getElementById('table');
   const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
   players.forEach((p,i)=>{
     const angle=(i/players.length)*2*Math.PI-Math.PI/2;
     const px=cx+(w/2+30)*Math.cos(angle);
     const py=cy+(h/2+30)*Math.sin(angle);
+
     const name=document.createElement('div');
     name.className='player-name';
     name.innerText=p;
     name.style.left=px+"px";
     name.style.top=py+"px";
     container.appendChild(name);
+
+    // Hovertext
+    const tt = document.createElement('div');
+    tt.className='tooltip';
+    const [cd, desc] = codenameMap[p] || ["Agent","Specialist"];
+    tt.innerText = `${cd}: ${desc}\n${roles[p] || "Groomsman"}`;
+    container.appendChild(tt);
+
+    name.onmouseover = e => { tt.style.opacity=1; tt.style.left=e.pageX+10+'px'; tt.style.top=e.pageY+10+'px'; }
+    name.onmousemove = e => { tt.style.left=e.pageX+10+'px'; tt.style.top=e.pageY+10+'px'; }
+    name.onmouseout = () => { tt.style.opacity=0; }
+
+    // Chips
     for(let c=0;c<3;c++){
       const chip=document.createElement('div');
       chip.className='chip';
@@ -221,7 +239,7 @@ function mission(){
   });
 }
 
-// Countdown
+// Countdown Timer
 function startTimer(){
   const target=new Date('September 18, 2026 12:00:00').getTime();
   setInterval(()=>{
