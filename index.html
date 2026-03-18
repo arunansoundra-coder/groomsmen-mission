@@ -23,11 +23,6 @@ body{
   padding:20px;
   border-radius:12px;
   text-align:center;
-  box-shadow:0 0 20px rgba(0,255,159,0.15);
-}
-
-h1{
-  letter-spacing:1px;
 }
 
 button{
@@ -39,11 +34,6 @@ button{
   border:none;
   border-radius:8px;
   cursor:pointer;
-  font-weight:bold;
-}
-
-button:hover{
-  background:#3b8f8a;
 }
 
 .timer{
@@ -52,6 +42,8 @@ button:hover{
   color:#ffd700;
   white-space:pre-line;
 }
+
+.success{ color:#00ff9f; }
 
 .table-wrapper{
   position:relative;
@@ -68,7 +60,6 @@ button:hover{
   border:3px solid #45a29e;
   box-shadow:0 0 20px rgba(0,255,159,0.2);
   animation:tablePulse 4s infinite ease-in-out;
-  pointer-events:none;
 }
 
 @keyframes tablePulse{
@@ -79,14 +70,14 @@ button:hover{
 
 .card{
   position:absolute;
-  width:28px;
-  height:40px;
+  width:32px;
+  height:46px;
   background:white;
   border-radius:4px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:0.65rem;
+  font-size:0.7rem;
   transform:translate(-50%,-50%) rotateY(90deg);
   transition:0.6s;
   box-shadow:0 2px 6px rgba(0,0,0,0.6);
@@ -105,15 +96,6 @@ button:hover{
   height:14px;
   border-radius:50%;
   box-shadow:0 0 4px black;
-}
-
-.fade{
-  animation:fadeIn 0.8s ease-in;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;}
-  to{opacity:1;}
 }
 
 @media(max-width:600px){
@@ -137,94 +119,61 @@ const urlParams=new URLSearchParams(window.location.search);
 const agentName=urlParams.get('agent')||'Agent';
 
 const codenames={
-"Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
-"Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
+  "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
+  "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
+};
+
+const roles={
+  "Arunan":"Best Man","Prathap":"Groomsman","Gill":"Groomsman",
+  "Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman","Jason":"Groomsman"
 };
 
 const codename=codenames[agentName]||"Agent";
+const role=roles[agentName]||"Groomsman";
 
-/* Sounds */
+function render(html){ app.innerHTML=html; }
+
+// Sounds
 const clickSound=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-const successSound=new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
+const successSound=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+successSound.playbackRate=0.6;
 successSound.volume=0.4;
 
 function playClick(){ clickSound.currentTime=0; clickSound.play(); }
 function playSuccess(){ successSound.currentTime=0; successSound.play(); }
 
-/* Easter Egg */
+// Easter egg
 let clicks=0;
 document.getElementById("title").onclick=()=>{
   clicks++;
   if(clicks===5) alert("Easter Egg Unlocked: Drinks on Arunan 🍸");
 };
 
-/* Render */
-function render(html){
-  app.innerHTML=html;
-}
-
-/* 🔥 Boot Sequence */
-function bootSequence(){
-  render(`<div class="fade" id="boot"></div>`);
-  const lines=[
-    "INITIALIZING MI6 SECURE CHANNEL...",
-    "AUTHENTICATING USER...",
-    "ENCRYPTION PROTOCOL: ACTIVE",
-    "CLEARANCE LEVEL: 7",
-    "ACCESS GRANTED ✓"
-  ];
-
-  let i=0;
-  function typeLine(){
-    if(i>=lines.length){
-      setTimeout(start,600);
-      return;
-    }
-    let div=document.createElement('div');
-    document.getElementById('boot').appendChild(div);
-    let j=0;
-    let line=lines[i];
-
-    let t=setInterval(()=>{
-      div.textContent+=line[j++];
-      if(j>=line.length){
-        clearInterval(t);
-        i++;
-        setTimeout(typeLine,250);
-      }
-    },20);
-  }
-  typeLine();
-}
-
-/* Start */
+// Start
 function start(){
-  render(`
-    <div class="fade">
-    <p>Agent ${agentName} – Codename: ${codename}</p>
-    <button onclick="eventScreen()">Begin Mission</button>
-    </div>
-  `);
+  render(`<p>Agent ${agentName} – Codename: ${codename}</p>
+  <button onclick="eventScreen()">Begin Mission</button>`);
 }
 
-/* Poker Screen */
+// Poker Screen
 function eventScreen(){
+  const w=300,h=188,cx=w/2,cy=h/2;
+
   render(`
-  <div id="missionScreen" class="fade">
-    <p style="color:#ffd700;">AGENTS ASSEMBLED</p>
-    <p>Awaiting final authorization…</p>
+    <div id="missionScreen">
+      <p style="color:#ffd700;">AGENTS ASSEMBLED AT COMMAND TABLE</p>
+      <p>Awaiting final authorization…</p>
 
-    <div class="table-wrapper" id="table">
-      <div class="table"></div>
-      <div id="centerText" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.75rem;color:#ffd700;">
-      🤖 DEALER ACTIVE<br>💰 ALL IN
+      <div class="table-wrapper" id="table">
+        <div class="table"></div>
+        <div id="centerText" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.75rem;color:#ffd700;">
+          🤖 AUTOMATED DEALER ACTIVE<br>💰 MISSION STAKES: ALL IN
+        </div>
       </div>
+
+      <div class="timer" id="timer"></div>
+      <button onclick="authorizeMission()">[ AUTHORIZE MISSION ]</button>
     </div>
-
-    <div class="timer" id="timer"></div>
-
-    <button onclick="authorizeMission()">[ AUTHORIZE MISSION ]</button>
-  </div>
   `);
 
   startTimer();
@@ -232,19 +181,16 @@ function eventScreen(){
   dealCards();
 }
 
-/* Table */
+// Build players
 function buildTable(){
   const w=300,h=188,cx=w/2,cy=h/2;
   const container=document.getElementById('table');
-
   const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
 
   players.forEach((p,i)=>{
     const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const radiusX=(w/2)*0.85;
-    const radiusY=(h/2)*0.85;
-    const px=cx + radiusX * Math.cos(angle);
-    const py=cy + radiusY * Math.sin(angle);
+    const px=cx+(w/2+30)*Math.cos(angle);
+    const py=cy+(h/2+30)*Math.sin(angle);
 
     const name=document.createElement('div');
     name.className='player-name';
@@ -258,34 +204,42 @@ function buildTable(){
     }
 
     container.appendChild(name);
+
+    for(let c=0;c<3;c++){
+      const chip=document.createElement('div');
+      chip.className='chip';
+      chip.style.background=c%2===0?'#ff4d4d':'#ffd700';
+      chip.style.left=(px+10)+'px';
+      chip.style.top=(py- c*3 +10)+'px';
+      container.appendChild(chip);
+    }
   });
 }
 
-/* Cards */
+// Deal cards
 function dealCards(){
   const container=document.getElementById('table');
   const w=300,h=188,cx=w/2,cy=h/2;
   const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
+  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥","8♠","7♦","6♣","5♦"];
 
   let delay=0;
 
   players.forEach((p,i)=>{
     const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const radiusX=(w/2)*0.85;
-    const radiusY=(h/2)*0.85;
-    const px=cx + radiusX * Math.cos(angle);
-    const py=cy + radiusY * Math.sin(angle);
+    const px=cx+(w/2)*Math.cos(angle);
+    const py=cy+(h/2)*Math.sin(angle);
 
     for(let c=0;c<2;c++){
       const card=document.createElement('div');
       card.className='card';
-      card.innerText="🂠";
+      card.innerText=deck[(i+c)%deck.length];
       card.style.left=cx+"px";
       card.style.top=cy+"px";
       container.appendChild(card);
 
       setTimeout(()=>{
-        card.style.left=(px+(c*8))+"px";
+        card.style.left=(px+(c*10))+"px";
         card.style.top=py+"px";
         card.style.transform="translate(-50%,-50%) rotateY(0deg)";
         playClick();
@@ -296,63 +250,52 @@ function dealCards(){
   });
 }
 
-/* Timer */
+// Timer
 function startTimer(){
   const target=new Date('September 18, 2026 12:00:00').getTime();
-
-  const timerInterval = setInterval(()=>{
+  setInterval(()=>{
     const now=new Date().getTime();
     const diff=target-now;
-
-    if(diff <= 0){
-        clearInterval(timerInterval);
-        document.getElementById('timer').innerText="MISSION CLOCK\nT–0D 0H 0M 0S";
-        return;
-    }
-
     const d=Math.floor(diff/(1000*60*60*24));
     const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
     const m=Math.floor((diff%(1000*60*60))/(1000*60));
     const s=Math.floor((diff%(1000*60))/1000);
 
     document.getElementById('timer').innerText=
-    `MISSION CLOCK\nT–${d}D ${h}H ${m}M ${s}S`;
+      `MISSION CLOCK ACTIVE\nT–${d}D ${h}H ${m}M ${s}S`;
   },1000);
 }
 
-/* Authorize */
+// Authorize → Transition
 function authorizeMission(){
   document.getElementById('centerText').innerHTML=
-  `<div style="color:#00ff9f;">CLEARANCE VERIFIED ✓</div>`;
+    `<div style="color:#00ff9f;">CLEARANCE VERIFIED ✓</div>`;
   playSuccess();
 
   setTimeout(()=>transitionToFinal(),1200);
 }
 
-/* Transition */
+// Transition
 function transitionToFinal(){
   const screen=document.getElementById('missionScreen');
+  screen.style.transition="opacity 0.8s";
   screen.style.opacity="0";
 
   setTimeout(()=>{
-    screen.innerHTML=`
-    <div id="type"></div>
-    <div id="actions" style="display:none;">
-      <button onclick="transmitSMS()">📡 Confirm via SMS</button>
-      <button onclick="transmitEmail()">✉ Confirm via Email</button>
-    </div>
-    <div id="feedback"></div>
-    `;
+    screen.innerHTML=`<div id="type"></div><div id="statusBar"></div><div id="actions" style="display:none;">
+    <button onclick="transmitSMS()">📡 Transmit</button>
+    <button onclick="transmitEmail()">✉ Email</button>
+    <button onclick="openForm()">📝 Backup</button>
+    </div><div id="feedback"></div>`;
     screen.style.opacity="1";
-
     startTerminalSequence();
   },800);
 }
 
-/* Terminal */
+// Terminal typing
 function startTerminalSequence(){
   const lines=[
-    "CLASSIFIED // LEVEL 7",
+    "CLASSIFIED // LEVEL 7 CLEARANCE",
     `AGENT: ${agentName.toUpperCase()} // ${codename.toUpperCase()}`,
     "SAFE HOUSE:",
     "6233 Muirfield Dr SW",
@@ -362,31 +305,23 @@ function startTerminalSequence(){
   ];
 
   let i=0;
-
   function type(){
     if(i>=lines.length){
       document.getElementById('actions').style.display='block';
       return;
     }
-
+    let line=lines[i];
     let div=document.createElement('div');
     document.getElementById('type').appendChild(div);
-
     let j=0;
     let t=setInterval(()=>{
-      div.textContent+=lines[i][j++];
-      if(j>=lines[i].length){
-        clearInterval(t);
-        i++;
-        setTimeout(type,200);
-      }
+      div.textContent+=line[j++];
+      if(j>=line.length){ clearInterval(t); i++; setTimeout(type,200); }
     },20);
   }
-
   type();
 }
 
-/* Transmission */
 function simulateTransmission(cb){
   const f=document.getElementById('feedback');
   f.innerHTML="📡 TRANSMITTING...";
@@ -397,18 +332,17 @@ function simulateTransmission(cb){
 
 function transmitSMS(){
   simulateTransmission(()=>{
-    window.location.href=`sms:+14694262300?body=Agent ${agentName} is staying at safehouse.`;
+    window.location.href=`sms:+14694262300?body=Agent ${agentName} staying`;
   });
 }
 
 function transmitEmail(){
   simulateTransmission(()=>{
-    window.location.href=`mailto:arunansoundra@gmail.com?subject=MI6 Safehouse Confirmation&body=Agent ${agentName} is staying at safehouse.`;
+    window.location.href=`mailto:arunansoundra@gmail.com`;
   });
 }
 
-/* INIT */
-bootSequence();
+start();
 </script>
 </body>
 </html>
