@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MI6 Secure Channel</title>
+  <title>MI6 Secure Terminal</title>
   <style>
     body {
       margin: 0;
@@ -13,6 +13,7 @@
       display: flex;
       justify-content: center;
       padding-top: 20px;
+      overflow-x: hidden;
     }
     .container {
       width: 95%;
@@ -21,6 +22,9 @@
       padding: 20px;
       border-radius: 12px;
       text-align: center;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
     }
     button {
       width: 100%;
@@ -31,7 +35,9 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: 0.3s;
     }
+    button:hover { background: #66fcf1; color: #1f2833; }
     .timer {
       margin-top: 15px;
       font-weight: bold;
@@ -53,19 +59,7 @@
       border-radius: 50% / 50%;
       background: #006400;
       border: 3px solid #45a29e;
-    }
-    .card {
-      position: absolute;
-      width: 30px;
-      height: 45px;
-      background: white;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      transform: translate(-50%, -50%) rotateY(90deg);
-      transition: 0.6s;
+      transition: transform 1s ease-in-out;
     }
     .player-name {
       position: absolute;
@@ -80,265 +74,197 @@
       border-radius: 50%;
       box-shadow: 0 0 4px black;
     }
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     @media (max-width: 600px) {
-      .table-wrapper {
-        transform: scale(0.75);
-        transform-origin: top center;
-      }
+      .table-wrapper { transform: scale(0.75); transform-origin: top center; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="title">MI6 Secure Channel</h1>
-    <div id="app"></div>
-  </div>
+<div class="container">
+  <h1 id="title">MI6 Secure Terminal</h1>
+  <div id="app"></div>
+</div>
 
-  <script>
-    const app = document.getElementById('app');
-    const urlParams = new URLSearchParams(window.location.search);
-    const agentName = urlParams.get('agent') || 'Agent';
+<script>
+// Agent Info
+const app = document.getElementById('app');
+const urlParams = new URLSearchParams(window.location.search);
+const agentName = urlParams.get('agent') || 'Agent';
+const codenames = { "Arunan":"Alpha","Jason":"Viper","Gill":"Architect","Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage" };
+const roles = { "Arunan":"Best Man","Prathap":"Groomsman","Gill":"Groomsman","Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman","Jason":"Groomsman" };
+const role = roles[agentName] || "Groomsman";
+const codename = codenames[agentName] || "Agent";
 
-    // Codename system
-    const codenames = {
-      "Arunan": "Alpha",
-      "Jason": "Viper",
-      "Gill": "Architect",
-      "Prathap": "Midnight",
-      "Taylor": "Shadow",
-      "Duran": "Anomaly",
-      "Josh": "Mirage"
-    };
+// Inner Circle Questions
+const innerCircle = [
+  { level:1, q:"How many times has Arunan gone to Sri Lanka?", options:["0","1","2","3"], answer:"1" },
+  { level:2, q:"How many times has Arunan gone to Ireland?", options:["0","1","2","3"], answer:"1" },
+  { level:3, q:"How many times has Arunan gone to Mexico?", options:["0","1","2","3"], answer:"2" },
+  { level:4, q:"Las Vegas is a high-stakes location, but how many missions has Agent Arunan completed there?", options:["0","1","2","3"], answer:"1" }
+];
 
-    // Roles
-    const roles = {
-      "Arunan": "Best Man",
-      "Prathap": "Groomsman",
-      "Gill": "Groomsman",
-      "Taylor": "Groomsman",
-      "Duran": "Groomsman",
-      "Josh": "Groomsman",
-      "Jason": "Groomsman"
-    };
+// Global Access Code
+const globalCode = "007";
 
-    const role = roles[agentName] || "Groomsman";
-    const codename = codenames[agentName] || "Agent";
+// Timer & Sounds
+let timerInterval, timeLeft = 15;
+const clickSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+const successSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
+function playClick(){ clickSound.play(); }
+function playSuccess(){ successSound.play(); }
 
-    function render(html) {
-      app.innerHTML = html;
+// Easter Egg
+let titleClicks = 0;
+document.getElementById("title").onclick = () => {
+  titleClicks++;
+  if(titleClicks === 5) alert("Easter Egg Unlocked: Drinks on Arunan 🍸");
+};
+
+// Helper render
+function render(html){
+  app.innerHTML = html;
+  app.classList.add('fade-in');
+}
+
+// Start
+function start(){
+  render(`
+    <p>Agent ${agentName} – Codename: ${codename}, proceed with authentication...</p>
+    <button onclick="authCode()">Begin Authentication</button>
+  `);
+}
+
+// Authentication
+function authCode(){
+  playClick();
+  render(`<p>Enter Global Access Code:</p>
+          <input id="code" maxlength="3">
+          <button onclick="checkCode()">Submit</button>
+          <div id="err"></div>`);
+}
+function checkCode(){
+  const val = document.getElementById('code').value;
+  if(val===globalCode){ playSuccess(); nextInnerCircle(0); }
+  else { document.getElementById('err').innerText="Access Denied"; playClick(); }
+}
+
+// Inner Circle Questions
+function nextInnerCircle(index){
+  if(index>=innerCircle.length) return mission();
+  let q=innerCircle[index];
+  timeLeft=15;
+  render(`<p>Level ${q.level} Clearance</p>
+          <p>${q.q}</p>
+          ${q.options.map(o=>`<button onclick="checkAnswer('${o}',${index})">${o}</button>`).join('')}
+          <div id="timer" class="timer"></div>
+          <div id="err"></div>`);
+  startQuestionTimer(index);
+}
+function startQuestionTimer(index){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
+    timeLeft--;
+    if(timeLeft < 0){ clearInterval(timerInterval); document.getElementById('err').innerText="Time Expired! Retry."; setTimeout(()=>nextInnerCircle(index),1000);}
+  },1000);
+}
+function checkAnswer(answer,index){
+  playClick();
+  clearInterval(timerInterval);
+  if(answer===innerCircle[index].answer){ playSuccess(); nextInnerCircle(index+1);}
+  else { document.getElementById('err').innerText="Access Denied"; setTimeout(()=>nextInnerCircle(index),1000);}
+}
+
+// Mission
+function mission(){
+  render(`<h2 style="color:#ffd700;">Operation Forever</h2>
+          <p>Agent ${agentName} – Codename: ${codename}</p>
+          <p>Will you assist as ${role}?</p>
+          <button onclick="eventScreen()">Accept Mission</button>`);
+}
+
+// Poker Table + Safehouse Combined
+function eventScreen(){
+  const w=300,h=188,cx=w/2,cy=h/2;
+  render(`<p>Mission Accepted</p>
+          <p>The mission begins September 18, 2026 at 12:00 PM</p>
+          <div class="table-wrapper" id="table"><div class="table"></div></div>
+          <div class="timer" id="timer"></div>
+          <div id="safehouse" style="margin-top:20px;"></div>
+          <button onclick="missionComplete()">Continue</button>`);
+  startTimer();
+
+  const container=document.getElementById('table');
+  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
+  players.forEach((p,i)=>{
+    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
+    const px=cx+(w/2+30)*Math.cos(angle);
+    const py=cy+(h/2+30)*Math.sin(angle);
+    const name=document.createElement('div');
+    name.className='player-name';
+    name.innerText=p;
+    name.style.left=px+"px";
+    name.style.top=py+"px";
+    container.appendChild(name);
+    for(let c=0;c<3;c++){
+      const chip=document.createElement('div');
+      chip.className='chip';
+      chip.style.background=c%2===0?'#ff4d4d':'#ffd700';
+      chip.style.left=(px+10)+'px';
+      chip.style.top=(py-c*3+10)+'px';
+      container.appendChild(chip);
     }
+  });
+}
 
-    // Inner Circle Questions
-    const innerCircle = [
-      { level: 1, q: "How many times has Arunan gone to Sri Lanka?", options: ["0","1","2","3"], answer: "1" },
-      { level: 2, q: "How many times has Arunan gone to Ireland?", options: ["0","1","2","3"], answer: "1" },
-      { level: 3, q: "How many times has Arunan gone to Mexico?", options: ["0","1","2","3"], answer: "2" },
-      { level: 4, q: "Las Vegas is a high-stakes location, but how many missions has Agent Arunan completed there?", options: ["0","1","2","3"], answer: "1" }
-    ];
+// Countdown
+function startTimer(){
+  const target=new Date('September 18, 2026 12:00:00').getTime();
+  setInterval(()=>{
+    const now=new Date().getTime();
+    const diff=target-now;
+    const d=Math.floor(diff/(1000*60*60*24));
+    const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const m=Math.floor((diff%(1000*60*60))/(1000*60));
+    const s=Math.floor((diff%(1000*60))/1000);
+    document.getElementById('timer').innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`;
+  },1000);
+}
 
-    // Global access code
-    const globalCode = "007";
-
-    // Timer
-    let timerInterval;
-    let timeLeft = 15;
-
-    // Easter egg
-    let titleClicks = 0;
-    document.getElementById("title").onclick = () => {
-      titleClicks++;
-      if(titleClicks === 5) alert("Easter Egg Unlocked: Drinks on Arunan 🍸");
-    };
-
-    // Sounds
-    const clickSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    const successSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-
-    function playClick() { clickSound.play(); }
-    function playSuccess() { successSound.play(); }
-
-    // START
-    function start() {
-      render(`
-        <p>Agent ${agentName} – Codename: ${codename}, proceed with authentication...</p>
-        <button onclick="authCode()">Begin Authentication</button>
-      `);
-    }
-
-    // Access code step
-    function authCode() {
-      playClick();
-      render(`
-        <p>Enter Global Access Code:</p>
-        <input id="code" maxlength="3">
-        <button onclick="checkCode()">Submit</button>
-        <div id="err"></div>
-      `);
-    }
-
-    function checkCode() {
-      const val = document.getElementById('code').value;
-      if(val === globalCode) {
-        playSuccess();
-        nextInnerCircle(0);
-      } else {
-        document.getElementById('err').innerText = "Access Denied";
-        playClick();
-      }
-    }
-
-    // Inner circle questions
-    function nextInnerCircle(index) {
-      if(index >= innerCircle.length) return mission();
-      let q = innerCircle[index];
-      timeLeft = 15;
-      render(`
-        <p>Level ${q.level} Clearance</p>
-        <p>${q.q}</p>
-        ${q.options.map(o => `<button onclick="checkAnswer('${o}',${index})">${o}</button>`).join('')}
-        <div id="timer"></div>
-        <div id="err"></div>
-      `);
-      startQuestionTimer(index);
-    }
-
-    function startQuestionTimer(index) {
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
-        timeLeft--;
-        if(timeLeft < 0) {
-          clearInterval(timerInterval);
-          document.getElementById('err').innerText = "Time Expired! Retry.";
-          setTimeout(() => nextInnerCircle(index), 1000);
-        }
-      }, 1000);
-    }
-
-    function checkAnswer(answer, index) {
-      playClick();
-      clearInterval(timerInterval);
-      if(answer === innerCircle[index].answer) {
-        playSuccess();
-        nextInnerCircle(index+1);
-      } else {
-        document.getElementById('err').innerText = "Access Denied";
-        setTimeout(() => nextInnerCircle(index), 1000);
-      }
-    }
-
-    // Mission screen
-    function mission() {
-      render(`
-        <h2 style="color:#ffd700;">Operation Forever</h2>
-        <p>Agent ${agentName} – Codename: ${codename}</p>
-        <p>Will you assist as ${role}?</p>
-        <button onclick="eventScreen()">Accept Mission</button>
-      `);
-    }
-
-    // Poker / mission screen
-    function eventScreen() {
-      const w = 300, h = 188, cx = w/2, cy = h/2;
-      render(`
-        <p>Mission Accepted</p>
-        <p>The mission begins September 18, 2026 at 12:00 PM</p>
-        <div class="table-wrapper" id="table"><div class="table"></div></div>
-        <div class="timer" id="timer"></div>
-        <button onclick="missionComplete()">Continue</button>
-      `);
-
-      startTimer();
-
-      const container = document.getElementById('table');
-      const players = ["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-      players.forEach((p,i) => {
-        const angle = (i / players.length) * 2 * Math.PI - Math.PI/2;
-        const px = cx + (w/2 + 30) * Math.cos(angle);
-        const py = cy + (h/2 + 30) * Math.sin(angle);
-        const name = document.createElement('div');
-        name.className = 'player-name';
-        name.innerText = p;
-        name.style.left = px + "px";
-        name.style.top = py + "px";
-        container.appendChild(name);
-
-        for(let c=0; c<3; c++) {
-          const chip = document.createElement('div');
-          chip.className = 'chip';
-          chip.style.background = c%2===0 ? '#ff4d4d' : '#ffd700';
-          chip.style.left = (px+10) + 'px';
-          chip.style.top = (py - c*3 +10) + 'px';
-          container.appendChild(chip);
-        }
-      });
-    }
-
-    // Countdown timer
-    function startTimer() {
-      const target = new Date('September 18, 2026 12:00:00').getTime();
-      setInterval(() => {
-        const now = new Date().getTime();
-        const diff = target - now;
-        const d = Math.floor(diff / (1000*60*60*24));
-        const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-        const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-        const s = Math.floor((diff % (1000*60)) / 1000);
-        document.getElementById('timer').innerText = `Countdown: ${d}d ${h}h ${m}m ${s}s`;
-      }, 1000);
-    }
-
-    // Mission complete / safehouse
-    function finalScreen() {
-      render(`
-        <p>Await further instructions for apparel.</p>
-        <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-        <p>Confirm attendance:</p>
-        <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
-        <button onclick="emailGroom()">Send via Email</button>
-        <button onclick="openForm()">Log Response (Backup)</button>
-        <button onclick="declineSafehouse()">Not Staying</button>
-        <div id="status" class="success"></div>
-        <br><br>
-        <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
-      `);
-    }
-
-    function notifyGroom() {
-      const msg = encodeURIComponent(`Agent ${agentName}: Staying at safe house.`);
-      window.location.href = `sms:+14694262300?body=${msg}`;
-      showStatus("✔ Transmission Sent");
-    }
-
-    function emailGroom() {
-      const subject = encodeURIComponent("Safe House Confirmation");
-      const body = encodeURIComponent(`Agent ${agentName} staying at safe house.`);
-      window.location.href = `mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`;
-      showStatus("✔ Email Prepared");
-    }
-
-    function openForm() {
-      const name = encodeURIComponent(agentName);
-      const stay = encodeURIComponent("Yes");
-      const r = encodeURIComponent(role);
-      window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${r}`);
-    }
-
-    function declineSafehouse() { showStatus("✔ Logged: Not Staying"); }
-    function showStatus(msg) { document.getElementById('status').innerText = msg; }
-
-    function missionComplete() {
-      render(`
-        <div style="padding:40px;">
-          <h1 style="color:#ffd700;">MISSION COMPLETE</h1>
+// Mission Complete + Safehouse Inline
+function missionComplete(){
+  render(`<h1 style="color:#ffd700;">MISSION COMPLETE</h1>
           <p>Agent ${agentName}, your presence has been confirmed.</p>
-        </div>
-      `);
-      setTimeout(finalScreen, 2500);
-    }
+          <div id="safehouse" style="margin-top:20px;">
+            <p>Await further instructions for apparel.</p>
+            <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
+            <p>Confirm attendance:</p>
+            <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
+            <button onclick="emailGroom()">Send via Email</button>
+            <button onclick="openForm()">Log Response (Backup)</button>
+            <button onclick="declineSafehouse()">Not Staying</button>
+            <div id="status" class="success"></div>
+            <br><br>
+            <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
+          </div>`);
+}
 
-    // Initialize
-    start();
-  </script>
+// Safehouse functions
+function notifyGroom(){ const msg=encodeURIComponent(`Agent ${agentName}: Staying at safe house.`); window.location.href=`sms:+14694262300?body=${msg}`; showStatus("✔ Transmission Sent"); }
+function emailGroom(){ const subject=encodeURIComponent("Safe House Confirmation"); const body=encodeURIComponent(`Agent ${agentName} staying at safe house.`); window.location.href=`mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`; showStatus("✔ Email Prepared"); }
+function openForm(){ const name=encodeURIComponent(agentName); const stay=encodeURIComponent("Yes"); const r=encodeURIComponent(role); window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${r}`); }
+function declineSafehouse(){ showStatus("✔ Logged: Not Staying"); }
+function showStatus(msg){ document.getElementById('status').innerText = msg; }
+
+// Initialize
+start();
+</script>
 </body>
 </html>
