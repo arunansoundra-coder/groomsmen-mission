@@ -148,9 +148,21 @@ document.getElementById("title").onclick = () => {
 
 // Sounds
 const clickSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-const successSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-function playClick(){ clickSound.play(); }
-function playSuccess(){ successSound.play(); }
+
+// Subtle, clean confirmation tone (no cartoon feel)
+const successSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+successSound.playbackRate = 0.6;   // deeper tone
+successSound.volume = 0.4;         // softer, less intrusive
+
+function playClick(){ 
+  clickSound.currentTime = 0;
+  clickSound.play(); 
+}
+
+function playSuccess(){ 
+  successSound.currentTime = 0;
+  successSound.play(); 
+}
 
 // START
 function start(){
