@@ -128,7 +128,7 @@ const roles={
 
 const [codename,desc]=codenameMap[agent]||["Agent","Specialist"];
 
-// QUESTIONS
+// Inner Circle Questions
 const innerCircle=[
   {level:1,q:"What is Arunan's ethnicity?",options:["Sri Lankan","Indian","Filipino","Other"],answer:"Sri Lankan"},
   {level:2,q:"What is Arunan's nationality?",options:["United States","Canada","Sri Lanka","United Kingdom"],answer:"United States"},
@@ -137,19 +137,19 @@ const innerCircle=[
   {level:5,q:"Arunan owned a grey 2023 BMW 330i. What was his name?",options:["Storm","Cloud","Ghost","Silver"],answer:"Cloud"}
 ];
 
-// RENDER
+// Render Helper
 function render(html){
   app.innerHTML=html;
   app.className="fade";
 }
 
-// START
+// Start
 function start(){
   render(`<p>Agent ${agent} – Codename: ${codename}</p>
   <button onclick="auth()">Begin Authentication</button>`);
 }
 
-// AUTH
+// Authentication
 function auth(){
   render(`<input id="code" maxlength="3">
   <button onclick="check()">Submit</button>
@@ -162,7 +162,7 @@ function check(){
   } else showError("Access Denied");
 }
 
-// ERROR
+// Show Error
 function showError(msg){
   let e=document.getElementById("err");
   e.innerText=msg;
@@ -170,7 +170,7 @@ function showError(msg){
   setTimeout(()=>e.classList.remove("shake"),400);
 }
 
-// QUESTIONS
+// Questions Flow
 function nextQ(i){
   if(i===4){ finalClearance(); return;}
   if(i>=innerCircle.length){ mission(); return;}
@@ -193,7 +193,7 @@ function checkAns(a,i){
   } else showError("Access Denied");
 }
 
-// FINAL CLEARANCE
+// Final Clearance
 function finalClearance(){
   render(`<h2>FINAL CLEARANCE REQUIRED</h2>
   <div id="status"></div>`);
@@ -204,7 +204,7 @@ function finalClearance(){
   setTimeout(()=>nextQ(4),5500);
 }
 
-// MISSION + TABLE
+// Mission + Poker Table
 function mission(){
   const w=500,h=300,cx=w/2,cy=h/2;
 
@@ -221,13 +221,12 @@ function mission(){
 
   <div style="margin-top:20px;">
     <p>Safe House: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-    <button onclick="notify()">Confirm Stay</button>
-    <button onclick="decline()">Not Staying</button>
-    <div id="statusMsg" class="success"></div>
+    <p>Confirm attendance:</p>
+    <button onclick="openForm()">Secure Safe House Access</button>
   </div>
   `);
 
-  // TIMER
+  // Timer
   const target=new Date("September 18, 2026 12:00:00").getTime();
   const t=setInterval(()=>{
     let diff=target-Date.now();
@@ -243,7 +242,7 @@ function mission(){
     timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
   },1000);
 
-  // TABLE
+  // Poker Table
   const container=document.getElementById("table");
   const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
 
@@ -283,11 +282,16 @@ function mission(){
   });
 }
 
-// SAFEHOUSE
-function notify(){ statusMsg.innerText="✔ Confirmed"; }
-function decline(){ statusMsg.innerText="✔ Not Staying"; }
+// Google Form Only
+function openForm(){
+  const name=encodeURIComponent(agent);
+  const stay=encodeURIComponent("Yes");
+  const roleVal=encodeURIComponent(roles[agent]||"Groomsman");
 
-// EASTER EGG
+  window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${roleVal}`);
+}
+
+// Easter Egg
 let clicks=0;
 title.onclick=()=>{
   clicks++;
