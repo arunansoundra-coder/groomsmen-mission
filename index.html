@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MI6 Secure Terminal</title>
+
 <style>
 body {
   margin: 0;
@@ -13,8 +14,9 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 20px;
-  overflow-x: hidden;
+  font-size: 14px;
 }
+
 .container {
   width: 95%;
   max-width: 800px;
@@ -23,9 +25,8 @@ body {
   border-radius: 12px;
   text-align: center;
   min-height: 500px;
-  position: relative;
-  overflow: hidden;
 }
+
 button {
   width: 100%;
   padding: 12px;
@@ -38,13 +39,12 @@ button {
   transition: 0.3s;
 }
 button:hover { background: #66fcf1; color: #1f2833; }
-.success { color: #00ff9f; margin-top: 10px; }
+
 .table-wrapper {
   position: relative;
   width: 500px;
   height: 300px;
-  margin: 40px auto 20px auto;
-  perspective: 800px;
+  margin: 40px auto;
 }
 .table {
   width: 100%;
@@ -53,211 +53,159 @@ button:hover { background: #66fcf1; color: #1f2833; }
   background: linear-gradient(#006400, #004d00);
   border: 4px solid #45a29e;
   box-shadow: 0 0 40px #45a29e inset, 0 0 20px #45a29e;
-  position: relative;
-  transform-style: preserve-3d;
 }
+
 .player-name {
   position: absolute;
-  font-size: 0.75rem;
-  font-weight: bold;
   transform: translate(-50%, -50%);
-  white-space: nowrap;
-  cursor: default;
-  text-align: center;
+  font-size: 0.75rem;
 }
+
 .chip {
   position: absolute;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  box-shadow: 0 0 6px black;
 }
+
 .tooltip {
   position: absolute;
-  background: rgba(0,0,0,0.8);
-  color: #00ff9f;
-  padding: 4px 8px;
-  border-radius: 4px;
+  background: black;
+  padding: 5px;
   font-size: 0.65rem;
-  pointer-events: none;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.2s;
-  z-index: 1000;
+  display: none;
 }
-.fade-in { animation: fadeIn 1s ease forwards; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
-@media (max-width: 600px) {
-  .table-wrapper { transform: scale(0.75); transform-origin: top center; }
+
+.shake { animation: shake 0.4s; }
+@keyframes shake {
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-5px);}
+  50%{transform:translateX(5px);}
+  75%{transform:translateX(-5px);}
+  100%{transform:translateX(0);}
 }
+
+.fade { animation: fade 1s; }
+@keyframes fade { from{opacity:0;} to{opacity:1;} }
 </style>
 </head>
+
 <body>
 <div class="container">
-  <h1 id="title">MI6 Secure Terminal</h1>
-  <div id="app"></div>
+<h1 id="title">MI6 Secure Terminal</h1>
+<div id="app"></div>
 </div>
 
 <script>
-// Agent Info
-const app = document.getElementById('app');
-const urlParams = new URLSearchParams(window.location.search);
-const agentName = urlParams.get('agent') || 'Agent';
-const codenameMap = {
+const app=document.getElementById("app");
+const agent=new URLSearchParams(window.location.search).get("agent")||"Agent";
+
+const codenameMap={
   "Arunan":["Ghost","Covert Infiltration Specialist"],
   "Jason":["Viper","Precision Strike Operative"],
-  "Taylor":["Shadow","Surveillance & Intelligence"],
-  "Gill":["Architect","Operational Commander"],
-  "Duran":["Anomaly","Unpredictable Wildcard"],
-  "Josh":["Mirage","Disguise & Deception Expert"],
-  "Prathap":["Midnight","Timing & Extraction Specialist"]
+  "Taylor":["Shadow","Surveillance"],
+  "Gill":["Architect","Commander"],
+  "Duran":["Anomaly","Wildcard"],
+  "Josh":["Mirage","Deception"],
+  "Prathap":["Midnight","Extraction"]
 };
-const roles = { "Arunan":"Best Man","Prathap":"Groomsman","Gill":"Groomsman","Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman","Jason":"Groomsman" };
-const role = roles[agentName] || "Groomsman";
-const [codename, codenameDesc] = codenameMap[agentName] || ["Agent","Specialist"];
 
-// Inner Circle Questions
-const innerCircle = [
-  { level:1, q:"How many times has Arunan gone to Sri Lanka?", options:["0","1","2","3"], answer:"1" },
-  { level:2, q:"How many times has Arunan gone to Ireland?", options:["0","1","2","3"], answer:"1" },
-  { level:3, q:"How many times has Arunan gone to Mexico?", options:["0","1","2","3"], answer:"2" },
-  { level:4, q:"Las Vegas is a high-stakes location, but how many missions has Agent Arunan completed there?", options:["0","1","2","3"], answer:"1" }
+const [codename,desc]=codenameMap[agent]||["Agent","Specialist"];
+
+const innerCircle=[
+  {level:1,q:"What is Arunan's ethnicity?",options:["Sri Lankan","Indian","Filipino","Other"],answer:"Sri Lankan"},
+  {level:2,q:"What is Arunan's nationality?",options:["United States","Canada","Sri Lanka","United Kingdom"],answer:"United States"},
+  {level:3,q:"Arunan had a Black Rocky Mountain Horse. What was her name?",options:["Shadow","Maya","Midnight","Blaze"],answer:"Maya"},
+  {level:4,q:"How many times has Arunan been to Vegas?",options:["0","1","2","Classified"],answer:"Classified"},
+  {level:5,q:"Arunan owned a grey 2023 BMW 330i. What was his name?",options:["Storm","Cloud","Ghost","Silver"],answer:"Cloud"}
 ];
 
-// Global Access Code
-const globalCode = "007";
-
-// Easter Egg
-let titleClicks = 0;
-document.getElementById("title").onclick = () => {
-  titleClicks++;
-  if(titleClicks === 5) alert("Easter Egg Unlocked: Drinks on Arunan 🍸");
-};
-
-// Helper render
 function render(html){
-  app.innerHTML = html;
-  app.classList.add('fade-in');
+  app.innerHTML=html;
+  app.classList.add("fade");
 }
 
-// Start
 function start(){
-  render(`
-    <p>Agent ${agentName} – Codename: ${codename} (${codenameDesc}), proceed with authentication...</p>
-    <button onclick="authCode()">Begin Authentication</button>
-  `);
+  render(`<p>Agent ${agent} – ${codename}</p>
+  <button onclick="auth()">Begin</button>`);
 }
 
-// Authentication
-function authCode(){
-  render(`<p>Enter Global Access Code:</p>
-          <input id="code" maxlength="3">
-          <button onclick="checkCode()">Submit</button>
-          <div id="err"></div>`);
-}
-function checkCode(){
-  const val = document.getElementById('code').value;
-  if(val===globalCode){ nextInnerCircle(0); }
-  else { document.getElementById('err').innerText="Access Denied"; }
+function auth(){
+  render(`<input id="code"><button onclick="check()">Submit</button><div id="err"></div>`);
 }
 
-// Inner Circle Questions (No Timer)
-function nextInnerCircle(index){
-  if(index>=innerCircle.length) return mission();
-  let q=innerCircle[index];
-  render(`<p>Level ${q.level} Clearance</p>
-          <p>${q.q}</p>
-          ${q.options.map(o=>`<button onclick="checkAnswer('${o}',${index})">${o}</button>`).join('')}
-          <div id="err"></div>`);
-}
-function checkAnswer(answer,index){
-  if(answer===innerCircle[index].answer){ nextInnerCircle(index+1);}
-  else { document.getElementById('err').innerText="Access Denied"; setTimeout(()=>nextInnerCircle(index),1000);}
+function check(){
+  if(document.getElementById("code").value==="007"){
+    nextQ(0);
+  } else showError();
 }
 
-// Combined Mission + Safehouse
+function showError(){
+  let e=document.getElementById("err");
+  e.innerText="Access Denied";
+  e.classList.add("shake");
+}
+
+function nextQ(i){
+  if(i===4){ finalClearance(); return;}
+  if(i>=innerCircle.length){ mission(); return;}
+
+  let q=innerCircle[i];
+  render(`<p>Level ${q.level}</p><p>${q.q}</p>
+  ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
+  <div id="err"></div>`);
+}
+
+function checkAns(a,i){
+  if(i===3 && a==="Classified"){
+    showError("ACCESS VERIFIED");
+    setTimeout(()=>nextQ(i+1),1000);
+    return;
+  }
+  if(a===innerCircle[i].answer){
+    nextQ(i+1);
+  } else showError();
+}
+
+function finalClearance(){
+  render(`<h2>FINAL CLEARANCE</h2><div id="status"></div>`);
+  setTimeout(()=>status.innerText="ACCESS GRANTED",1500);
+  setTimeout(()=>status.innerText="INNER CIRCLE VERIFIED",3000);
+  setTimeout(()=>nextQ(4),4500);
+}
+
 function mission(){
-  const w=500,h=300,cx=w/2,cy=h/2;
-  render(`<p>Operation Forever</p>
-          <p>Agent ${agentName}</p>
-          <p>Codename: ${codename}</p>
-          <p>${codenameDesc}</p>
-          <p>Role: ${role}</p>
-          <p>Mission begins September 18, 2026 at 12:00 PM</p>
-          <div class="table-wrapper" id="table"><div class="table"></div></div>
-          <div class="timer" id="timer"></div>
-          <div id="safehouse" style="margin-top:20px;">
-            <p>Await further instructions for apparel.</p>
-            <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-            <p>Confirm attendance:</p>
-            <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
-            <button onclick="emailGroom()">Send via Email</button>
-            <button onclick="openForm()">Log Response (Backup)</button>
-            <button onclick="declineSafehouse()">Not Staying</button>
-            <div id="status" class="success"></div>
-            <br><br>
-            <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
-          </div>`);
+  render(`<p>MISSION ACCEPTED</p>
+  <div class="table-wrapper" id="table"><div class="table"></div></div>
+  <div id="timer"></div>`);
 
-  startTimer();
+  let target=new Date("Sep 18 2026 12:00").getTime();
+  setInterval(()=>{
+    let diff=target-Date.now();
+    if(diff<0){timer.innerText="Mission Started"; return;}
+    let d=Math.floor(diff/86400000);
+    let h=Math.floor(diff/3600000)%24;
+    let m=Math.floor(diff/60000)%60;
+    let s=Math.floor(diff/1000)%60;
+    timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
+  },1000);
 
-  const container=document.getElementById('table');
-  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
+  let table=document.getElementById("table");
+  let players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
   players.forEach((p,i)=>{
-    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const px=cx+(w/2+40)*Math.cos(angle);
-    const py=cy+(h/2+40)*Math.sin(angle);
+    let angle=(i/players.length)*2*Math.PI;
+    let x=250+200*Math.cos(angle);
+    let y=150+120*Math.sin(angle);
 
-    const name=document.createElement('div');
-    name.className='player-name';
-    name.innerText=p;
-    name.style.left=px+"px";
-    name.style.top=py+"px";
-    container.appendChild(name);
-
-    const tt=document.createElement('div');
-    tt.className='tooltip';
-    const [cd, desc] = codenameMap[p] || ["Agent","Specialist"];
-    tt.innerText = `${cd}: ${desc}\n${roles[p] || "Groomsman"}`;
-    container.appendChild(tt);
-
-    name.onmouseover = e => { tt.style.opacity=1; tt.style.left=e.pageX+10+'px'; tt.style.top=e.pageY+10+'px'; }
-    name.onmousemove = e => { tt.style.left=e.pageX+10+'px'; tt.style.top=e.pageY+10+'px'; }
-    name.onmouseout = () => { tt.style.opacity=0; }
-
-    for(let c=0;c<4;c++){
-      const chip=document.createElement('div');
-      chip.className='chip';
-      chip.style.background=c%2===0?'#ff4d4d':'#ffd700';
-      chip.style.left=(px+10)+'px';
-      chip.style.top=(py-c*4+10)+'px';
-      container.appendChild(chip);
-    }
+    let el=document.createElement("div");
+    el.className="player-name";
+    el.style.left=x+"px";
+    el.style.top=y+"px";
+    el.innerText=p;
+    table.appendChild(el);
   });
 }
 
-// Countdown Timer
-function startTimer(){
-  const target=new Date('September 18, 2026 12:00:00').getTime();
-  setInterval(()=>{
-    const now=new Date().getTime();
-    const diff=target-now;
-    const d=Math.floor(diff/(1000*60*60*24));
-    const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-    const m=Math.floor((diff%(1000*60*60))/(1000*60));
-    const s=Math.floor((diff%(1000*60))/1000);
-    document.getElementById('timer').innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`;
-  },1000);
-}
-
-// Safehouse functions
-function notifyGroom(){ const msg=encodeURIComponent(`Agent ${agentName}: Staying at safe house.`); window.location.href=`sms:+14694262300?body=${msg}`; showStatus("✔ Transmission Sent"); }
-function emailGroom(){ const subject=encodeURIComponent("Safe House Confirmation"); const body=encodeURIComponent(`Agent ${agentName} staying at safe house.`); window.location.href=`mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`; showStatus("✔ Email Prepared"); }
-function openForm(){ const name=encodeURIComponent(agentName); const stay=encodeURIComponent("Yes"); const r=encodeURIComponent(role); window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${r}`); }
-function declineSafehouse(){ showStatus("✔ Logged: Not Staying"); }
-function showStatus(msg){ document.getElementById('status').innerText = msg; }
-
-// Initialize
 start();
 </script>
 </body>
