@@ -113,12 +113,8 @@ const innerCircle = [
 // Global Access Code
 const globalCode = "007";
 
-// Timer & Sounds
+// Timer
 let timerInterval, timeLeft = 15;
-const clickSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-const successSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-function playClick(){ clickSound.play(); }
-function playSuccess(){ successSound.play(); }
 
 // Easter Egg
 let titleClicks = 0;
@@ -143,7 +139,6 @@ function start(){
 
 // Authentication
 function authCode(){
-  playClick();
   render(`<p>Enter Global Access Code:</p>
           <input id="code" maxlength="3">
           <button onclick="checkCode()">Submit</button>
@@ -151,8 +146,8 @@ function authCode(){
 }
 function checkCode(){
   const val = document.getElementById('code').value;
-  if(val===globalCode){ playSuccess(); nextInnerCircle(0); }
-  else { document.getElementById('err').innerText="Access Denied"; playClick(); }
+  if(val===globalCode){ nextInnerCircle(0); }
+  else { document.getElementById('err').innerText="Access Denied"; }
 }
 
 // Inner Circle Questions
@@ -176,9 +171,8 @@ function startQuestionTimer(index){
   },1000);
 }
 function checkAnswer(answer,index){
-  playClick();
   clearInterval(timerInterval);
-  if(answer===innerCircle[index].answer){ playSuccess(); nextInnerCircle(index+1);}
+  if(answer===innerCircle[index].answer){ nextInnerCircle(index+1);}
   else { document.getElementById('err').innerText="Access Denied"; setTimeout(()=>nextInnerCircle(index),1000);}
 }
 
