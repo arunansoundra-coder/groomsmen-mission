@@ -290,41 +290,136 @@ function startTimer(){
 // Mission complete / safehouse
 function finalScreen(){
   render(`
-    <p>Await further instructions for apparel.</p>
-    <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-    <p>Confirm attendance:</p>
-    <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
-    <button onclick="emailGroom()">Send via Email</button>
-    <button onclick="openForm()">Log Response (Backup)</button>
-    <button onclick="declineSafehouse()">Not Staying</button>
-    <div id="status" class="success"></div>
-    <br><br>
-    <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
+    <div id="terminal" style="text-align:left; font-size:0.9rem; line-height:1.5;">
+      <div id="type"></div>
+
+      <div id="statusBar" style="margin-top:15px; color:#ffd700;"></div>
+
+      <div id="actions" style="display:none; margin-top:20px;">
+        <button onclick="transmitSMS()">📡 Transmit Safe House Confirmation</button>
+        <button onclick="transmitEmail()">✉ Secure Email</button>
+        <button onclick="openForm()">📝 Log Response (Backup)</button>
+        <button onclick="declineSafehouse()">❌ Decline Safe House</button>
+      </div>
+
+      <div id="feedback" class="success" style="margin-top:15px;"></div>
+
+      <br>
+      <button onclick="window.open('https://theknot.com/arunanandbrooke')" style="margin-top:15px;">
+        🎯 Proceed to RSVP
+      </button>
+    </div>
   `);
+
+  startTerminalSequence();
 }
 
-function notifyGroom(){
-  const msg = encodeURIComponent(`Agent ${agentName}: Staying at safe house.`);
-  window.location.href = `sms:+14694262300?body=${msg}`;
-  showStatus("✔ Transmission Sent");
+// 🧠 TYPEWRITER SEQUENCE
+function startTerminalSequence(){
+  const lines = [
+    "CLASSIFIED // LEVEL 7 CLEARANCE",
+    "-------------------------------------",
+    `AGENT: ${agentName.toUpperCase()} // CODENAME: ${codename.toUpperCase()}`,
+    "STATUS: ACTIVE",
+    "",
+    "OPERATION: FOREVER",
+    "",
+    "📍 LOCATION LOCKED",
+    "SAFE HOUSE:",
+    "6233 Muirfield Dr SW",
+    "Cedar Rapids, IA",
+    "COORDINATES VERIFIED ✓",
+    "",
+    "INSTRUCTIONS:",
+    "Await further instructions regarding attire.",
+    "Confirm with groom if safe house meets operational needs.",
+    "",
+    "FINAL DIRECTIVE:",
+    "Arrive prepared. Maintain discretion.",
+    "Your presence is critical to mission success.",
+    ""
+  ];
+
+  let i = 0;
+  function typeLine(){
+    if(i >= lines.length){
+      showStatusBar();
+      document.getElementById('actions').style.display = 'block';
+      return;
+    }
+
+    let line = lines[i];
+    let charIndex = 0;
+    const typeDiv = document.getElementById('type');
+    let currentLine = document.createElement("div");
+    typeDiv.appendChild(currentLine);
+
+    let typing = setInterval(()=>{
+      currentLine.textContent += line.charAt(charIndex);
+      charIndex++;
+      if(charIndex >= line.length){
+        clearInterval(typing);
+        i++;
+        setTimeout(typeLine, 250);
+      }
+    }, 20);
+  }
+
+  typeLine();
 }
 
-function emailGroom(){
-  const subject = encodeURIComponent("Safe House Confirmation");
-  const body = encodeURIComponent(`Agent ${agentName} staying at safe house.`);
-  window.location.href = `mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`;
-  showStatus("✔ Email Prepared");
+// ⏳ STATUS BAR
+function showStatusBar(){
+  const bar = document.getElementById('statusBar');
+  let progress = 0;
+
+  let interval = setInterval(()=>{
+    progress += 10;
+    bar.textContent = `MISSION STATUS: ${"█".repeat(progress/10)}${"░".repeat(10 - progress/10)} ${progress}%`;
+
+    if(progress >= 100){
+      clearInterval(interval);
+      bar.textContent = "STATUS: AWAITING FINAL CONFIRMATION ✓";
+    }
+  }, 150);
 }
 
-function openForm(){
-  const name = encodeURIComponent(agentName);
-  const stay = encodeURIComponent("Yes");
-  const r = encodeURIComponent(role);
-  window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${r}`);
+// 📡 TRANSMISSION SIMULATION
+function simulateTransmission(callback){
+  const feedback = document.getElementById('feedback');
+  feedback.innerHTML = "📡 TRANSMITTING...";
+  
+  setTimeout(()=> feedback.innerHTML += "<br>ENCRYPTING...", 600);
+  setTimeout(()=> feedback.innerHTML += "<br>VERIFYING SIGNAL...", 1200);
+  setTimeout(()=>{
+    feedback.innerHTML = "✔ SIGNAL RECEIVED<br>✔ ENCRYPTION VERIFIED";
+    if(callback) callback();
+  }, 1800);
 }
 
-function declineSafehouse(){ showStatus("✔ Logged: Not Staying"); }
-function showStatus(msg){ document.getElementById('status').innerText = msg; }
+// 📱 SMS
+function transmitSMS(){
+  simulateTransmission(()=>{
+    const msg = encodeURIComponent(`Agent ${agentName}: Staying at safe house.`);
+    window.location.href = `sms:+14694262300?body=${msg}`;
+  });
+}
+
+// ✉ EMAIL
+function transmitEmail(){
+  simulateTransmission(()=>{
+    const subject = encodeURIComponent("Safe House Confirmation");
+    const body = encodeURIComponent(`Agent ${agentName} staying at safe house.`);
+    window.location.href = `mailto:arunansoundra@gmail.com?subject=${subject}&body=${body}`;
+  });
+}
+
+// ❌ DECLINE
+function declineSafehouse(){
+  simulateTransmission(()=>{
+    document.getElementById('feedback').innerHTML += "<br>✔ RESPONSE LOGGED: NOT STAYING";
+  });
+}
 
 function missionComplete(){
   render(`<div style="padding:40px;">
