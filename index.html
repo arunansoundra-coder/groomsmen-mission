@@ -176,23 +176,26 @@ function checkAnswer(answer,index){
   else { document.getElementById('err').innerText="Access Denied"; setTimeout(()=>nextInnerCircle(index),1000);}
 }
 
-// Mission
+// Combined Mission Accepted + Safehouse
 function mission(){
-  render(`<h2 style="color:#ffd700;">Operation Forever</h2>
-          <p>Agent ${agentName} – Codename: ${codename}</p>
-          <p>Will you assist as ${role}?</p>
-          <button onclick="eventScreen()">Accept Mission</button>`);
-}
-
-// Poker Table + Safehouse Combined
-function eventScreen(){
   const w=300,h=188,cx=w/2,cy=h/2;
-  render(`<p>Mission Accepted</p>
+  render(`<p>Operation Forever – Agent ${agentName} (${codename})</p>
+          <p>Role: ${role}</p>
           <p>The mission begins September 18, 2026 at 12:00 PM</p>
           <div class="table-wrapper" id="table"><div class="table"></div></div>
           <div class="timer" id="timer"></div>
-          <div id="safehouse" style="margin-top:20px;"></div>
-          <button onclick="missionComplete()">Continue</button>`);
+          <div id="safehouse" style="margin-top:20px;">
+            <p>Await further instructions for apparel.</p>
+            <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
+            <p>Confirm attendance:</p>
+            <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
+            <button onclick="emailGroom()">Send via Email</button>
+            <button onclick="openForm()">Log Response (Backup)</button>
+            <button onclick="declineSafehouse()">Not Staying</button>
+            <div id="status" class="success"></div>
+            <br><br>
+            <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
+          </div>`);
   startTimer();
 
   const container=document.getElementById('table');
@@ -230,24 +233,6 @@ function startTimer(){
     const s=Math.floor((diff%(1000*60))/1000);
     document.getElementById('timer').innerText=`Countdown: ${d}d ${h}h ${m}m ${s}s`;
   },1000);
-}
-
-// Mission Complete + Safehouse Inline
-function missionComplete(){
-  render(`<h1 style="color:#ffd700;">MISSION COMPLETE</h1>
-          <p>Agent ${agentName}, your presence has been confirmed.</p>
-          <div id="safehouse" style="margin-top:20px;">
-            <p>Await further instructions for apparel.</p>
-            <p>Safe house: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-            <p>Confirm attendance:</p>
-            <button onclick="notifyGroom()">Transmit Safe House Confirmation</button>
-            <button onclick="emailGroom()">Send via Email</button>
-            <button onclick="openForm()">Log Response (Backup)</button>
-            <button onclick="declineSafehouse()">Not Staying</button>
-            <div id="status" class="success"></div>
-            <br><br>
-            <button onclick="window.open('https://theknot.com/arunanandbrooke')">RSVP</button>
-          </div>`);
 }
 
 // Safehouse functions
