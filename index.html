@@ -14,7 +14,6 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 20px;
-  font-size: 14px;
 }
 
 .container {
@@ -24,7 +23,6 @@ body {
   padding: 20px;
   border-radius: 12px;
   text-align: center;
-  min-height: 500px;
 }
 
 button {
@@ -36,7 +34,6 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
 }
 button:hover { background: #66fcf1; color: #1f2833; }
 
@@ -46,19 +43,21 @@ button:hover { background: #66fcf1; color: #1f2833; }
   height: 300px;
   margin: 40px auto;
 }
+
 .table {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(#006400, #004d00);
+  background: radial-gradient(circle, #006400, #003300);
   border: 4px solid #45a29e;
-  box-shadow: 0 0 40px #45a29e inset, 0 0 20px #45a29e;
+  box-shadow: 0 0 40px #45a29e inset, 0 0 25px #45a29e;
 }
 
 .player-name {
   position: absolute;
   transform: translate(-50%, -50%);
   font-size: 0.75rem;
+  cursor: default;
 }
 
 .chip {
@@ -74,6 +73,7 @@ button:hover { background: #66fcf1; color: #1f2833; }
   padding: 5px;
   font-size: 0.65rem;
   display: none;
+  border-radius: 4px;
 }
 
 .shake { animation: shake 0.4s; }
@@ -85,8 +85,14 @@ button:hover { background: #66fcf1; color: #1f2833; }
   100%{transform:translateX(0);}
 }
 
-.fade { animation: fade 1s; }
+.fade { animation: fade 0.8s; }
 @keyframes fade { from{opacity:0;} to{opacity:1;} }
+
+.success { color:#00ff9f; margin-top:10px; }
+
+@media (max-width:600px){
+  .table-wrapper { transform: scale(0.75); transform-origin: top center; }
+}
 </style>
 </head>
 
@@ -103,15 +109,26 @@ const agent=new URLSearchParams(window.location.search).get("agent")||"Agent";
 const codenameMap={
   "Arunan":["Ghost","Covert Infiltration Specialist"],
   "Jason":["Viper","Precision Strike Operative"],
-  "Taylor":["Shadow","Surveillance"],
-  "Gill":["Architect","Commander"],
-  "Duran":["Anomaly","Wildcard"],
-  "Josh":["Mirage","Deception"],
-  "Prathap":["Midnight","Extraction"]
+  "Taylor":["Shadow","Surveillance & Intelligence"],
+  "Gill":["Architect","Operational Commander"],
+  "Duran":["Anomaly","Unpredictable Wildcard"],
+  "Josh":["Mirage","Disguise & Deception Expert"],
+  "Prathap":["Midnight","Timing & Extraction Specialist"]
+};
+
+const roles={
+  "Arunan":"Best Man",
+  "Prathap":"Groomsman",
+  "Gill":"Groomsman",
+  "Taylor":"Groomsman",
+  "Duran":"Groomsman",
+  "Josh":"Groomsman",
+  "Jason":"Groomsman"
 };
 
 const [codename,desc]=codenameMap[agent]||["Agent","Specialist"];
 
+// QUESTIONS
 const innerCircle=[
   {level:1,q:"What is Arunan's ethnicity?",options:["Sri Lankan","Indian","Filipino","Other"],answer:"Sri Lankan"},
   {level:2,q:"What is Arunan's nationality?",options:["United States","Canada","Sri Lanka","United Kingdom"],answer:"United States"},
@@ -120,69 +137,105 @@ const innerCircle=[
   {level:5,q:"Arunan owned a grey 2023 BMW 330i. What was his name?",options:["Storm","Cloud","Ghost","Silver"],answer:"Cloud"}
 ];
 
+// RENDER
 function render(html){
   app.innerHTML=html;
-  app.classList.add("fade");
+  app.className="fade";
 }
 
+// START
 function start(){
-  render(`<p>Agent ${agent} – ${codename}</p>
-  <button onclick="auth()">Begin</button>`);
+  render(`<p>Agent ${agent} – Codename: ${codename}</p>
+  <button onclick="auth()">Begin Authentication</button>`);
 }
 
+// AUTH
 function auth(){
-  render(`<input id="code"><button onclick="check()">Submit</button><div id="err"></div>`);
+  render(`<input id="code" maxlength="3">
+  <button onclick="check()">Submit</button>
+  <div id="err"></div>`);
 }
 
 function check(){
   if(document.getElementById("code").value==="007"){
     nextQ(0);
-  } else showError();
+  } else showError("Access Denied");
 }
 
-function showError(){
+// ERROR
+function showError(msg){
   let e=document.getElementById("err");
-  e.innerText="Access Denied";
+  e.innerText=msg;
   e.classList.add("shake");
+  setTimeout(()=>e.classList.remove("shake"),400);
 }
 
+// QUESTIONS
 function nextQ(i){
   if(i===4){ finalClearance(); return;}
   if(i>=innerCircle.length){ mission(); return;}
 
   let q=innerCircle[i];
-  render(`<p>Level ${q.level}</p><p>${q.q}</p>
+  render(`<p>Level ${q.level} Clearance</p>
+  <p>${q.q}</p>
   ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
   <div id="err"></div>`);
 }
 
 function checkAns(a,i){
   if(i===3 && a==="Classified"){
-    showError("ACCESS VERIFIED");
-    setTimeout(()=>nextQ(i+1),1000);
+    showError("ACCESS RESTRICTED: VERIFIED");
+    setTimeout(()=>nextQ(i+1),1200);
     return;
   }
   if(a===innerCircle[i].answer){
     nextQ(i+1);
-  } else showError();
+  } else showError("Access Denied");
 }
 
+// FINAL CLEARANCE
 function finalClearance(){
-  render(`<h2>FINAL CLEARANCE</h2><div id="status"></div>`);
-  setTimeout(()=>status.innerText="ACCESS GRANTED",1500);
-  setTimeout(()=>status.innerText="INNER CIRCLE VERIFIED",3000);
-  setTimeout(()=>nextQ(4),4500);
+  render(`<h2>FINAL CLEARANCE REQUIRED</h2>
+  <div id="status"></div>`);
+
+  setTimeout(()=>status.innerText="BIOMETRIC VERIFIED...",1500);
+  setTimeout(()=>status.innerText="ACCESS GRANTED",3000);
+  setTimeout(()=>status.innerText="INNER CIRCLE VERIFIED",4500);
+  setTimeout(()=>nextQ(4),5500);
 }
 
+// MISSION + TABLE
 function mission(){
-  render(`<p>MISSION ACCEPTED</p>
-  <div class="table-wrapper" id="table"><div class="table"></div></div>
-  <div id="timer"></div>`);
+  const w=500,h=300,cx=w/2,cy=h/2;
 
-  let target=new Date("Sep 18 2026 12:00").getTime();
-  setInterval(()=>{
+  render(`
+  <p>OPERATION FOREVER</p>
+  <p>Agent ${agent}</p>
+  <p>${codename}</p>
+
+  <div class="table-wrapper" id="table">
+    <div class="table"></div>
+  </div>
+
+  <div id="timer"></div>
+
+  <div style="margin-top:20px;">
+    <p>Safe House: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
+    <button onclick="notify()">Confirm Stay</button>
+    <button onclick="decline()">Not Staying</button>
+    <div id="statusMsg" class="success"></div>
+  </div>
+  `);
+
+  // TIMER
+  const target=new Date("September 18, 2026 12:00:00").getTime();
+  const t=setInterval(()=>{
     let diff=target-Date.now();
-    if(diff<0){timer.innerText="Mission Started"; return;}
+    if(diff<=0){
+      timer.innerText="Mission Started";
+      clearInterval(t);
+      return;
+    }
     let d=Math.floor(diff/86400000);
     let h=Math.floor(diff/3600000)%24;
     let m=Math.floor(diff/60000)%60;
@@ -190,21 +243,56 @@ function mission(){
     timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
   },1000);
 
-  let table=document.getElementById("table");
-  let players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-  players.forEach((p,i)=>{
-    let angle=(i/players.length)*2*Math.PI;
-    let x=250+200*Math.cos(angle);
-    let y=150+120*Math.sin(angle);
+  // TABLE
+  const container=document.getElementById("table");
+  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
 
-    let el=document.createElement("div");
-    el.className="player-name";
-    el.style.left=x+"px";
-    el.style.top=y+"px";
-    el.innerText=p;
-    table.appendChild(el);
+  players.forEach((p,i)=>{
+    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
+    const x=cx+(w/2+40)*Math.cos(angle);
+    const y=cy+(h/2+40)*Math.sin(angle);
+
+    let name=document.createElement("div");
+    name.className="player-name";
+    name.innerText=p;
+    name.style.left=x+"px";
+    name.style.top=y+"px";
+    container.appendChild(name);
+
+    let tooltip=document.createElement("div");
+    tooltip.className="tooltip";
+    const [cd,desc]=codenameMap[p];
+    tooltip.innerHTML=`${cd}: ${desc}<br>${roles[p]}`;
+    container.appendChild(tooltip);
+
+    name.onmouseover=e=>{
+      tooltip.style.display="block";
+      tooltip.style.left=e.pageX+10+"px";
+      tooltip.style.top=e.pageY+10+"px";
+    };
+    name.onmouseout=()=>tooltip.style.display="none";
+
+    for(let c=0;c<4;c++){
+      let chip=document.createElement("div");
+      chip.className="chip";
+      chip.style.background=c%2?'gold':'red';
+      chip.style.left=x+"px";
+      chip.style.top=(y-c*5)+"px";
+      container.appendChild(chip);
+    }
   });
 }
+
+// SAFEHOUSE
+function notify(){ statusMsg.innerText="✔ Confirmed"; }
+function decline(){ statusMsg.innerText="✔ Not Staying"; }
+
+// EASTER EGG
+let clicks=0;
+title.onclick=()=>{
+  clicks++;
+  if(clicks===5) alert("Drinks on Arunan 🍸");
+};
 
 start();
 </script>
