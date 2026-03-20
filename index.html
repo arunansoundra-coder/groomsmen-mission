@@ -14,28 +14,94 @@ body{
   text-align:center;
 }
 
-h1{margin-top:30px;}
-
-#pokerTable{
-  margin:40px auto;
-  width:600px;
-  height:600px;
-  border-radius:50%;
-  background:radial-gradient(circle, #1f2833, #0b0c10);
-  border:3px solid #66fcf1;
-  position:relative;
+/* Mission Brief */
+#missionBrief{
+  margin:15px auto 10px;
+  font-size:16px;
+  max-width:800px;
+  color:#c5c6c7;
 }
 
+/* Background glow */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at center, rgba(0,255,150,0.08), transparent 70%);
+  pointer-events:none;
+}
+
+/* Poker Table */
+#pokerTable{
+  margin:20px auto;
+  width:650px;
+  height:650px;
+  border-radius:50%;
+  position:relative;
+
+  background:
+    radial-gradient(circle at center, #1b5e20 0%, #0b3d1c 70%, #072a14 100%);
+
+  border:10px solid #3e2723;
+
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.9),
+    inset 0 0 80px rgba(0,0,0,0.6),
+    0 20px 40px rgba(0,0,0,0.8);
+}
+
+/* Felt texture */
+#pokerTable::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  opacity:0.15;
+}
+
+/* Chips */
+.chip{
+  position:absolute;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+
+  background: radial-gradient(circle at 30% 30%, #b2ff59, #2e7d32);
+
+  border:2px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,0.4),
+    inset 0 -3px 5px rgba(0,0,0,0.5),
+    0 2px 4px rgba(0,0,0,0.6);
+}
+
+/* Agents */
 .agent{
   position:absolute;
-  width:100px;
-  height:100px;
-  border:2px solid #66fcf1;
+  width:110px;
+  height:110px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+
+  background:rgba(0,0,0,0.6);
+  border:2px solid #66fcf1;
+
+  box-shadow:
+    inset 0 0 10px rgba(102,252,241,0.3),
+    0 0 15px rgba(102,252,241,0.2);
+
   transition:0.3s;
 }
 
@@ -49,6 +115,7 @@ h1{margin-top:30px;}
   color:#0b0c10;
 }
 
+/* Overlay */
 #overlay{
   position:fixed;
   top:0;
@@ -69,32 +136,38 @@ h1{margin-top:30px;}
   height:80%;
   border:2px solid #66fcf1;
   border-radius:10px;
-  overflow:hidden;
-  box-shadow:0 0 20px #66fcf1;
   padding:20px;
 }
 
-#terminalHeader{
-  background:#1f2833;
-  padding:10px;
-  text-align:left;
-  margin-bottom:10px;
+/* Decision UI */
+#decisionStage{
+  display:block;
 }
 
-button{
-  padding:10px 15px;
-  margin:10px;
+#questionText{
+  font-size:20px;
+  margin-bottom:20px;
+}
+
+#decisionStage button{
+  display:block;
+  width:220px;
+  margin:12px auto;
+  padding:12px;
+  font-size:16px;
   background:#1f2833;
-  border:1px solid #66fcf1;
+  border:2px solid #66fcf1;
   color:#66fcf1;
   cursor:pointer;
 }
 
-#formFrame{
-  width:100%;
-  height:100%;
-  border:none;
-  display:none;
+#confirmBtn{
+  border-color:#66fcf1;
+}
+
+#declineBtn{
+  border-color:#ff4c4c;
+  color:#ff4c4c;
 }
 
 #confirmation{
@@ -114,20 +187,20 @@ button{
 
 <body>
 
-<h1>MI6 Poker Table</h1>
+<div id="missionBrief">
+MISSION OBJECTIVE: Complete all agent clearances. Each operative must confirm their participation before the table is revealed.
+</div>
+
 <div id="pokerTable"></div>
 <div id="allDone">🎉 ALL AGENTS ACCOUNTED FOR 🎉</div>
 
 <div id="overlay">
   <div id="terminal">
-    <div id="terminalHeader">SECURITY CLEARANCE REQUIRED</div>
-
-    <div id="securityStage">
+    <div id="decisionStage">
       <p id="questionText"></p>
-      <div id="options"></div>
+      <button id="confirmBtn">ACCEPT MISSION</button>
+      <button id="declineBtn">DECLINE</button>
     </div>
-
-    <iframe id="formFrame"></iframe>
   </div>
   <div id="confirmation">MISSION CONFIRMED</div>
 </div>
@@ -142,75 +215,61 @@ const agents = {
   midnight: { name: "Midnight", role: "Groomsman" }
 };
 
-// ORIGINAL QUESTIONS (UNCHANGED)
-const innerCircle=[
-{level:1,q:"MISSION BRIEF: The operation begins in a city where two paths became one. Identify the location.",options:["Cedar Rapids","Chicago","Des Moines","Omaha"],answer:"Cedar Rapids"},
-{level:2,q:"INTEL REPORT: Confirm the operation date.",options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],answer:"September 18, 2026"},
-{level:3,q:"SURVEILLANCE LOG: Identify the follow-up celebration event.",options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],answer:"Homecoming Celebration"},
-{level:4,q:"CLASSIFIED MOVEMENT: What is the lodging location called?",options:["Headquarters","Safe House","Command Center","Base Camp"],answer:"Safe House"},
-{level:5,q:"FINAL CLEARANCE: Blood makes us related, loyalty makes a family, and family is ______.",options:["Forever","Strong","Unbreakable","Everything"],answer:"Forever"}
-];
-
-let currentLevel = 0;
 let currentAgentKey = null;
-
-const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform";
 
 const table = document.getElementById("pokerTable");
 const overlay = document.getElementById("overlay");
-const frame = document.getElementById("formFrame");
-const confirmation = document.getElementById("confirmation");
 const questionText = document.getElementById("questionText");
-const optionsDiv = document.getElementById("options");
 
-const positions = [[250,20],[450,150],[450,350],[250,480],[50,350],[50,150]];
+const positions = [
+  [275,30],[500,180],[500,420],
+  [275,540],[50,420],[50,180]
+];
 
-function loadQuestion(){
-  const q = innerCircle[currentLevel];
-  questionText.innerText = q.q;
-  optionsDiv.innerHTML = "";
-
-  q.options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.innerText = option;
-
-    btn.onclick = () => {
-      if(option === q.answer){
-        currentLevel++;
-        if(currentLevel >= innerCircle.length){
-          startMission();
-        } else {
-          loadQuestion();
-        }
-      } else {
-        alert("ACCESS DENIED");
-      }
-    };
-
-    optionsDiv.appendChild(btn);
-  });
+/* Create Chips */
+function createChips(){
+  for(let i=0;i<25;i++){
+    const chip=document.createElement("div");
+    chip.className="chip";
+    chip.style.left=Math.random()*620+"px";
+    chip.style.top=Math.random()*620+"px";
+    table.appendChild(chip);
+  }
 }
 
-function startMission(){
-  const agent = agents[currentAgentKey];
-
-  const url = `${formBase}?usp=pp_url&entry.385675046=${encodeURIComponent(agent.name)}&entry.794497838=${encodeURIComponent(agent.role)}&entry.1160902778=Yes`;
-
-  frame.src = url;
-  document.getElementById("securityStage").style.display = "none";
-  frame.style.display = "block";
-
-  setTimeout(() => {
-    localStorage.setItem(currentAgentKey,"confirmed");
-    document.querySelector(`[data-agent='${currentAgentKey}']`).classList.add("confirmed");
-
-    document.getElementById("terminal").style.display = "none";
-    confirmation.style.display = "block";
-
-    checkAllComplete();
-  }, 8000);
+/* Decision UI */
+function loadDecision(){
+  document.getElementById("confirmation").style.display="none";
+  questionText.innerText = "AUTHORIZATION REQUIRED: Accept your role in this operation?";
+  overlay.style.display="flex";
 }
 
+/* Confirm */
+document.getElementById("confirmBtn").onclick = () => {
+  missionComplete();
+};
+
+/* Decline */
+document.getElementById("declineBtn").onclick = () => {
+  alert("ACCESS DENIED: Participation required to proceed.");
+};
+
+/* Mission Complete */
+function missionComplete(){
+  localStorage.setItem(currentAgentKey,"confirmed");
+
+  document.querySelector(`[data-agent='${currentAgentKey}']`)
+    .classList.add("confirmed");
+
+  overlay.style.display="none";
+
+  // Reveal poker table after each agent completes
+  document.getElementById("pokerTable").style.display = "block";
+
+  checkAllComplete();
+}
+
+/* Check Completion */
 function checkAllComplete(){
   const allDone = Object.keys(agents).every(a => localStorage.getItem(a)==="confirmed");
   if(allDone){
@@ -218,6 +277,7 @@ function checkAllComplete(){
   }
 }
 
+/* Build agents */
 Object.keys(agents).forEach((key,i)=>{
   const agent = agents[key];
 
@@ -225,6 +285,7 @@ Object.keys(agents).forEach((key,i)=>{
   div.className="agent";
   div.innerText=agent.name;
   div.dataset.agent=key;
+
   div.style.left=positions[i][0]+"px";
   div.style.top=positions[i][1]+"px";
 
@@ -234,13 +295,15 @@ Object.keys(agents).forEach((key,i)=>{
 
   div.onclick=()=>{
     currentAgentKey=key;
-    currentLevel=0;
-    overlay.style.display="flex";
-    loadQuestion();
+    loadDecision();
   };
 
   table.appendChild(div);
 });
+
+/* Init */
+table.style.display="none";
+createChips();
 </script>
 
 </body>
