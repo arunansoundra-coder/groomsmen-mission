@@ -228,11 +228,17 @@ function checkAns(a,i){
 
 // Final Clearance
 function finalClearance(){
-  render(`<h2>FINAL CLEARANCE REQUIRED</h2><div id="status"></div>`);
-  setTimeout(()=>status.innerText="BIOMETRIC VERIFIED...",1500);
-  setTimeout(()=>status.innerText="ACCESS GRANTED",3000);
-  setTimeout(()=>status.innerText="INNER CIRCLE VERIFIED",4500);
-  setTimeout(()=>nextQ(4),5500);
+  render(`
+    <h2>FINAL CLEARANCE REQUIRED</h2>
+    <div id="status"></div>
+  `);
+
+  const statusEl = document.getElementById("status");
+
+  setTimeout(()=>{ statusEl.innerText="BIOMETRIC VERIFIED..."; },1500);
+  setTimeout(()=>{ statusEl.innerText="ACCESS GRANTED"; },3000);
+  setTimeout(()=>{ statusEl.innerText="INNER CIRCLE VERIFIED"; },4500);
+  setTimeout(()=>{ nextQ(4); },5500);
 }
 
 // Mission + Poker Table
