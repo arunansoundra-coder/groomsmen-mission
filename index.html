@@ -210,14 +210,26 @@ function showError(msg){
 
 // Question Flow
 function nextQ(i){
-  if(i===4){ finalClearance(); return;}
-  if(i>=innerCircle.length){ mission(); return;}
+  if(i >= innerCircle.length){
+    mission();
+    return;
+  }
 
-  let q=innerCircle[i];
-  render(`<p>CLEARANCE LEVEL ${q.level}</p>
-  <p>${q.q}</p>
-  ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
-  <div id="err"></div>`);
+  let q = innerCircle[i];
+
+  // ONLY trigger final clearance BEFORE Level 5
+  if(i === innerCircle.length - 1 && !window.finalClearanceShown){
+    window.finalClearanceShown = true;
+    finalClearance();
+    return;
+  }
+
+  render(`
+    <p>CLEARANCE LEVEL ${q.level}</p>
+    <p>${q.q}</p>
+    ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
+    <div id="err"></div>
+  `);
 }
 
 function checkAns(a,i){
