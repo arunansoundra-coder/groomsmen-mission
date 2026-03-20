@@ -15,7 +15,6 @@ body {
   justify-content: center;
   padding-top: 20px;
 }
-
 .container {
   width: 95%;
   max-width: 800px;
@@ -24,7 +23,6 @@ body {
   border-radius: 12px;
   text-align: center;
 }
-
 button {
   width: 100%;
   padding: 12px;
@@ -43,7 +41,6 @@ button:hover { background: #66fcf1; color: #1f2833; }
   height: 300px;
   margin: 40px auto;
 }
-
 .table {
   width: 100%;
   height: 100%;
@@ -52,21 +49,17 @@ button:hover { background: #66fcf1; color: #1f2833; }
   border: 4px solid #45a29e;
   box-shadow: 0 0 40px #45a29e inset, 0 0 25px #45a29e;
 }
-
 .player-name {
   position: absolute;
   transform: translate(-50%, -50%);
   font-size: 0.75rem;
-  cursor: default;
 }
-
 .chip {
   position: absolute;
   width: 16px;
   height: 16px;
   border-radius: 50%;
 }
-
 .tooltip {
   position: absolute;
   background: black;
@@ -84,11 +77,8 @@ button:hover { background: #66fcf1; color: #1f2833; }
   75%{transform:translateX(-5px);}
   100%{transform:translateX(0);}
 }
-
 .fade { animation: fade 0.8s; }
 @keyframes fade { from{opacity:0;} to{opacity:1;} }
-
-.success { color:#00ff9f; margin-top:10px; }
 
 @media (max-width:600px){
   .table-wrapper { transform: scale(0.75); transform-origin: top center; }
@@ -128,16 +118,41 @@ const roles={
 
 const [codename,desc]=codenameMap[agent]||["Agent","Specialist"];
 
-// Inner Circle Questions
+// Wedding Mission Questions
 const innerCircle=[
-  {level:1,q:"What is Arunan's ethnicity?",options:["Sri Lankan","Indian","Filipino","Other"],answer:"Sri Lankan"},
-  {level:2,q:"What is Arunan's nationality?",options:["United States","Canada","Sri Lanka","United Kingdom"],answer:"United States"},
-  {level:3,q:"Arunan had a Black Rocky Mountain Horse. What was her name?",options:["Shadow","Maya","Midnight","Blaze"],answer:"Maya"},
-  {level:4,q:"How many times has Arunan been to Vegas?",options:["0","1","2","Classified"],answer:"Classified"},
-  {level:5,q:"Arunan owned a grey 2023 BMW 330i. What was his name?",options:["Storm","Cloud","Ghost","Silver"],answer:"Cloud"}
+{
+level:1,
+q:"MISSION BRIEF: The operation begins in a city where two paths became one. Identify the location.",
+options:["Cedar Rapids","Chicago","Des Moines","Omaha"],
+answer:"Cedar Rapids"
+},
+{
+level:2,
+q:"INTEL REPORT: Confirm the operation date.",
+options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],
+answer:"September 18, 2026"
+},
+{
+level:3,
+q:"SURVEILLANCE LOG: Identify the follow-up celebration event.",
+options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],
+answer:"Homecoming Celebration"
+},
+{
+level:4,
+q:"CLASSIFIED MOVEMENT: What is the lodging location called?",
+options:["Headquarters","Safe House","Command Center","Base Camp"],
+answer:"Safe House"
+},
+{
+level:5,
+q:"FINAL CLEARANCE: Blood makes us related, loyalty makes a family, and family is ______.",
+options:["Forever","Strong","Unbreakable","Everything"],
+answer:"Forever"
+}
 ];
 
-// Render Helper
+// Render
 function render(html){
   app.innerHTML=html;
   app.className="fade";
@@ -149,20 +164,43 @@ function start(){
   <button onclick="auth()">Begin Authentication</button>`);
 }
 
-// Authentication
+// Progressive Hint System
+let failedAttempts=0;
+
 function auth(){
-  render(`<input id="code" maxlength="3">
-  <button onclick="check()">Submit</button>
-  <div id="err"></div>`);
+  render(`
+    <p>Enter Global Access Code:</p>
+    <input id="code" maxlength="3">
+    <button onclick="check()">Submit</button>
+
+    <div id="hint">
+      SYSTEM: Behavioral pattern suggests familiarity with British intelligence.<br>
+      Decrypting hint...<br>
+      Hint: Think like Bond.
+    </div>
+
+    <div id="err"></div>
+  `);
 }
 
 function check(){
-  if(document.getElementById("code").value==="007"){
-    nextQ(0);
-  } else showError("Access Denied");
+  const val=document.getElementById("code").value;
+
+  if(val==="007"){ nextQ(0); return; }
+
+  failedAttempts++;
+
+  if(failedAttempts===1){
+    document.getElementById("hint").innerHTML=`
+      SYSTEM UPDATE: Agent hesitation detected.<br>
+      Decrypting intel...<br>
+      Hint: A number every spy would recognize.
+    `;
+  }
+
+  showError("Access Denied");
 }
 
-// Show Error
 function showError(msg){
   let e=document.getElementById("err");
   e.innerText=msg;
@@ -170,24 +208,19 @@ function showError(msg){
   setTimeout(()=>e.classList.remove("shake"),400);
 }
 
-// Questions Flow
+// Question Flow
 function nextQ(i){
   if(i===4){ finalClearance(); return;}
   if(i>=innerCircle.length){ mission(); return;}
 
   let q=innerCircle[i];
-  render(`<p>Level ${q.level} Clearance</p>
+  render(`<p>CLEARANCE LEVEL ${q.level}</p>
   <p>${q.q}</p>
   ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
   <div id="err"></div>`);
 }
 
 function checkAns(a,i){
-  if(i===3 && a==="Classified"){
-    showError("ACCESS RESTRICTED: VERIFIED");
-    setTimeout(()=>nextQ(i+1),1200);
-    return;
-  }
   if(a===innerCircle[i].answer){
     nextQ(i+1);
   } else showError("Access Denied");
@@ -195,9 +228,7 @@ function checkAns(a,i){
 
 // Final Clearance
 function finalClearance(){
-  render(`<h2>FINAL CLEARANCE REQUIRED</h2>
-  <div id="status"></div>`);
-
+  render(`<h2>FINAL CLEARANCE REQUIRED</h2><div id="status"></div>`);
   setTimeout(()=>status.innerText="BIOMETRIC VERIFIED...",1500);
   setTimeout(()=>status.innerText="ACCESS GRANTED",3000);
   setTimeout(()=>status.innerText="INNER CIRCLE VERIFIED",4500);
@@ -221,7 +252,6 @@ function mission(){
 
   <div style="margin-top:20px;">
     <p>Safe House: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-    <p>Confirm attendance:</p>
     <button onclick="openForm()">Secure Safe House Access</button>
   </div>
   `);
