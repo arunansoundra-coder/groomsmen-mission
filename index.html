@@ -3,350 +3,245 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 Secure Terminal</title>
+<title>MI6 Wedding Mission</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Courier New', monospace;
-  background: #0b0c10;
-  color: #66fcf1;
-  display: flex;
-  justify-content: center;
-  padding-top: 20px;
-}
-.container {
-  width: 95%;
-  max-width: 800px;
-  background: #1f2833;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-}
-button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  background: #45a29e;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-button:hover { background: #66fcf1; color: #1f2833; }
-
-.table-wrapper {
-  position: relative;
-  width: 500px;
-  height: 300px;
-  margin: 40px auto;
-}
-.table {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #006400, #003300);
-  border: 4px solid #45a29e;
-  box-shadow: 0 0 40px #45a29e inset, 0 0 25px #45a29e;
-}
-.player-name {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 0.75rem;
-}
-.chip {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-}
-.tooltip {
-  position: absolute;
-  background: black;
-  padding: 5px;
-  font-size: 0.65rem;
-  display: none;
-  border-radius: 4px;
+body{
+  margin:0;
+  font-family:'Courier New', monospace;
+  background:#0b0c10;
+  color:#66fcf1;
+  text-align:center;
 }
 
-.shake { animation: shake 0.4s; }
-@keyframes shake {
-  0%{transform:translateX(0);}
-  25%{transform:translateX(-5px);}
-  50%{transform:translateX(5px);}
-  75%{transform:translateX(-5px);}
-  100%{transform:translateX(0);}
-}
-.fade { animation: fade 0.8s; }
-@keyframes fade { from{opacity:0;} to{opacity:1;} }
+h1{margin-top:30px;}
 
-@media (max-width:600px){
-  .table-wrapper { transform: scale(0.75); transform-origin: top center; }
+#pokerTable{
+  margin:40px auto;
+  width:600px;
+  height:600px;
+  border-radius:50%;
+  background:radial-gradient(circle, #1f2833, #0b0c10);
+  border:3px solid #66fcf1;
+  position:relative;
+}
+
+.agent{
+  position:absolute;
+  width:100px;
+  height:100px;
+  border:2px solid #66fcf1;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.agent:hover{
+  background:#66fcf1;
+  color:#0b0c10;
+}
+
+.confirmed{
+  background:#45a29e;
+  color:#0b0c10;
+}
+
+#overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
+}
+
+#terminal{
+  width:90%;
+  max-width:900px;
+  height:80%;
+  border:2px solid #66fcf1;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 0 20px #66fcf1;
+  padding:20px;
+}
+
+#terminalHeader{
+  background:#1f2833;
+  padding:10px;
+  text-align:left;
+  margin-bottom:10px;
+}
+
+button{
+  padding:10px 15px;
+  margin:10px;
+  background:#1f2833;
+  border:1px solid #66fcf1;
+  color:#66fcf1;
+  cursor:pointer;
+}
+
+#formFrame{
+  width:100%;
+  height:100%;
+  border:none;
+  display:none;
+}
+
+#confirmation{
+  display:none;
+  font-size:28px;
+  color:#45a29e;
+}
+
+#allDone{
+  display:none;
+  font-size:32px;
+  color:#66fcf1;
+  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
-<h1 id="title">MI6 Secure Terminal</h1>
-<div id="app"></div>
+
+<h1>MI6 Agent Deployment Table</h1>
+<div id="pokerTable"></div>
+<div id="allDone">🎉 ALL AGENTS ACCOUNTED FOR 🎉</div>
+
+<div id="overlay">
+  <div id="terminal">
+    <div id="terminalHeader">SECURITY CLEARANCE REQUIRED</div>
+
+    <div id="securityStage">
+      <p id="questionText"></p>
+      <div id="options"></div>
+    </div>
+
+    <iframe id="formFrame"></iframe>
+  </div>
+  <div id="confirmation">MISSION CONFIRMED</div>
 </div>
 
 <script>
-const app=document.getElementById("app");
-const agent=new URLSearchParams(window.location.search).get("agent")||"Agent";
-
-const codenameMap={
-  "Arunan":["Ghost","Covert Infiltration Specialist"],
-  "Jason":["Viper","Precision Strike Operative"],
-  "Taylor":["Shadow","Surveillance & Intelligence"],
-  "Gill":["Architect","Operational Commander"],
-  "Duran":["Anomaly","Unpredictable Wildcard"],
-  "Josh":["Mirage","Disguise & Deception Expert"],
-  "Prathap":["Midnight","Timing & Extraction Specialist"]
+const agents = {
+  viper: { name: "Viper", role: "Best Man" },
+  shadow: { name: "Shadow", role: "Groomsman" },
+  architect: { name: "Architect", role: "Groomsman" },
+  anomaly: { name: "Anomaly", role: "Groomsman" },
+  mirage: { name: "Mirage", role: "Groomsman" },
+  midnight: { name: "Midnight", role: "Groomsman" }
 };
 
-const roles={
-  "Arunan":"Best Man",
-  "Prathap":"Groomsman",
-  "Gill":"Groomsman",
-  "Taylor":"Groomsman",
-  "Duran":"Groomsman",
-  "Josh":"Groomsman",
-  "Jason":"Groomsman"
-};
-
-const [codename,desc]=codenameMap[agent]||["Agent","Specialist"];
-
-// Wedding Mission Questions
+// ORIGINAL QUESTIONS (UNCHANGED)
 const innerCircle=[
-{
-level:1,
-q:"MISSION BRIEF: The operation begins in a city where two paths became one. Identify the location.",
-options:["Cedar Rapids","Chicago","Des Moines","Omaha"],
-answer:"Cedar Rapids"
-},
-{
-level:2,
-q:"INTEL REPORT: Confirm the operation date.",
-options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],
-answer:"September 18, 2026"
-},
-{
-level:3,
-q:"SURVEILLANCE LOG: Identify the follow-up celebration event.",
-options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],
-answer:"Homecoming Celebration"
-},
-{
-level:4,
-q:"CLASSIFIED MOVEMENT: What is the lodging location called?",
-options:["Headquarters","Safe House","Command Center","Base Camp"],
-answer:"Safe House"
-},
-{
-level:5,
-q:"FINAL CLEARANCE: Blood makes us related, loyalty makes a family, and family is ______.",
-options:["Forever","Strong","Unbreakable","Everything"],
-answer:"Forever"
-}
+{level:1,q:"MISSION BRIEF: The operation begins in a city where two paths became one. Identify the location.",options:["Cedar Rapids","Chicago","Des Moines","Omaha"],answer:"Cedar Rapids"},
+{level:2,q:"INTEL REPORT: Confirm the operation date.",options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],answer:"September 18, 2026"},
+{level:3,q:"SURVEILLANCE LOG: Identify the follow-up celebration event.",options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],answer:"Homecoming Celebration"},
+{level:4,q:"CLASSIFIED MOVEMENT: What is the lodging location called?",options:["Headquarters","Safe House","Command Center","Base Camp"],answer:"Safe House"},
+{level:5,q:"FINAL CLEARANCE: Blood makes us related, loyalty makes a family, and family is ______.",options:["Forever","Strong","Unbreakable","Everything"],answer:"Forever"}
 ];
 
-// Render
-function render(html){
-  app.innerHTML=html;
-  app.className="fade";
-}
+let currentLevel = 0;
+let currentAgentKey = null;
 
-// Start
-function start(){
-  render(`<p>Agent ${agent} – Codename: ${codename}</p>
-  <button onclick="auth()">Begin Authentication</button>`);
-}
+const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform";
 
-// Progressive Hint System
-let failedAttempts=0;
+const table = document.getElementById("pokerTable");
+const overlay = document.getElementById("overlay");
+const frame = document.getElementById("formFrame");
+const confirmation = document.getElementById("confirmation");
+const questionText = document.getElementById("questionText");
+const optionsDiv = document.getElementById("options");
 
-function auth(){
-  render(`
-    <p>Enter Global Access Code:</p>
-    <input id="code" maxlength="3">
-    <button onclick="check()">Submit</button>
+const positions = [[250,20],[450,150],[450,350],[250,480],[50,350],[50,150]];
 
-    <div id="hint">
-      SYSTEM: Behavioral pattern suggests familiarity with British intelligence.<br>
-      Decrypting hint...<br>
-      Hint: Think like Bond.
-    </div>
+function loadQuestion(){
+  const q = innerCircle[currentLevel];
+  questionText.innerText = q.q;
+  optionsDiv.innerHTML = "";
 
-    <div id="err"></div>
-  `);
-}
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.innerText = option;
 
-function check(){
-  const val=document.getElementById("code").value;
-
-  if(val==="007"){ nextQ(0); return; }
-
-  failedAttempts++;
-
-  if(failedAttempts===1){
-    document.getElementById("hint").innerHTML=`
-      SYSTEM UPDATE: Agent hesitation detected.<br>
-      Decrypting intel...<br>
-      Hint: A number every spy would recognize.
-    `;
-  }
-
-  showError("Access Denied");
-}
-
-function showError(msg){
-  let e=document.getElementById("err");
-  e.innerText=msg;
-  e.classList.add("shake");
-  setTimeout(()=>e.classList.remove("shake"),400);
-}
-
-// Question Flow
-function nextQ(i){
-  if(i >= innerCircle.length){
-    mission();
-    return;
-  }
-
-  let q = innerCircle[i];
-
-  // ONLY trigger final clearance BEFORE Level 5
-  if(i === innerCircle.length - 1 && !window.finalClearanceShown){
-    window.finalClearanceShown = true;
-    finalClearance();
-    return;
-  }
-
-  render(`
-    <p>CLEARANCE LEVEL ${q.level}</p>
-    <p>${q.q}</p>
-    ${q.options.map(o=>`<button onclick="checkAns('${o}',${i})">${o}</button>`).join("")}
-    <div id="err"></div>
-  `);
-}
-
-function checkAns(a,i){
-  if(a===innerCircle[i].answer){
-    nextQ(i+1);
-  } else showError("Access Denied");
-}
-
-// Final Clearance
-function finalClearance(){
-  render(`
-    <h2>FINAL CLEARANCE REQUIRED</h2>
-    <div id="status"></div>
-  `);
-
-  const statusEl = document.getElementById("status");
-
-  setTimeout(()=>{ statusEl.innerText="BIOMETRIC VERIFIED..."; },1500);
-  setTimeout(()=>{ statusEl.innerText="ACCESS GRANTED"; },3000);
-  setTimeout(()=>{ statusEl.innerText="INNER CIRCLE VERIFIED"; },4500);
-  setTimeout(()=>{ nextQ(4); },5500);
-}
-
-// Mission + Poker Table
-function mission(){
-  const w=500,h=300,cx=w/2,cy=h/2;
-
-  render(`
-  <p>OPERATION FOREVER</p>
-  <p>Agent ${agent}</p>
-  <p>${codename}</p>
-
-  <div class="table-wrapper" id="table">
-    <div class="table"></div>
-  </div>
-
-  <div id="timer"></div>
-
-  <div style="margin-top:20px;">
-    <p>Safe House: 6233 Muirfield Dr SW Cedar Rapids, IA</p>
-    <button onclick="openForm()">Secure Safe House Access</button>
-  </div>
-  `);
-
-  // Timer
-  const target=new Date("September 18, 2026 12:00:00").getTime();
-  const t=setInterval(()=>{
-    let diff=target-Date.now();
-    if(diff<=0){
-      timer.innerText="Mission Started";
-      clearInterval(t);
-      return;
-    }
-    let d=Math.floor(diff/86400000);
-    let h=Math.floor(diff/3600000)%24;
-    let m=Math.floor(diff/60000)%60;
-    let s=Math.floor(diff/1000)%60;
-    timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
-  },1000);
-
-  // Poker Table
-  const container=document.getElementById("table");
-  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-
-  players.forEach((p,i)=>{
-    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const x=cx+(w/2+40)*Math.cos(angle);
-    const y=cy+(h/2+40)*Math.sin(angle);
-
-    let name=document.createElement("div");
-    name.className="player-name";
-    name.innerText=p;
-    name.style.left=x+"px";
-    name.style.top=y+"px";
-    container.appendChild(name);
-
-    let tooltip=document.createElement("div");
-    tooltip.className="tooltip";
-    const [cd,desc]=codenameMap[p];
-    tooltip.innerHTML=`${cd}: ${desc}<br>${roles[p]}`;
-    container.appendChild(tooltip);
-
-    name.onmouseover=e=>{
-      tooltip.style.display="block";
-      tooltip.style.left=e.pageX+10+"px";
-      tooltip.style.top=e.pageY+10+"px";
+    btn.onclick = () => {
+      if(option === q.answer){
+        currentLevel++;
+        if(currentLevel >= innerCircle.length){
+          startMission();
+        } else {
+          loadQuestion();
+        }
+      } else {
+        alert("ACCESS DENIED");
+      }
     };
-    name.onmouseout=()=>tooltip.style.display="none";
 
-    for(let c=0;c<4;c++){
-      let chip=document.createElement("div");
-      chip.className="chip";
-      chip.style.background=c%2?'gold':'red';
-      chip.style.left=x+"px";
-      chip.style.top=(y-c*5)+"px";
-      container.appendChild(chip);
-    }
+    optionsDiv.appendChild(btn);
   });
 }
 
-// Google Form Only
-function openForm(){
-  const name=encodeURIComponent(agent);
-  const stay=encodeURIComponent("Yes");
-  const roleVal=encodeURIComponent(roles[agent]||"Groomsman");
+function startMission(){
+  const agent = agents[currentAgentKey];
 
-  window.open(`https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/viewform?usp=pp_url&entry.385675046=${name}&entry.1160902778=${stay}&entry.794497838=${roleVal}`);
+  const url = `${formBase}?usp=pp_url&entry.385675046=${encodeURIComponent(agent.name)}&entry.794497838=${encodeURIComponent(agent.role)}&entry.1160902778=Yes`;
+
+  frame.src = url;
+  document.getElementById("securityStage").style.display = "none";
+  frame.style.display = "block";
+
+  setTimeout(() => {
+    localStorage.setItem(currentAgentKey,"confirmed");
+    document.querySelector(`[data-agent='${currentAgentKey}']`).classList.add("confirmed");
+
+    document.getElementById("terminal").style.display = "none";
+    confirmation.style.display = "block";
+
+    checkAllComplete();
+  }, 8000);
 }
 
-// Easter Egg
-let clicks=0;
-title.onclick=()=>{
-  clicks++;
-  if(clicks===5) alert("Drinks on Arunan 🍸");
-};
+function checkAllComplete(){
+  const allDone = Object.keys(agents).every(a => localStorage.getItem(a)==="confirmed");
+  if(allDone){
+    document.getElementById("allDone").style.display = "block";
+  }
+}
 
-start();
+Object.keys(agents).forEach((key,i)=>{
+  const agent = agents[key];
+
+  const div = document.createElement("div");
+  div.className="agent";
+  div.innerText=agent.name;
+  div.dataset.agent=key;
+  div.style.left=positions[i][0]+"px";
+  div.style.top=positions[i][1]+"px";
+
+  if(localStorage.getItem(key)==="confirmed"){
+    div.classList.add("confirmed");
+  }
+
+  div.onclick=()=>{
+    currentAgentKey=key;
+    currentLevel=0;
+    overlay.style.display="flex";
+    loadQuestion();
+  };
+
+  table.appendChild(div);
+});
 </script>
+
 </body>
 </html>
