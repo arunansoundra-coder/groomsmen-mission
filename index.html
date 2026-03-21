@@ -53,47 +53,39 @@ button{
 
 .seat{
   position:absolute;
-  width:60px;
+  width:90px;
   text-align:center;
-  font-size:0.6rem;
-  cursor:pointer;
+  transform:translate(-50%, -50%);
+}
+
+.seat b{
+  font-size:0.65rem;
+}
+
+.seat span{
+  display:block;
 }
 
 .chips{
-  width:20px;
-  height:10px;
+  width:18px;
+  height:8px;
   background:gold;
-  margin:3px auto;
   border-radius:2px;
+  margin:4px auto 0;
 }
 
-.popup{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#1f2833;
-  padding:20px;
-  border-radius:10px;
-  border:2px solid #45a29e;
-  display:none;
-  z-index:10;
-}
-
-.popup img{
-  width:80px;
-  height:80px;
-  background:#333;
-  border-radius:50%;
-  margin-bottom:10px;
-}
-
-.overlay{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.7);
-  display:none;
+.card{
+  width:24px;
+  height:34px;
+  background:white;
+  color:black;
+  font-size:0.5rem;
+  border-radius:3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:4px auto 0;
+  box-shadow:0 2px 4px rgba(0,0,0,0.5);
 }
 </style>
 </head>
@@ -104,19 +96,8 @@ button{
 <div id="app"></div>
 </div>
 
-<div class="overlay" id="overlay"></div>
-
-<div class="popup" id="popup">
-  <img src="" id="popupImg">
-  <h3 id="popupName"></h3>
-  <p id="popupCodename"></p>
-  <p id="popupRole"></p>
-  <button onclick="closePopup()">Close</button>
-</div>
-
 <script>
 const app=document.getElementById('app');
-
 const agentName=new URLSearchParams(window.location.search).get('agent')||'Agent';
 
 const codenames={
@@ -145,16 +126,23 @@ let currentQ=0;
 
 function render(html){app.innerHTML=html;}
 
+/* START */
 function start(){
-render(`<h2>Agent ${agentName}</h2>
-<button onclick="showQuestion()">Begin Mission</button>`);
+render(`
+<h2>Agent ${agentName}</h2>
+<button onclick="showQuestion()">Begin Mission</button>
+`);
 }
 
+/* QUESTIONS */
 function showQuestion(){
 const q=innerCircle[currentQ];
-render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>
+render(`
+<h3>LEVEL ${q.level}</h3>
+<p>${q.q}</p>
 ${q.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join('')}
-<div id="fb"></div>`);
+<div id="fb"></div>
+`);
 }
 
 function checkAnswer(a){
@@ -162,20 +150,58 @@ const q=innerCircle[currentQ];
 const fb=document.getElementById('fb');
 
 if(a===q.answer){
-fb.innerHTML="✓";
+fb.innerHTML="✓ Correct";
 currentQ++;
-if(currentQ<innerCircle.length) setTimeout(showQuestion,800);
-else setTimeout(pokerTable,1000);
-} else fb.innerHTML="✖";
+
+if(currentQ<innerCircle.length){
+  setTimeout(showQuestion,800);
+} else {
+  setTimeout(missionAcceptance,800);
+}
+
+} else {
+fb.innerHTML="✖ Incorrect";
+}
+}
+
+/* MISSION ACCEPTANCE */
+function missionAcceptance(){
+const role=roles[agentName] || "Groomsman";
+
+render(`
+<h3>CLASSIFIED // FINAL CLEARANCE</h3>
+
+<p>Agent ${agentName},</p>
+
+<p>You have been assigned:</p>
+<h2 style="color:#ffd700;">${role}</h2>
+
+<p>Do you accept this mission?</p>
+
+<p style="font-style:italic; color:#aaa;">
+“The world is not enough... but tonight, this mission is.”
+</p>
+
+<button onclick="acceptMission()">🍸 Pour the whiskey</button>
+<button onclick="acceptMission()">🥃 Shaken, not stirred</button>
+<button onclick="acceptMission()">🎯 I accept the mission</button>
+`);
+}
+
+/* ACCEPT → POKER */
+function acceptMission(){
+pokerTable();
 }
 
 /* POKER TABLE */
 function pokerTable(){
 render(`
 <h3>MISSION BRIEFING</h3>
+
 <div class="table-wrapper" id="table">
 <div class="table"></div>
 </div>
+
 <button onclick="safeHouse()">Continue</button>
 `);
 
@@ -184,39 +210,44 @@ const cx=175, cy=110;
 
 agents.forEach((name,i)=>{
 let angle=(i/agents.length)*Math.PI*2;
-let x=cx+Math.cos(angle)*140;
-let y=cy+Math.sin(angle)*90;
+
+// TEXT (outside)
+let textX=cx+Math.cos(angle)*165;
+let textY=cy+Math.sin(angle)*125;
+
+// CHIP + CARD (inside)
+let chipX=cx+Math.cos(angle)*110;
+let chipY=cy+Math.sin(angle)*80;
+
+let cardX=cx+Math.cos(angle)*90;
+let cardY=cy+Math.sin(angle)*65;
 
 let seat=document.createElement('div');
 seat.className='seat';
-seat.style.left=x+"px";
-seat.style.top=y+"px";
+
+seat.style.left=textX+"px";
+seat.style.top=textY+"px";
 
 seat.innerHTML=`
-<div class="chips"></div>
-<b>${name}</b><br>
-${codenames[name]}
-`;
+<b>${name}</b>
+<span style="color:#ffd700;">${codenames[name]}</span>
+<span style="color:#aaa; font-size:0.55rem;">${roles[name]}</span>
 
-seat.onclick=()=>showPopup(name);
+<div class="chips" style="position:absolute; left:${chipX-textX}px; top:${chipY-textY}px;"></div>
+
+<div class="card" style="position:absolute; left:${cardX-textX}px; top:${cardY-textY}px;">
+${getCard(i)}
+</div>
+`;
 
 table.appendChild(seat);
 });
 }
 
-/* POPUP */
-function showPopup(name){
-document.getElementById('overlay').style.display='block';
-document.getElementById('popup').style.display='block';
-
-document.getElementById('popupName').innerText=name;
-document.getElementById('popupCodename').innerText="Codename: "+codenames[name];
-document.getElementById('popupRole').innerText="Role: "+roles[name];
-}
-
-function closePopup(){
-document.getElementById('overlay').style.display='none';
-document.getElementById('popup').style.display='none';
+/* CARDS */
+function getCard(i){
+const cards=["A♠","K♥","Q♣","J♦","10♠","9♥","8♣","7♦"];
+return cards[i%cards.length];
 }
 
 /* SAFE HOUSE */
@@ -233,7 +264,6 @@ render(`
 /* GOOGLE FORM */
 function submitForm(attending){
 
-// Skip submission for Groom
 if(roles[agentName]==="Groom"){
 render("<h2>✔ Attendance Recorded (Local)</h2>");
 return;
@@ -252,7 +282,7 @@ mode:"no-cors",
 body:data
 });
 
-render(`<h2>✔ Response Submitted</h2>`);
+render("<h2>✔ Response Submitted</h2>");
 }
 
 start();
