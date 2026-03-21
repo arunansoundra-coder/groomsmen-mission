@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MI6 Secure Channel</title>
 
+<meta name="theme-color" content="#0b0c10">
+
 <style>
 body{
   margin:0;
@@ -21,49 +23,49 @@ body{
   max-width:700px;
   background:#1f2833;
   padding:20px;
-  border-radius:12px;
+  border-radius:20px;
   text-align:center;
 }
 
 button{
   width:100%;
-  padding:12px;
+  padding:14px;
   margin:8px 0;
   background:#45a29e;
   color:white;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
+}
+
+.screen{
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 
 .table-wrapper{
   position:relative;
-  width:100%;
-  max-width:320px;
-  height:220px;
-  margin:20px auto;
+  width:300px;
+  height:188px;
+  margin:30px auto;
 }
 
 .table{
   width:100%;
   height:100%;
-  border-radius:50%;
+  border-radius:50%/50%;
   background:radial-gradient(circle,#0a5f2f,#004d26);
   border:3px solid #45a29e;
 }
 
-.player{
+.player-name{
   position:absolute;
-  font-size:0.6rem;
-  text-align:center;
-}
-
-.card{
-  position:absolute;
-  width:32px;
-  height:44px;
-  background:white;
-  border-radius:4px;
+  font-size:0.65rem;
+  transform:translate(-50%,-50%);
 }
 </style>
 </head>
@@ -74,174 +76,205 @@ button{
 <div id="app"></div>
 </div>
 
-<script>
-const app=document.getElementById("app");
-const params=new URLSearchParams(window.location.search);
-const agent=params.get("agent")||"Agent";
+<!-- ✅ Firebase v8 (WORKING) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-const roles={
-  "Arunan":"Groom",
-  "Jason":"Best Man",
-  "Gill":"Groomsman",
-  "Prathap":"Groomsman",
-  "Taylor":"Groomsman",
-  "Duran":"Groomsman",
-  "Josh":"Groomsman"
-};
+<script>
+const app=document.getElementById('app');
+const agentName=new URLSearchParams(window.location.search).get('agent')||'Agent';
 
 const codenames={
-  "Arunan":"Ghost",
-  "Jason":"Viper",
-  "Gill":"Architect",
-  "Prathap":"Midnight",
-  "Taylor":"Shadow",
-  "Duran":"Anomaly",
-  "Josh":"Mirage"
+"Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
+"Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
 };
 
-let currentQ=0;
-
-const questions=[
-{q:"City where paths became one?",a:"Cedar Rapids",options:["Cedar Rapids","Chicago","Des Moines","Omaha"]},
-{q:"Operation date?",a:"September 18, 2026",options:["September 18, 2026","September 19, 2026"]},
-{q:"Follow-up event?",a:"Homecoming Celebration",options:["Homecoming Celebration","After Party"]},
-{q:"Lodging location?",a:"Safe House",options:["Safe House","Hotel"]},
-{q:"Family is ______",a:"Forever",options:["Forever","Strong"]}
-];
-
-/* SOUND */
-const sounds={
- deal:new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_6c8b0a2e9b.mp3"),
- chip:new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a0c6a6b2f.mp3"),
- dealer:new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5d2c4c8a2b.mp3")
+const roles={
+"Arunan":"Best Man",
+"Prathap":"Groomsman","Gill":"Groomsman",
+"Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman","Jason":"Groomsman"
 };
-function play(s){sounds[s]?.play();}
 
-/* FLOW */
-function start(){
- app.innerHTML=`
-  <p>${agent}</p>
-  <button onclick="startQuestions()">Begin Mission</button>
- `;
+const codename=codenames[agentName]||"Agent";
+const role=roles[agentName]||"Groomsman";
+
+function render(html){
+  app.innerHTML=`<div class="screen">${html}</div>`;
 }
 
-function startQuestions(){ showQ(); }
+/* QUESTIONS */
+const innerCircle=[
+{level:1,q:"Where did it all begin?",options:["Cedar Rapids","Chicago","Omaha"],answer:"Cedar Rapids"},
+{level:2,q:"Mission date?",options:["September 18, 2026","September 19, 2026"],answer:"September 18, 2026"},
+{level:3,q:"Follow up event?",options:["Homecoming Celebration","After Party"],answer:"Homecoming Celebration"},
+{level:4,q:"Lodging codename?",options:["Safe House","Base"],answer:"Safe House"},
+{level:5,q:"Family is ____",options:["Forever","Strong"],answer:"Forever"}
+];
 
+let qIndex=0;
+
+/* START */
+function start(){
+render(`<p>Agent ${agentName} (${codename})</p>
+<button id="startBtn">Begin Mission</button>`);
+document.getElementById("startBtn").addEventListener("click", startQ);
+}
+
+function startQ(){ showQ(); }
+
+/* QUESTIONS */
 function showQ(){
- let q=questions[currentQ];
- app.innerHTML=`
-  <h3>${q.q}</h3>
-  ${q.options.map(o=>`<button onclick="check('${o}')">${o}</button>`).join("")}
- `;
+const q=innerCircle[qIndex];
+
+render(`
+<h3>LEVEL ${q.level}</h3>
+<p>${q.q}</p>
+${q.options.map(o=>`<button class="opt">${o}</button>`).join('')}
+<div id="fb"></div>
+`);
+
+document.querySelectorAll(".opt").forEach(btn=>{
+btn.addEventListener("click", ()=>check(btn.innerText));
+});
 }
 
 function check(ans){
- let q=questions[currentQ];
- if(ans===q.a){
-  currentQ++;
-  if(currentQ<questions.length) showQ();
-  else mission();
- }
+const q=innerCircle[qIndex];
+
+if(ans===q.answer){
+qIndex++;
+if(qIndex<innerCircle.length) setTimeout(showQ,500);
+else setTimeout(accessGranted,800);
+}else{
+document.getElementById('fb').innerText="Incorrect. Try again.";
+}
 }
 
-/* MISSION */
-function mission(){
- let role=roles[agent]||"Groomsman";
- let codename=codenames[agent]||"Agent";
+/* GLITCH */
+function accessGranted(){
+render(`<h1 id="g">ACCESS GRANTED</h1>`);
+let g=document.getElementById('g'),c=0;
 
- app.innerHTML=`
-  <h3>MISSION ACCEPTANCE</h3>
-  <p>${agent} (${codename})</p>
-  <h2>${role}</h2>
-
-  <button onclick="accept()">🥃 Pour the whiskey</button>
-  <button onclick="accept()">🍸 Shaken not stirred</button>
- `;
+let fx=setInterval(()=>{
+g.style.opacity=Math.random();
+g.style.transform=`translate(${Math.random()*5}px,${Math.random()*5}px)`;
+if(++c>10){
+clearInterval(fx);
+terminal();
+}
+},80);
 }
 
-function accept(){
- poker();
+/* TERMINAL */
+function terminal(){
+render(`
+<h3>OPERATION: FOREVER</h3>
+<p>${agentName} (${codename})</p>
+<h2>${role}</h2>
+
+<button class="accept">🥃 Pour the whiskey</button>
+<button class="accept">🍸 Shaken, not stirred</button>
+`);
+
+document.querySelectorAll(".accept").forEach(btn=>{
+btn.addEventListener("click", poker);
+});
 }
 
 /* POKER */
-let players=["Jason","Gill","Prathap","Taylor","Duran","Josh","Arunan"];
-let turn=0;
-let pot=0;
-
 function poker(){
- app.innerHTML=`
-  <h3>Poker Table</h3>
-  <p>Pot: ${pot}</p>
 
-  <div class="table-wrapper" id="table">
-   <div class="table"></div>
-  </div>
+const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
 
-  <button onclick="action('call')">Call</button>
-  <button onclick="action('raise')">Raise</button>
-  <button onclick="action('fold')">Fold</button>
+render(`
+<h3>MISSION START</h3>
+<p>${agentName} (${codename}) - ${role}</p>
+<h2>12:00 PM • September 18, 2026</h2>
 
-  <button onclick="safeHouse()">Continue</button>
- `;
- renderPlayers();
-}
+<div class="table-wrapper" id="table">
+<div class="table"></div>
+</div>
 
-function renderPlayers(){
- let table=document.getElementById("table");
- players.forEach((p,i)=>{
-  let angle=(i/players.length)*Math.PI*2;
-  let x=150+Math.cos(angle)*120;
-  let y=100+Math.sin(angle)*80;
+<button id="safeBtn">Proceed to Safe House</button>
+`);
 
-  let div=document.createElement("div");
-  div.className="player";
-  div.style.left=x+"px";
-  div.style.top=y+"px";
-  div.innerHTML=p;
-  table.appendChild(div);
- });
-}
+const table=document.getElementById('table');
+const cx=150,cy=94;
 
-function action(type){
- if(type==="raise"){pot+=10; play("chip");}
- turn=(turn+1)%players.length;
- poker();
+players.forEach((p,i)=>{
+let angle=i*(2*Math.PI/players.length);
+let x=cx+120*Math.cos(angle);
+let y=cy+70*Math.sin(angle);
+
+let name=document.createElement('div');
+name.className='player-name';
+name.innerText=p===agentName?`${p} (YOU)`:p;
+name.style.left=x+"px";
+name.style.top=y+"px";
+
+table.appendChild(name);
+});
+
+document.getElementById("safeBtn").addEventListener("click", safe);
 }
 
 /* SAFE HOUSE */
-function safeHouse(){
+function safe(){
+render(`
+<h3>SAFE HOUSE</h3>
+<p>6233 Muirfield Dr SW<br>Cedar Rapids, IA</p>
 
- let role=roles[agent];
-
- if(role==="Groomsman" || role==="Best Man"){
-  sendForm();
- }
-
- app.innerHTML=`
-  <h3>Safe House</h3>
-  <p>6233 Muirfield Dr SW</p>
-  <button onclick="confirm()">Confirm Attendance</button>
- `;
+<button onclick="confirm(true)">Confirm Attendance</button>
+<button onclick="confirm(false)">Decline</button>
+`);
 }
 
-function sendForm(){
- if(agent==="Arunan") return;
+/* FIREBASE */
+const firebaseConfig={
+apiKey:"YOUR_API_KEY",
+databaseURL:"YOUR_DATABASE_URL"
+};
 
- let url="https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/formResponse";
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
 
- fetch(url,{
-  method:"POST",
-  mode:"no-cors",
-  body:new URLSearchParams({
-   "entry.385675046":agent,
-   "entry.1160902778":"Yes",
-   "entry.794497838":roles[agent]
-  })
- });
+/* CONFIRM */
+function confirm(status){
+
+db.ref("agents/"+agentName).set({
+name:agentName,
+codename:codename,
+role:role,
+status:status?"Attending":"Declined",
+timestamp:Date.now()
+});
+
+render(`
+<h2 style="color:${status?'#00ff9f':'#ff4d4d'};">
+${status?"✔ Attendance Confirmed":"✖ Declined"}
+</h2>
+
+<button onclick="dashboard()">View Dashboard</button>
+`);
 }
 
-function confirm(){
- app.innerHTML="<h2>✔ Confirmed</h2>";
+/* DASHBOARD */
+function dashboard(){
+render(`<h3>🛰 LIVE AGENTS</h3><div id="list"></div>`);
+
+db.ref("agents").on("value",snap=>{
+let data=snap.val();
+let list=document.getElementById('list');
+list.innerHTML="";
+
+for(let k in data){
+let a=data[k];
+list.innerHTML+=`
+<p>${a.name} (${a.codename}) - 
+<span style="color:${a.status==="Attending"?'#00ff9f':'#ff4d4d'}">
+${a.status}</span></p>`;
+}
+});
 }
 
 start();
