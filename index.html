@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -49,14 +49,6 @@ button{
   border-radius:50%/50%;
   background:radial-gradient(circle, #0a5f2f, #004d26);
   border:3px solid #45a29e;
-  box-shadow:0 0 20px rgba(0,255,159,0.2);
-  animation:tablePulse 4s infinite ease-in-out;
-}
-
-@keyframes tablePulse{
-  0%{ box-shadow:0 0 10px rgba(0,255,159,0.2);}
-  50%{ box-shadow:0 0 25px rgba(0,255,159,0.4);}
-  100%{ box-shadow:0 0 10px rgba(0,255,159,0.2);}
 }
 
 .card{
@@ -89,15 +81,22 @@ button{
 
 <script>
 const app=document.getElementById('app');
-const urlParams=new URLSearchParams(window.location.search);
-const agentName=urlParams.get('agent')||'Agent';
+const agentName=new URLSearchParams(window.location.search).get('agent')||'Agent';
 
 const codenames={
   "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
   "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
 };
 
+const roles={
+  "Arunan":"Best Man",
+  "Prathap":"Groomsman","Gill":"Groomsman",
+  "Taylor":"Groomsman","Duran":"Groomsman",
+  "Josh":"Groomsman","Jason":"Groomsman"
+};
+
 const codename=codenames[agentName]||"Agent";
+const role=roles[agentName]||"Groomsman";
 
 /* QUESTIONS */
 const innerCircle=[
@@ -123,9 +122,9 @@ function startQuestions(){ showQuestion(); }
 
 function showQuestion(){
   const q=innerCircle[currentQ];
-  let options=q.options.map(opt=>`<button onclick="checkAnswer('${opt}')">${opt}</button>`).join('');
-
-  render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>${options}<div id="feedback"></div>`);
+  render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>
+    ${q.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join('')}
+    <div id="feedback"></div>`);
 }
 
 function checkAnswer(selected){
@@ -140,97 +139,95 @@ function checkAnswer(selected){
       setTimeout(showQuestion,800);
     } else {
       fb.innerHTML="🎯 INNER CIRCLE VERIFIED";
-      setTimeout(eventScreen,1000);
+      setTimeout(terminalIntro,1000);
     }
   } else {
     fb.innerHTML="✖ Incorrect. Try again.";
   }
 }
 
+/* TERMINAL INTRO */
+function terminalIntro(){
+  render(`
+    <h3>CLASSIFIED // OPERATION: FOREVER</h3>
+    <p>Agent ${agentName} (${codename})</p>
+    <p>You are hereby assigned the role of:</p>
+    <h2 style="color:#ffd700;">${role}</h2>
+    <p>Do you accept this mission?</p>
+
+    <button onclick="acceptMission()">🥃 Pour the whiskey</button>
+    <button onclick="acceptMission()">🍸 Shaken, not stirred</button>
+    <button onclick="acceptMission()">🎯 Mission accepted</button>
+  `);
+}
+
+/* ACCEPT → POKER */
+function acceptMission(){
+  eventScreen();
+}
+
 /* POKER SCREEN */
 function eventScreen(){
   render(`
-    <p style="color:#ffd700;">AGENTS ASSEMBLED AT COMMAND TABLE</p>
+    <h3 style="color:#ffd700;">MISSION BRIEFING</h3>
+    <p>Agent ${agentName} (${codename})</p>
+    <p>Role: ${role}</p>
+
+    <p>Mission begins at:</p>
+    <h2>12:00 PM — September 18, 2026</h2>
+    <p>Location: High Stakes Poker Table</p>
+    <p>Objective: Beat the Groom</p>
 
     <div class="table-wrapper" id="table">
       <div class="table"></div>
-      <div id="centerText" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.75rem;color:#ffd700;">
-        🤖 DEALER ACTIVE
-      </div>
     </div>
 
-    <button onclick="authorizeMission()">[ AUTHORIZE MISSION ]</button>
+    <button onclick="safeHouse()">Proceed to Safe House Intel</button>
   `);
 
-  buildTable();
   dealCards();
-}
-
-function buildTable(){
-  const w=300,h=188,cx=w/2,cy=h/2;
-  const container=document.getElementById('table');
-  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-
-  players.forEach((p,i)=>{
-    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const px=cx+(w/2+30)*Math.cos(angle);
-    const py=cy+(h/2+30)*Math.sin(angle);
-
-    const name=document.createElement('div');
-    name.className='player-name';
-    name.innerText=p===agentName?`${p} (YOU)`:p;
-    name.style.left=px+"px";
-    name.style.top=py+"px";
-
-    container.appendChild(name);
-  });
 }
 
 function dealCards(){
   const container=document.getElementById('table');
-  const w=300,h=188,cx=w/2,cy=h/2;
-  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-  const deck=["A♠","K♥","Q♣","J♦","10♠","9♥"];
+  const cx=150,cy=94;
+  const deck=["A♠","K♥","Q♣","J♦"];
 
-  let delay=0;
+  for(let i=0;i<4;i++){
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerText=deck[i];
+    card.style.left=cx+"px";
+    card.style.top=cy+"px";
+    container.appendChild(card);
 
-  players.forEach((p,i)=>{
-    const angle=(i/players.length)*2*Math.PI-Math.PI/2;
-    const px=cx+(w/2)*Math.cos(angle);
-    const py=cy+(h/2)*Math.sin(angle);
-
-    for(let c=0;c<2;c++){
-      const card=document.createElement('div');
-      card.className='card';
-      card.innerText=deck[(i+c)%deck.length];
-      card.style.left=cx+"px";
-      card.style.top=cy+"px";
-      container.appendChild(card);
-
-      setTimeout(()=>{
-        card.style.left=(px+(c*10))+"px";
-        card.style.top=py+"px";
-        card.style.transform="translate(-50%,-50%) rotateY(0deg)";
-      },delay);
-
-      delay+=150;
-    }
-  });
+    setTimeout(()=>{
+      card.style.left=(cx+Math.cos(i*1.5)*100)+"px";
+      card.style.top=(cy+Math.sin(i*1.5)*60)+"px";
+      card.style.transform="translate(-50%,-50%) rotateY(0deg)";
+    },i*200);
+  }
 }
 
-/* FINAL */
-function authorizeMission(){
-  render(`<h2 style="color:#00ff9f;">MISSION CONFIRMED</h2>
-  <button onclick="transmitSMS()">📡 Transmit</button>
-  <button onclick="transmitEmail()">✉ Email</button>`);
+/* SAFE HOUSE */
+function safeHouse(){
+  render(`
+    <h3>SAFE HOUSE LOCATION</h3>
+    <p>6233 Muirfield Dr SW</p>
+    <p>Cedar Rapids, IA</p>
+
+    <p>Confirm your presence at the safe house during the mission.</p>
+
+    <button onclick="confirm(true)">✅ Confirm Attendance</button>
+    <button onclick="confirm(false)">❌ Decline</button>
+  `);
 }
 
-function transmitSMS(){
-  window.location.href=`sms:+14694262300?body=Agent ${agentName} staying`;
-}
-
-function transmitEmail(){
-  window.location.href=`mailto:arunansoundra@gmail.com`;
+function confirm(status){
+  render(status
+    ? "<h2 style='color:#00ff9f;'>✔ Attendance Confirmed</h2>"
+    : "<h2 style='color:#ff4d4d;'>✖ Mission Declined</h2>"
+  );
 }
 
 start();
