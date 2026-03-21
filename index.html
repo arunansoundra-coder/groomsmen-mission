@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MI6 Secure Channel</title>
+
+<!-- 📱 Mobile App Feel -->
+<meta name="theme-color" content="#0b0c10">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
 <style>
 body{
@@ -14,6 +19,7 @@ body{
   display:flex;
   justify-content:center;
   padding-top:20px;
+  overscroll-behavior:none;
 }
 
 .container{
@@ -21,33 +27,49 @@ body{
   max-width:700px;
   background:#1f2833;
   padding:20px;
-  border-radius:12px;
+  border-radius:20px;
   text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
 button{
   width:100%;
-  padding:12px;
+  padding:14px;
   margin:8px 0;
   background:#45a29e;
   color:white;
   border:none;
-  border-radius:8px;
-  cursor:pointer;
+  border-radius:10px;
+  font-weight:600;
 }
 
+button:active{
+  transform:scale(0.97);
+}
+
+/* 🎬 Screen Animation */
+.screen{
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* 🃏 Poker Table */
 .table-wrapper{
   position:relative;
   width:300px;
   height:188px;
-  margin:40px auto 20px auto;
+  margin:30px auto;
 }
 
 .table{
   width:100%;
   height:100%;
   border-radius:50%/50%;
-  background:radial-gradient(circle, #0a5f2f, #004d26);
+  background:radial-gradient(circle,#0a5f2f,#004d26);
   border:3px solid #45a29e;
 }
 
@@ -60,7 +82,6 @@ button{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:0.7rem;
   transform:translate(-50%,-50%) rotateY(90deg);
   transition:0.6s;
 }
@@ -79,155 +100,181 @@ button{
 <div id="app"></div>
 </div>
 
+<!-- 🔊 Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
 <script>
 const app=document.getElementById('app');
 const agentName=new URLSearchParams(window.location.search).get('agent')||'Agent';
 
 const codenames={
-  "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
-  "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
+"Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
+"Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
 };
 
 const roles={
-  "Arunan":"Best Man",
-  "Prathap":"Groomsman","Gill":"Groomsman",
-  "Taylor":"Groomsman","Duran":"Groomsman",
-  "Josh":"Groomsman","Jason":"Groomsman"
+"Arunan":"Best Man",
+"Prathap":"Groomsman","Gill":"Groomsman",
+"Taylor":"Groomsman","Duran":"Groomsman",
+"Josh":"Groomsman","Jason":"Groomsman"
 };
 
 const codename=codenames[agentName]||"Agent";
 const role=roles[agentName]||"Groomsman";
 
-/* QUESTIONS */
+/* 🔊 AUDIO */
+const casinoAudio=new Audio('https://assets.mixkit.co/sfx/preview/mixkit-casino-ambience-2093.mp3');
+casinoAudio.loop=true;
+casinoAudio.volume=0.3;
+
+/* 📱 HAPTICS */
+function haptic(){ if(navigator.vibrate) navigator.vibrate(10); }
+
+/* 🔥 RENDER */
+function render(html){ app.innerHTML=`<div class="screen">${html}</div>`; }
+
+/* 🧠 QUESTIONS */
 const innerCircle=[
-{level:1,q:"MISSION BRIEF: The operation begins in a city where two paths became one. Identify the location.",options:["Cedar Rapids","Chicago","Des Moines","Omaha"],answer:"Cedar Rapids"},
-{level:2,q:"INTEL REPORT: Confirm the operation date.",options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],answer:"September 18, 2026"},
-{level:3,q:"SURVEILLANCE LOG: Identify the follow-up celebration event.",options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],answer:"Homecoming Celebration"},
-{level:4,q:"CLASSIFIED MOVEMENT: What is the lodging location called?",options:["Headquarters","Safe House","Command Center","Base Camp"],answer:"Safe House"},
-{level:5,q:"FINAL CLEARANCE: Blood makes us related, loyalty makes a family, and family is ______.",options:["Forever","Strong","Unbreakable","Everything"],answer:"Forever"}
+{level:1,q:"Where did it all begin?",options:["Cedar Rapids","Chicago","Omaha"],answer:"Cedar Rapids"},
+{level:2,q:"Mission date?",options:["Sept 18","Sept 19"],answer:"Sept 18"},
+{level:3,q:"Follow up event?",options:["Homecoming Celebration","After Party"],answer:"Homecoming Celebration"},
+{level:4,q:"Lodging codename?",options:["Safe House","Base"],answer:"Safe House"},
+{level:5,q:"Family is ____",options:["Forever","Strong"],answer:"Forever"}
 ];
 
-let currentQ=0;
-
-function render(html){ app.innerHTML=html; }
+let qIndex=0;
 
 /* START */
 function start(){
-  render(`<p>Agent ${agentName} – Codename: ${codename}</p>
-  <button onclick="startQuestions()">Begin Mission</button>`);
+render(`<p>Agent ${agentName} (${codename})</p>
+<button onclick="startQ()">Begin Mission</button>`);
 }
 
-/* QUESTIONS */
-function startQuestions(){ showQuestion(); }
+function startQ(){ showQ(); }
 
-function showQuestion(){
-  const q=innerCircle[currentQ];
-  render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>
-    ${q.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join('')}
-    <div id="feedback"></div>`);
+function showQ(){
+const q=innerCircle[qIndex];
+render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>
+${q.options.map(o=>`<button onclick="check('${o}')">${o}</button>`).join('')}
+<div id="fb"></div>`);
 }
 
-function checkAnswer(selected){
-  const q=innerCircle[currentQ];
-  const fb=document.getElementById('feedback');
-
-  if(selected===q.answer){
-    fb.innerHTML="✓ Correct";
-    currentQ++;
-
-    if(currentQ<innerCircle.length){
-      setTimeout(showQuestion,800);
-    } else {
-      fb.innerHTML="🎯 INNER CIRCLE VERIFIED";
-      setTimeout(terminalIntro,1000);
-    }
-  } else {
-    fb.innerHTML="✖ Incorrect. Try again.";
-  }
+function check(ans){
+haptic();
+const q=innerCircle[qIndex];
+if(ans===q.answer){
+qIndex++;
+if(qIndex<innerCircle.length) setTimeout(showQ,500);
+else setTimeout(accessGranted,700);
+}else document.getElementById('fb').innerText="Incorrect";
 }
 
-/* TERMINAL INTRO */
-function terminalIntro(){
-  render(`
-    <h3>CLASSIFIED // OPERATION: FOREVER</h3>
-    <p>Agent ${agentName} (${codename})</p>
-    <p>You are hereby assigned the role of:</p>
-    <h2 style="color:#ffd700;">${role}</h2>
-    <p>Do you accept this mission?</p>
-
-    <button onclick="acceptMission()">🥃 Pour the whiskey</button>
-    <button onclick="acceptMission()">🍸 Shaken, not stirred</button>
-    <button onclick="acceptMission()">🎯 Mission accepted</button>
-  `);
+/* 🎬 GLITCH */
+function accessGranted(){
+render(`<h1 id="g">ACCESS GRANTED</h1>`);
+let g=document.getElementById('g'),c=0;
+let fx=setInterval(()=>{
+g.style.opacity=Math.random();
+g.style.transform=`translate(${Math.random()*5}px,${Math.random()*5}px)`;
+if(++c>10){clearInterval(fx); terminal();}
+},80);
 }
 
-/* ACCEPT → POKER */
-function acceptMission(){
-  eventScreen();
+/* 🖥 TERMINAL */
+function terminal(){
+render(`
+<h3>OPERATION: FOREVER</h3>
+<p>${agentName} (${codename})</p>
+<h2>${role}</h2>
+<button onclick="accept()">🥃 Pour the whiskey</button>
+<button onclick="accept()">🍸 Shaken, not stirred</button>
+`);
 }
 
-/* POKER SCREEN */
-function eventScreen(){
-  render(`
-    <h3 style="color:#ffd700;">MISSION BRIEFING</h3>
-    <p>Agent ${agentName} (${codename})</p>
-    <p>Role: ${role}</p>
-
-    <p>Mission begins at:</p>
-    <h2>12:00 PM — September 18, 2026</h2>
-    <p>Location: High Stakes Poker Table</p>
-    <p>Objective: Beat the Groom</p>
-
-    <div class="table-wrapper" id="table">
-      <div class="table"></div>
-    </div>
-
-    <button onclick="safeHouse()">Proceed to Safe House Intel</button>
-  `);
-
-  dealCards();
+/* ACCEPT */
+function accept(){
+haptic();
+casinoAudio.play().catch(()=>{});
+poker();
 }
 
-function dealCards(){
-  const container=document.getElementById('table');
-  const cx=150,cy=94;
-  const deck=["A♠","K♥","Q♣","J♦"];
+/* 🃏 POKER */
+function poker(){
+const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
+render(`
+<h3>MISSION START</h3>
+<p>${agentName} (${codename}) - ${role}</p>
+<h2>12:00 PM • Sept 18 2026</h2>
 
-  for(let i=0;i<4;i++){
-    const card=document.createElement('div');
-    card.className='card';
-    card.innerText=deck[i];
-    card.style.left=cx+"px";
-    card.style.top=cy+"px";
-    container.appendChild(card);
+<div class="table-wrapper" id="table"><div class="table"></div></div>
 
-    setTimeout(()=>{
-      card.style.left=(cx+Math.cos(i*1.5)*100)+"px";
-      card.style.top=(cy+Math.sin(i*1.5)*60)+"px";
-      card.style.transform="translate(-50%,-50%) rotateY(0deg)";
-    },i*200);
-  }
+<button onclick="safe()">Safe House Intel</button>
+`);
+
+const table=document.getElementById('table');
+const cx=150,cy=94;
+
+players.forEach((p,i)=>{
+let angle=i*(2*Math.PI/players.length);
+let x=cx+120*Math.cos(angle);
+let y=cy+70*Math.sin(angle);
+
+let name=document.createElement('div');
+name.className='player-name';
+name.innerText=p===agentName?`${p} (YOU)`:p;
+name.style.left=x+"px";
+name.style.top=y+"px";
+table.appendChild(name);
+});
 }
 
-/* SAFE HOUSE */
-function safeHouse(){
-  render(`
-    <h3>SAFE HOUSE LOCATION</h3>
-    <p>6233 Muirfield Dr SW</p>
-    <p>Cedar Rapids, IA</p>
-
-    <p>Confirm your presence at the safe house during the mission.</p>
-
-    <button onclick="confirm(true)">✅ Confirm Attendance</button>
-    <button onclick="confirm(false)">❌ Decline</button>
-  `);
+/* 📍 SAFE HOUSE */
+function safe(){
+render(`
+<h3>SAFE HOUSE</h3>
+<p>6233 Muirfield Dr SW<br>Cedar Rapids, IA</p>
+<button onclick="confirm(true)">Confirm</button>
+<button onclick="confirm(false)">Decline</button>
+`);
 }
 
+/* 🔥 FIREBASE CONFIG (PUT YOURS) */
+const firebaseConfig={
+apiKey:"YOUR_API_KEY",
+databaseURL:"YOUR_DB_URL"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+/* 📡 CONFIRM */
 function confirm(status){
-  render(status
-    ? "<h2 style='color:#00ff9f;'>✔ Attendance Confirmed</h2>"
-    : "<h2 style='color:#ff4d4d;'>✖ Mission Declined</h2>"
-  );
+db.ref("agents/"+agentName).set({
+name:agentName,
+codename:codename,
+role:role,
+status:status?"Attending":"Declined"
+});
+
+render(`
+<h2>${status?"✔ Confirmed":"✖ Declined"}</h2>
+<button onclick="dashboard()">View Dashboard</button>
+`);
+}
+
+/* 🛰 DASHBOARD */
+function dashboard(){
+render(`<h3>LIVE AGENTS</h3><div id="list"></div>`);
+
+db.ref("agents").on("value",snap=>{
+let data=snap.val();
+let list=document.getElementById('list');
+list.innerHTML="";
+for(let k in data){
+let a=data[k];
+list.innerHTML+=`<p>${a.name} (${a.codename}) - ${a.status}</p>`;
+}
+});
 }
 
 start();
