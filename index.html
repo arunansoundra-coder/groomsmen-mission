@@ -35,6 +35,7 @@ button{
   color:white;
   border:none;
   border-radius:10px;
+  cursor:pointer;
 }
 
 .screen{
@@ -75,11 +76,12 @@ button{
 <div id="app"></div>
 </div>
 
-<!-- ✅ Firebase v8 (FIXED) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
 <script>
+/* 🚨 ERROR VISIBILITY */
+window.onerror = function(message){
+  alert("Error: " + message);
+};
+
 const app=document.getElementById('app');
 const agentName=new URLSearchParams(window.location.search).get('agent')||'Agent';
 
@@ -98,11 +100,12 @@ const roles={
 const codename=codenames[agentName]||"Agent";
 const role=roles[agentName]||"Groomsman";
 
+/* 🔥 RENDER */
 function render(html){
   app.innerHTML=`<div class="screen">${html}</div>`;
 }
 
-/* QUESTIONS */
+/* 🧠 QUESTIONS */
 const innerCircle=[
 {level:1,q:"Where did it all begin?",options:["Cedar Rapids","Chicago","Omaha"],answer:"Cedar Rapids"},
 {level:2,q:"Mission date?",options:["September 18, 2026","September 19, 2026"],answer:"September 18, 2026"},
@@ -113,147 +116,140 @@ const innerCircle=[
 
 let qIndex=0;
 
+/* 🚀 START (FIXED BUTTON) */
 function start(){
-render(`<p>Agent ${agentName} (${codename})</p>
-<button onclick="startQ()">Begin Mission</button>`);
+  render(`
+    <p>Agent ${agentName} (${codename})</p>
+    <button id="startBtn">Begin Mission</button>
+  `);
+
+  document.getElementById("startBtn").addEventListener("click", startQ);
 }
 
+/* QUESTIONS FLOW */
 function startQ(){ showQ(); }
 
 function showQ(){
-const q=innerCircle[qIndex];
-render(`<h3>LEVEL ${q.level}</h3><p>${q.q}</p>
-${q.options.map(o=>`<button onclick="check('${o}')">${o}</button>`).join('')}
-<div id="fb"></div>`);
+  const q=innerCircle[qIndex];
+  render(`
+    <h3>LEVEL ${q.level}</h3>
+    <p>${q.q}</p>
+    ${q.options.map(o=>`<button class="opt">${o}</button>`).join('')}
+    <div id="fb"></div>
+  `);
+
+  document.querySelectorAll(".opt").forEach(btn=>{
+    btn.addEventListener("click", ()=>check(btn.innerText));
+  });
 }
 
 function check(ans){
-const q=innerCircle[qIndex];
-if(ans===q.answer){
-qIndex++;
-if(qIndex<innerCircle.length) setTimeout(showQ,500);
-else setTimeout(accessGranted,800);
-}else{
-document.getElementById('fb').innerText="Incorrect. Try again.";
-}
+  const q=innerCircle[qIndex];
+
+  if(ans===q.answer){
+    qIndex++;
+    if(qIndex<innerCircle.length){
+      setTimeout(showQ,500);
+    } else {
+      setTimeout(accessGranted,800);
+    }
+  } else {
+    document.getElementById('fb').innerText="Incorrect. Try again.";
+  }
 }
 
-/* GLITCH */
+/* 🎬 GLITCH */
 function accessGranted(){
-render(`<h1 id="g">ACCESS GRANTED</h1>`);
-let g=document.getElementById('g'),c=0;
-let fx=setInterval(()=>{
-g.style.opacity=Math.random();
-g.style.transform=`translate(${Math.random()*5}px,${Math.random()*5}px)`;
-if(++c>10){clearInterval(fx); terminal();}
-},80);
+  render(`<h1 id="g">ACCESS GRANTED</h1>`);
+  let g=document.getElementById('g'),c=0;
+
+  let fx=setInterval(()=>{
+    g.style.opacity=Math.random();
+    g.style.transform=`translate(${Math.random()*5}px,${Math.random()*5}px)`;
+
+    if(++c>10){
+      clearInterval(fx);
+      terminal();
+    }
+  },80);
 }
 
-/* TERMINAL */
+/* 🖥 TERMINAL */
 function terminal(){
-render(`
-<h3>OPERATION: FOREVER</h3>
-<p>${agentName} (${codename})</p>
-<h2>${role}</h2>
-<button onclick="accept()">🥃 Pour the whiskey</button>
-<button onclick="accept()">🍸 Shaken, not stirred</button>
-`);
+  render(`
+    <h3>OPERATION: FOREVER</h3>
+    <p>${agentName} (${codename})</p>
+    <h2>${role}</h2>
+
+    <button class="accept">🥃 Pour the whiskey</button>
+    <button class="accept">🍸 Shaken, not stirred</button>
+  `);
+
+  document.querySelectorAll(".accept").forEach(btn=>{
+    btn.addEventListener("click", poker);
+  });
 }
 
-/* POKER */
-function accept(){
-poker();
-}
-
+/* 🃏 POKER */
 function poker(){
-const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
-render(`
-<h3>MISSION START</h3>
-<p>${agentName} (${codename}) - ${role}</p>
-<h2>12:00 PM • September 18, 2026</h2>
+  const players=["Arunan","Prathap","Gill","Taylor","Duran","Josh","Jason"];
 
-<div class="table-wrapper" id="table"><div class="table"></div></div>
+  render(`
+    <h3>MISSION START</h3>
+    <p>${agentName} (${codename}) - ${role}</p>
+    <h2>12:00 PM • September 18, 2026</h2>
 
-<button onclick="safe()">Proceed to Safe House</button>
-`);
+    <div class="table-wrapper" id="table">
+      <div class="table"></div>
+    </div>
 
-const table=document.getElementById('table');
-const cx=150,cy=94;
+    <button id="safeBtn">Proceed to Safe House</button>
+  `);
 
-players.forEach((p,i)=>{
-let angle=i*(2*Math.PI/players.length);
-let x=cx+120*Math.cos(angle);
-let y=cy+70*Math.sin(angle);
+  const table=document.getElementById('table');
+  const cx=150,cy=94;
 
-let name=document.createElement('div');
-name.className='player-name';
-name.innerText=p===agentName?`${p} (YOU)`:p;
-name.style.left=x+"px";
-name.style.top=y+"px";
+  players.forEach((p,i)=>{
+    let angle=i*(2*Math.PI/players.length);
+    let x=cx+120*Math.cos(angle);
+    let y=cy+70*Math.sin(angle);
 
-table.appendChild(name);
-});
+    let name=document.createElement('div');
+    name.className='player-name';
+    name.innerText=p===agentName?`${p} (YOU)`:p;
+    name.style.left=x+"px";
+    name.style.top=y+"px";
+
+    table.appendChild(name);
+  });
+
+  document.getElementById("safeBtn").addEventListener("click", safe);
 }
 
-/* SAFE HOUSE */
+/* 📍 SAFE HOUSE */
 function safe(){
-render(`
-<h3>SAFE HOUSE</h3>
-<p>6233 Muirfield Dr SW<br>Cedar Rapids, IA</p>
+  render(`
+    <h3>SAFE HOUSE</h3>
+    <p>6233 Muirfield Dr SW<br>Cedar Rapids, IA</p>
 
-<button onclick="confirm(true)">Confirm Attendance</button>
-<button onclick="confirm(false)">Decline</button>
-`);
+    <button id="yes">Confirm Attendance</button>
+    <button id="no">Decline</button>
+  `);
+
+  document.getElementById("yes").addEventListener("click", ()=>confirm(true));
+  document.getElementById("no").addEventListener("click", ()=>confirm(false));
 }
 
-/* ✅ Firebase CONFIG (REPLACE THESE) */
-const firebaseConfig={
-apiKey:"YOUR_API_KEY",
-databaseURL:"YOUR_DATABASE_URL"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-
-/* CONFIRM */
+/* ✅ FINAL */
 function confirm(status){
-
-db.ref("agents/"+agentName).set({
-name:agentName,
-codename:codename,
-role:role,
-status:status?"Attending":"Declined",
-timestamp:Date.now()
-});
-
-render(`
-<h2 style="color:${status?'#00ff9f':'#ff4d4d'};">
-${status?"✔ Attendance Confirmed":"✖ Mission Declined"}
-</h2>
-<button onclick="dashboard()">View Agent Dashboard</button>
-`);
+  render(`
+    <h2 style="color:${status ? '#00ff9f' : '#ff4d4d'};">
+      ${status ? "✔ Attendance Confirmed" : "✖ Mission Declined"}
+    </h2>
+  `);
 }
 
-/* DASHBOARD */
-function dashboard(){
-render(`<h3>🛰 LIVE AGENTS</h3><div id="list"></div>`);
-
-db.ref("agents").on("value",snap=>{
-let data=snap.val();
-let list=document.getElementById('list');
-list.innerHTML="";
-
-for(let k in data){
-let a=data[k];
-list.innerHTML+=`
-<p>${a.name} (${a.codename}) — 
-<span style="color:${a.status==="Attending"?'#00ff9f':'#ff4d4d'}">
-${a.status}
-</span></p>`;
-}
-});
-}
-
+/* INIT */
 start();
 </script>
 </body>
