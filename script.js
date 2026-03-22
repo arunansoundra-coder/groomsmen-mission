@@ -2,264 +2,229 @@
 const dealSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3");
 const chipSound = new Audio("https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3");
 
-// --- HAND RANKS ---
-const handRanks = [
-  {name:"High Card", value:1},
-  {name:"Pair", value:2},
-  {name:"Two Pair", value:3},
-  {name:"Three of a Kind", value:4},
-  {name:"Straight", value:5},
-  {name:"Flush", value:6}
-];
-
 // --- APP ROOT ---
 const app = document.getElementById('app');
 
-// --- AGENT DATA ---
-const agentName = new URLSearchParams(window.location.search).get('agent') || 'Agent';
-
+// --- AGENTS ---
 const codenames = {
-  "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
+  "Arunan":"Ghost","Jason":"Viper","Gill":"Architect",
   "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
-};
-
-const roles = {
-  "Arunan":"Groom",
-  "Jason":"Best Man",
-  "Prathap":"Groomsman","Gill":"Groomsman",
-  "Taylor":"Groomsman","Duran":"Groomsman","Josh":"Groomsman"
 };
 
 const agents = Object.keys(codenames);
 
-// --- QUESTIONS ---
-const innerCircle = [
-  {level:1,q:"Identify the location.",options:["Cedar Rapids","Chicago","Des Moines","Omaha"],answer:"Cedar Rapids"},
-  {level:2,q:"Confirm the operation date.",options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],answer:"September 18, 2026"},
-  {level:3,q:"Follow-up event?",options:["Homecoming Celebration","Rehearsal Dinner","After Party","Brunch"],answer:"Homecoming Celebration"},
-  {level:4,q:"Lodging location?",options:["Safe House","Headquarters","Command Center","Base Camp"],answer:"Safe House"},
-  {level:5,q:"Blood makes us related, loyalty makes a family, and family is ____.",options:["Forever","Strong","Unbreakable","Everything"],answer:"Forever"}
-];
+// --- DECK ---
+const suits = ["♠","♥","♦","♣"];
+const values = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
-let currentQ = 0;
+function createDeck(){
+  let deck = [];
+  for(let s of suits){
+    for(let v of values){
+      deck.push(v+s);
+    }
+  }
+  return shuffle(deck);
+}
+
+function shuffle(deck){
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+  return deck;
+}
+
+// --- HAND EVALUATION (REAL) ---
+function getValue(card){
+  const v = card.slice(0,-1);
+  return values.indexOf(v);
+}
+
+function evaluateHand(cards){
+  const vals = cards.map(getValue).sort((a,b)=>a-b);
+  const suitsArr = cards.map(c=>c.slice(-1));
+
+  const isFlush = suitsArr.every(s=>s===suitsArr[0]);
+
+  let isStraight = true;
+  for(let i=1;i<vals.length;i++){
+    if(vals[i] !== vals[i-1]+1){
+      isStraight = false;
+      break;
+    }
+  }
+
+  let counts = {};
+  vals.forEach(v=>counts[v]=(counts[v]||0)+1);
+  const freq = Object.values(counts).sort((a,b)=>b-a);
+
+  if(isStraight && isFlush) return {name:"Straight Flush", score:9};
+  if(freq[0]===4) return {name:"Four of a Kind", score:8};
+  if(freq[0]===3 && freq[1]===2) return {name:"Full House", score:7};
+  if(isFlush) return {name:"Flush", score:6};
+  if(isStraight) return {name:"Straight", score:5};
+  if(freq[0]===3) return {name:"Three of a Kind", score:4};
+  if(freq[0]===2 && freq[1]===2) return {name:"Two Pair", score:3};
+  if(freq[0]===2) return {name:"Pair", score:2};
+
+  return {name:"High Card", score:1};
+}
 
 // --- RENDER ---
 function render(html){
   app.innerHTML = html;
 }
 
-// --- START ---
-function start(){
-  render(`
-    <h2>Agent ${agentName}</h2>
-    <button onclick="showQuestion()">Begin Mission</button>
-  `);
-}
-
-// --- QUESTIONS ---
-function showQuestion(){
-  const q = innerCircle[currentQ];
-
-  render(`
-    <h3>LEVEL ${q.level}</h3>
-    <p>${q.q}</p>
-    ${q.options.map(o => `<button onclick="checkAnswer('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}
-    <div id="fb"></div>
-  `);
-}
-
-function checkAnswer(a){
-  const q = innerCircle[currentQ];
-  const fb = document.getElementById('fb');
-
-  if(a === q.answer){
-    fb.innerHTML = "✓";
-    currentQ++;
-    if(currentQ < innerCircle.length){
-      setTimeout(showQuestion, 700);
-    } else {
-      setTimeout(pokerTable, 900);
-    }
-  } else {
-    fb.innerHTML = "✖";
-  }
-}
-
-// --- HAND EVALUATION ---
-function evaluateHand(){
-  return handRanks[Math.floor(Math.random() * handRanks.length)];
-}
-
-// --- RANDOM CARD ---
-function randomCard(){
-  const suits = ["♠","♥","♦","♣"];
-  const values = ["A","K","Q","J","10","9","8","7"];
-  return values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
-}
-
-// --- POKER TABLE ---
+// --- MAIN TABLE ---
 function pokerTable(){
+
   render(`
-    <h3>MISSION BRIEFING</h3>
     <div class="table-wrapper" id="table">
       <div class="table"></div>
       <div class="deal-origin" id="origin"></div>
-      <div class="pot">POT</div>
+      <div class="pot" id="pot">POT: 0</div>
     </div>
-
-    <div id="centerMsg" class="center-message"></div>
-
-    <button onclick="safeHouse()">Continue</button>
+    <div id="centerMsg"></div>
   `);
 
   const table = document.getElementById('table');
   const origin = document.getElementById('origin');
+  const potEl = document.getElementById('pot');
   const centerMsg = document.getElementById('centerMsg');
 
-  const cx = 175, cy = 110;
+  const cx = 180, cy = 120;
+  const radiusX = 150, radiusY = 95;
 
-  let results = [];
+  let deck = createDeck();
+  let pot = 0;
 
+  const dealerIndex = Math.floor(Math.random()*agents.length);
+
+  let players = [];
+
+  // --- CREATE SEATS ---
   agents.forEach((name,i)=>{
 
-    const angle = (i / agents.length) * Math.PI * 2;
+    const angle = (i/agents.length)*Math.PI*2;
+    const x = cx + Math.cos(angle)*radiusX;
+    const y = cy + Math.sin(angle)*radiusY;
 
-    // Oval positioning
-    const radiusX = 145;
-    const radiusY = 95;
-
-    const x = cx + Math.cos(angle) * radiusX;
-    const y = cy + Math.sin(angle) * radiusY;
+    const rotation = angle*(180/Math.PI)+90;
 
     const seat = document.createElement('div');
-    seat.className = 'seat';
-    seat.style.left = x + "px";
-    seat.style.top = y + "px";
-    seat.id = "seat-" + i;
+    seat.className="seat";
+    seat.style.left=x+"px";
+    seat.style.top=y+"px";
+    seat.id="seat-"+i;
 
-    const rotation = angle * (180 / Math.PI) + 90;
+    const hand = [deck.pop(),deck.pop()];
+    const community = [deck.pop(),deck.pop(),deck.pop()];
+    const fullHand = [...hand,...community];
 
-    const card1 = randomCard();
-    const card2 = randomCard();
+    const evalResult = evaluateHand(fullHand);
 
-    const rank = evaluateHand();
-    results.push({name, rank, index:i});
+    players.push({name, hand, evalResult, index:i});
 
-    seat.innerHTML = `
+    seat.innerHTML=`
       <div class="player-area">
 
-        <div class="result-text" id="result-${i}"></div>
+        <div class="cards" 
+          style="transform: rotate(${rotation}deg) skewY(${Math.sin(angle)*10}deg);">
 
-        <div class="cards" style="transform: rotate(${rotation}deg);">
           <div class="card" id="c1-${i}"></div>
           <div class="card" id="c2-${i}"></div>
         </div>
 
         <div class="player-name">
-          <b>${name}</b>
-          <div>${codenames[name]}</div>
+          <b>${name}</b><br>${codenames[name]}
         </div>
+
+        <div class="result-text" id="r-${i}"></div>
 
       </div>
     `;
 
     table.appendChild(seat);
 
-    setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), card1), i*300+200);
-    setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), card2), i*300+350);
+    // DEAL
+    setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), hand[0]), i*200);
+    setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), hand[1]), i*200+150);
+
+    // BETTING
+    const bet = Math.floor(Math.random()*50)+10;
+    pot += bet;
+
+    setTimeout(()=>{
+      animateChips(seat);
+      chipSound.play().catch(()=>{});
+      potEl.innerText="POT: "+pot;
+    }, i*200+400);
+
+    // DEALER BUTTON
+    if(i===dealerIndex){
+      const d = document.createElement('div');
+      d.className="dealer-btn";
+      d.innerText="D";
+      d.style.left=(x+20)+"px";
+      d.style.top=(y-15)+"px";
+      table.appendChild(d);
+    }
   });
 
+  // --- REVEAL ---
   setTimeout(()=>{
-    centerMsg.innerText = "Evaluating hands...";
-  }, agents.length * 300 + 800);
-
-  setTimeout(()=>{
-    results.forEach(r=>{
-      const el = document.getElementById(`result-${r.index}`);
-      if(el) el.innerText = r.rank.name;
+    players.forEach(p=>{
+      document.getElementById(`r-${p.index}`).innerText=p.evalResult.name;
     });
-  }, agents.length * 300 + 1500);
+  },2000);
 
+  // --- WINNER ---
   setTimeout(()=>{
-    const sorted = [...results].sort((a,b)=>b.rank.value - a.rank.value);
-    const winner = sorted[0];
+    const winner = players.sort((a,b)=>b.evalResult.score-a.evalResult.score)[0];
 
-    document.getElementById("seat-" + winner.index)?.classList.add("winner");
+    document.getElementById("seat-"+winner.index).classList.add("winner");
 
-    centerMsg.innerHTML = `🏆 WINNER: ${winner.name} (${winner.rank.name})`;
-  }, agents.length * 300 + 2500);
+    centerMsg.innerHTML=`🏆 ${winner.name} wins with ${winner.evalResult.name}`;
+  },3000);
+}
+
+// --- CHIP ANIMATION ---
+function animateChips(seat){
+  const chip = document.createElement('div');
+  chip.className="chip";
+  chip.style.left="0px";
+  chip.style.top="0px";
+  seat.appendChild(chip);
+
+  setTimeout(()=>chip.remove(),500);
 }
 
 // --- DEAL CARD ---
-function dealCard(origin, target, value){
-  if(!origin || !target) return;
+function dealCard(origin,target,value){
+  if(!target)return;
 
-  const rect = target.getBoundingClientRect();
-  const parentRect = origin.parentElement.getBoundingClientRect();
-
-  const card = document.createElement('div');
-  card.className = 'dealing-card';
-  card.innerText = value;
+  const card=document.createElement('div');
+  card.className="dealing-card";
+  card.innerText=value;
 
   origin.parentElement.appendChild(card);
 
-  try {
-    dealSound.currentTime = 0;
-    dealSound.play().catch(()=>{});
-  } catch {}
+  const rect=target.getBoundingClientRect();
+  const parentRect=origin.parentElement.getBoundingClientRect();
+
+  dealSound.play().catch(()=>{});
 
   setTimeout(()=>{
-    card.style.left = (rect.left - parentRect.left) + "px";
-    card.style.top = (rect.top - parentRect.top) + "px";
-  }, 20);
+    card.style.left=(rect.left-parentRect.left)+"px";
+    card.style.top=(rect.top-parentRect.top)+"px";
+  },20);
 
   setTimeout(()=>{
-    target.innerText = value;
-    target.classList.add("dealt");
+    target.innerText=value;
     card.remove();
-  }, 500);
+  },400);
 }
 
-// --- SAFE HOUSE ---
-function safeHouse(){
-  render(`
-    <h3>Safe House</h3>
-    <p>6233 Muirfield Dr SW</p>
-
-    <button onclick="submitForm(true)">Confirm Attendance</button>
-    <button onclick="submitForm(false)">Decline</button>
-  `);
-}
-
-// --- FORM ---
-function submitForm(attending){
-
-  if(roles[agentName] === "Groom"){
-    render("<h2>✔ Attendance Recorded (Local)</h2>");
-    return;
-  }
-
-  const url = "https://docs.google.com/forms/d/e/1FAIpQLSdBp0bzZtk-W-5jtPFT3uUjNoJrOG1C8HsVxbTgG5D5VSAY_w/formResponse";
-
-  const data = new URLSearchParams();
-  data.append("entry.385675046", agentName);
-  data.append("entry.1160902778", attending ? "Yes":"No");
-  data.append("entry.794497838", roles[agentName]);
-
-  fetch(url,{
-    method:"POST",
-    mode:"no-cors",
-    body:data
-  });
-
-  render(`<h2>✔ Response Submitted</h2>`);
-}
-
-// --- INIT ---
-start();
-
-// --- GLOBAL ---
-window.safeHouse = safeHouse;
-window.submitForm = submitForm;
-window.checkAnswer = checkAnswer;
-window.showQuestion = showQuestion;
+// --- START ---
+pokerTable();
