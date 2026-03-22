@@ -71,6 +71,12 @@ function pokerTable(){
   const table = document.getElementById('table');
   const cx = 175, cy = 110;
 
+  const suits = ["♠","♥","♦","♣"];
+  const values = ["A","K","Q","J","10","9","8","7"];
+
+  // Random dealer
+  const dealerIndex = Math.floor(Math.random() * agents.length);
+
   agents.forEach((name,i)=>{
     let angle = (i / agents.length) * Math.PI * 2;
     let x = cx + Math.cos(angle) * 140;
@@ -81,11 +87,44 @@ function pokerTable(){
     seat.style.left = x + "px";
     seat.style.top = y + "px";
 
+    // Random 2 cards
+    const card1 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
+    const card2 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
+
+    // Random chips
+    const chipCount = Math.floor(Math.random()*4)+2;
+    let chipsHTML = '';
+    for(let c=0;c<chipCount;c++){
+      const types=["red","blue","black","gold"];
+      const t = types[Math.floor(Math.random()*types.length)];
+      chipsHTML += `<div class="chip ${t}"></div>`;
+    }
+
     seat.innerHTML = `
-      <div class="chips"></div>
-      <b>${name}</b><br>
-      ${codenames[name]}
+      <div class="player-area">
+        <div class="cards">
+          <div class="card">${card1}</div>
+          <div class="card">${card2}</div>
+        </div>
+
+        <div class="chip-stack">
+          ${chipsHTML}
+        </div>
+
+        <b>${name}</b>
+        <div>${codenames[name]}</div>
+      </div>
     `;
+
+    // Dealer button
+    if(i === dealerIndex){
+      const dealer = document.createElement('div');
+      dealer.className = 'dealer-btn';
+      dealer.innerText = 'D';
+      dealer.style.left = (x + 25) + "px";
+      dealer.style.top = (y - 10) + "px";
+      table.appendChild(dealer);
+    }
 
     seat.onclick = () => showPopup(name);
     table.appendChild(seat);
