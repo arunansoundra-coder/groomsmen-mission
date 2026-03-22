@@ -85,10 +85,16 @@ function checkAnswer(a){
   }
 }
 
-// --- HAND EVALUATION (simple for now) ---
+// --- HAND EVALUATION ---
 function evaluateHand(){
-  const score = Math.floor(Math.random() * handRanks.length);
-  return handRanks[score];
+  return handRanks[Math.floor(Math.random() * handRanks.length)];
+}
+
+// --- RANDOM CARD ---
+function randomCard(){
+  const suits = ["♠","♥","♦","♣"];
+  const values = ["A","K","Q","J","10","9","8","7"];
+  return values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
 }
 
 // --- POKER TABLE ---
@@ -98,10 +104,7 @@ function pokerTable(){
     <div class="table-wrapper" id="table">
       <div class="table"></div>
       <div class="deal-origin" id="origin"></div>
-
-      <div class="pot">
-        POT
-      </div>
+      <div class="pot">POT</div>
     </div>
 
     <div id="centerMsg" class="center-message"></div>
@@ -114,26 +117,30 @@ function pokerTable(){
   const centerMsg = document.getElementById('centerMsg');
 
   const cx = 175, cy = 110;
-  const suits = ["♠","♥","♦","♣"];
-  const values = ["A","K","Q","J","10","9","8","7"];
 
-  const dealerIndex = Math.floor(Math.random() * agents.length);
   let results = [];
 
   agents.forEach((name,i)=>{
 
-    let angle = (i / agents.length) * Math.PI * 2;
-    let x = cx + Math.cos(angle) * 135;
-    let y = cy + Math.sin(angle) * 75;
+    const angle = (i / agents.length) * Math.PI * 2;
 
-    let seat = document.createElement('div');
+    // Oval positioning
+    const radiusX = 145;
+    const radiusY = 95;
+
+    const x = cx + Math.cos(angle) * radiusX;
+    const y = cy + Math.sin(angle) * radiusY;
+
+    const seat = document.createElement('div');
     seat.className = 'seat';
     seat.style.left = x + "px";
     seat.style.top = y + "px";
     seat.id = "seat-" + i;
 
-    const card1 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
-    const card2 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
+    const rotation = angle * (180 / Math.PI) + 90;
+
+    const card1 = randomCard();
+    const card2 = randomCard();
 
     const rank = evaluateHand();
     results.push({name, rank, index:i});
@@ -143,7 +150,7 @@ function pokerTable(){
 
         <div class="result-text" id="result-${i}"></div>
 
-        <div class="cards">
+        <div class="cards" style="transform: rotate(${rotation}deg);">
           <div class="card" id="c1-${i}"></div>
           <div class="card" id="c2-${i}"></div>
         </div>
@@ -158,91 +165,30 @@ function pokerTable(){
 
     table.appendChild(seat);
 
-    // Dealer marker
-    if(i === dealerIndex){
-      const dealer = document.createElement('div');
-      dealer.className = 'dealer-btn';
-      dealer.innerText = 'D';
-      dealer.style.left = (x + 20) + "px";
-      dealer.style.top = (y - 15) + "px";
-      table.appendChild(dealer);
-    }
-
     setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), card1), i*300+200);
     setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), card2), i*300+350);
   });
 
-  setTimeout(()=> centerMsg.innerText = "Evaluating hands...", agents.length*300+800);
+  setTimeout(()=>{
+    centerMsg.innerText = "Evaluating hands...";
+  }, agents.length * 300 + 800);
 
   setTimeout(()=>{
     results.forEach(r=>{
       const el = document.getElementById(`result-${r.index}`);
       if(el) el.innerText = r.rank.name;
     });
-  }, agents.length*300+1500);
+  }, agents.length * 300 + 1500);
 
   setTimeout(()=>{
     const sorted = [...results].sort((a,b)=>b.rank.value - a.rank.value);
     const winner = sorted[0];
 
-    document.getElementById("seat-"+winner.index)?.classList.add("winner");
+    document.getElementById("seat-" + winner.index)?.classList.add("winner");
 
     centerMsg.innerHTML = `🏆 WINNER: ${winner.name} (${winner.rank.name})`;
-
-  }, agents.length*300+2500);
+  }, agents.length * 300 + 2500);
 }
-
-agents.forEach((name,i)=>{
-
-  const angle = (i / agents.length) * Math.PI * 2;
-
-  // Elliptical table (more realistic proportions)
-  const radiusX = 145;
-  const radiusY = 95;
-
-  const x = cx + Math.cos(angle) * radiusX;
-  const y = cy + Math.sin(angle) * radiusY;
-
-  let seat = document.createElement('div');
-  seat.className = 'seat';
-  seat.style.left = x + "px";
-  seat.style.top = y + "px";
-  seat.id = "seat-" + i;
-
-  // Calculate rotation so cards face center
-  const rotation = angle * (180 / Math.PI) + 90;
-
-  const card1 = randomCard();
-  const card2 = randomCard();
-
-  const rank = evaluateHand();
-  results.push({name, rank, index:i});
-
-  seat.innerHTML = `
-    <div class="player-area">
-
-      <div class="result-text" id="result-${i}"></div>
-
-      <!-- CARDS (ROTATE TO FACE CENTER) -->
-      <div class="cards" style="transform: rotate(${rotation}deg);">
-        <div class="card" id="c1-${i}"></div>
-        <div class="card" id="c2-${i}"></div>
-      </div>
-
-      <!-- NAME ALWAYS STRAIGHT -->
-      <div class="player-name">
-        <b>${name}</b>
-        <div>${codenames[name]}</div>
-      </div>
-
-    </div>
-  `;
-
-  table.appendChild(seat);
-
-  setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), card1), i*300+200);
-  setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), card2), i*300+350);
-});
 
 // --- DEAL CARD ---
 function dealCard(origin, target, value){
@@ -307,12 +253,6 @@ function submitForm(attending){
   });
 
   render(`<h2>✔ Response Submitted</h2>`);
-}
-
-function randomCard(){
-  const suits = ["♠","♥","♦","♣"];
-  const values = ["A","K","Q","J","10","9","8","7"];
-  return values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
 }
 
 // --- INIT ---
