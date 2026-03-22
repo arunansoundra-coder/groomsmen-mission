@@ -207,6 +207,10 @@ function pokerTable(){
 
 /* DEAL FUNCTION */
 function dealCard(origin, target, value){
+
+  // 🛑 SAFETY CHECK (prevents blank screen crash)
+  if(!target || !origin) return;
+
   const rect = target.getBoundingClientRect();
   const tableRect = origin.parentElement.getBoundingClientRect();
 
@@ -219,8 +223,10 @@ function dealCard(origin, target, value){
 
   origin.parentElement.appendChild(card);
 
-  dealSound.currentTime = 0;
-  dealSound.play();
+  try {
+    dealSound.currentTime = 0;
+    dealSound.play();
+  } catch(e) {}
 
   setTimeout(()=>{
     card.style.left = (rect.left - tableRect.left) + "px";
@@ -228,8 +234,10 @@ function dealCard(origin, target, value){
   },10);
 
   setTimeout(()=>{
-    target.innerText = value;
-    target.classList.add("dealt");
+    if(target){
+      target.innerText = value;
+      target.classList.add("dealt");
+    }
     card.remove();
   },500);
 }
