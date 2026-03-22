@@ -78,7 +78,7 @@ function pokerTable(){
       <div class="table"></div>
       <div class="deal-origin" id="origin"></div>
 
-      <div class="pot">
+      <div class="pot" id="pot">
         POT
         <div class="chips-center">
           <div class="chip red"></div>
@@ -87,11 +87,15 @@ function pokerTable(){
         </div>
       </div>
     </div>
+
+    <div id="centerMsg" class="center-message"></div>
+
     <button onclick="safeHouse()">Continue</button>
   `);
 
   const table = document.getElementById('table');
   const origin = document.getElementById('origin');
+  const centerMsg = document.getElementById('centerMsg');
 
   const cx = 175, cy = 110;
 
@@ -99,6 +103,8 @@ function pokerTable(){
   const values = ["A","K","Q","J","10","9","8","7"];
 
   const dealerIndex = Math.floor(Math.random() * agents.length);
+
+  let results = [];
 
   agents.forEach((name,i)=>{
     let angle = (i / agents.length) * Math.PI * 2;
@@ -109,9 +115,14 @@ function pokerTable(){
     seat.className = 'seat';
     seat.style.left = x + "px";
     seat.style.top = y + "px";
+    seat.id = "seat-" + i;
 
     const card1 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
     const card2 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
+
+    const rank = handRanks[Math.floor(Math.random()*handRanks.length)];
+
+    results.push({name, rank, index:i});
 
     const chipCount = Math.floor(Math.random()*4)+2;
     let chipsHTML = '';
@@ -123,6 +134,8 @@ function pokerTable(){
 
     seat.innerHTML = `
       <div class="player-area">
+        <div class="result-text" id="result-${i}"></div>
+
         <div class="cards">
           <div class="card" id="c1-${i}"></div>
           <div class="card" id="c2-${i}"></div>
@@ -152,7 +165,7 @@ function pokerTable(){
 
     table.appendChild(seat);
 
-    // DEAL ANIMATION
+    // DEAL CARDS
     setTimeout(()=>{
       dealCard(origin, document.getElementById(`c1-${i}`), card1);
     }, i * 300);
@@ -161,6 +174,39 @@ function pokerTable(){
       dealCard(origin, document.getElementById(`c2-${i}`), card2);
     }, i * 300 + 150);
   });
+
+  /* --- EVALUATION PHASE --- */
+  setTimeout(()=>{
+    centerMsg.innerText = "Evaluating hands...";
+  }, agents.length * 300 + 800);
+
+  /* --- REVEAL HANDS --- */
+  setTimeout(()=>{
+    results.forEach(r=>{
+      document.getElementById(`result-${r.index}`).innerText = r.rank.name;
+    });
+  }, agents.length * 300 + 2000);
+
+  /* --- DETERMINE WINNER --- */
+  setTimeout(()=>{
+    let winner = results.reduce((a,b)=> a.rank.value > b.rank.value ? a : b);
+
+    const winnerSeat = document.getElementById("seat-" + winner.index);
+    winnerSeat.classList.add("winner");
+
+    centerMsg.innerHTML = `🏆 WINNER: ${winner.name} (${codenames[winner.name]})`;
+
+    /* --- BEST MAN ADVANTAGE --- */
+    setTimeout(()=>{
+      if(roles[winner.name] === "Best Man"){
+        centerMsg.innerHTML += `<br><br>🎯 BEST MAN ADVANTAGE UNLOCKED<br>
+        Command authority granted.`;
+      } else {
+        centerMsg.innerHTML += `<br><br>Elite status granted.`;
+      }
+    },1500);
+
+  }, agents.length * 300 + 3500);
 }
 
 /* DEAL FUNCTION */
