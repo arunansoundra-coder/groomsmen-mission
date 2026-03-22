@@ -157,3 +157,52 @@ button{
   font-weight:bold;
   box-shadow:0 0 6px rgba(255,255,255,0.8);
 }
+/* --- STAGE 3 ANIMATIONS --- */
+
+.card {
+  transform: rotateY(180deg);
+  transition: transform 0.6s ease;
+}
+
+.card.dealt {
+  transform: rotateY(0deg);
+}
+
+.deal-origin {
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:10px;
+  height:10px;
+}
+
+.dealing-card {
+  position:absolute;
+  width:22px;
+  height:30px;
+  background:white;
+  border-radius:3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.6rem;
+  box-shadow:0 2px 6px rgba(0,0,0,0.6);
+  transition: all 0.5s ease;
+}
+
+.pot {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:white;
+  font-size:0.8rem;
+  text-align:center;
+}
+
+.pot .chips-center {
+  display:flex;
+  gap:3px;
+  justify-content:center;
+  margin-top:4px;
+}
