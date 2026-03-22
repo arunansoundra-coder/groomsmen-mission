@@ -233,20 +233,6 @@ function dealCard(origin, target, value){
     card.remove();
   },500);
 }
-/* POPUP */
-function showPopup(name){
-  document.getElementById('overlay').style.display = 'block';
-  document.getElementById('popup').style.display = 'block';
-
-  document.getElementById('popupName').innerText = name;
-  document.getElementById('popupCodename').innerText = "Codename: " + codenames[name];
-  document.getElementById('popupRole').innerText = "Role: " + roles[name];
-}
-
-function closePopup(){
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('popup').style.display = 'none';
-}
 
 /* SAFE HOUSE */
 function safeHouse(){
@@ -286,8 +272,6 @@ function submitForm(attending){
 start();
 
 /* GLOBAL */
-window.showPopup = showPopup;
-window.closePopup = closePopup;
 window.safeHouse = safeHouse;
 window.submitForm = submitForm;
 window.checkAnswer = checkAnswer;
