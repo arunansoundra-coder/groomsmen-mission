@@ -1,6 +1,8 @@
+// --- SOUND ---
 const dealSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3");
 const chipSound = new Audio("https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3");
 
+// --- HAND RANKS ---
 const handRanks = [
   {name:"High Card", value:1},
   {name:"Pair", value:2},
@@ -10,8 +12,10 @@ const handRanks = [
   {name:"Flush", value:6}
 ];
 
+// --- APP ROOT ---
 const app = document.getElementById('app');
 
+// --- AGENT DATA ---
 const agentName = new URLSearchParams(window.location.search).get('agent') || 'Agent';
 
 const codenames = {
@@ -28,6 +32,7 @@ const roles = {
 
 const agents = Object.keys(codenames);
 
+// --- QUESTIONS ---
 const innerCircle = [
   {level:1,q:"Identify the location.",options:["Cedar Rapids","Chicago","Des Moines","Omaha"],answer:"Cedar Rapids"},
   {level:2,q:"Confirm the operation date.",options:["September 18, 2026","September 19, 2026","October 1, 2026","August 30, 2026"],answer:"September 18, 2026"},
@@ -38,22 +43,30 @@ const innerCircle = [
 
 let currentQ = 0;
 
+// --- RENDER ---
 function render(html){
   app.innerHTML = html;
 }
 
+// --- START ---
 function start(){
-  render(`<h2>Agent ${agentName}</h2>
-  <button onclick="showQuestion()">Begin Mission</button>`);
+  render(`
+    <h2>Agent ${agentName}</h2>
+    <button onclick="showQuestion()">Begin Mission</button>
+  `);
 }
 
+// --- QUESTIONS ---
 function showQuestion(){
   const q = innerCircle[currentQ];
 
-  render(`<h3>LEVEL ${q.level}</h3>
-  <p>${q.q}</p>
-  ${q.options.map(o=>`<button onclick="checkAnswer(&quot;${o}&quot;)">${o}</button>`).join('')}
-
+  render(`
+    <h3>LEVEL ${q.level}</h3>
+    <p>${q.q}</p>
+    ${q.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join('')}
+    <div id="fb"></div>
+  `);
+}
 
 function checkAnswer(a){
   const q = innerCircle[currentQ];
@@ -69,7 +82,7 @@ function checkAnswer(a){
   }
 }
 
-/* POKER TABLE */
+// --- POKER TABLE ---
 function pokerTable(){
   render(`
     <h3>MISSION BRIEFING</h3>
@@ -77,7 +90,7 @@ function pokerTable(){
       <div class="table"></div>
       <div class="deal-origin" id="origin"></div>
 
-      <div class="pot" id="pot">
+      <div class="pot">
         POT
         <div class="chips-center">
           <div class="chip red"></div>
@@ -120,11 +133,10 @@ function pokerTable(){
     const card2 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
 
     const rank = handRanks[Math.floor(Math.random()*handRanks.length)];
-
     results.push({name, rank, index:i});
 
-    const chipCount = Math.floor(Math.random()*4)+2;
     let chipsHTML = '';
+    const chipCount = Math.floor(Math.random()*4)+2;
     for(let c=0;c<chipCount;c++){
       const types=["red","blue","black","gold"];
       const t = types[Math.floor(Math.random()*types.length)];
@@ -147,6 +159,7 @@ function pokerTable(){
       </div>
     `;
 
+    // Dealer button
     if(i === dealerIndex){
       const dealer = document.createElement('div');
       dealer.className = 'dealer-btn';
@@ -156,58 +169,56 @@ function pokerTable(){
       table.appendChild(dealer);
     }
 
-    seat.onclick = null;
-    
+    seat.style.pointerEvents = "none"; // disable interaction
     table.appendChild(seat);
 
-    // DEAL CARDS
- setTimeout(()=>{
-  const t1 = document.getElementById(`c1-${i}`);
-  if(t1) dealCard(origin, t1, card1);
-}, i * 400 + 200);
+    // DEAL ANIMATION
+    setTimeout(()=>{
+      const t1 = document.getElementById(`c1-${i}`);
+      if(t1) dealCard(origin, t1, card1);
+    }, i * 400 + 200);
 
-setTimeout(()=>{
-  const t2 = document.getElementById(`c2-${i}`);
-  if(t2) dealCard(origin, t2, card2);
-}, i * 400 + 350);
+    setTimeout(()=>{
+      const t2 = document.getElementById(`c2-${i}`);
+      if(t2) dealCard(origin, t2, card2);
+    }, i * 400 + 350);
+  });
 
-  /* --- EVALUATION PHASE --- */
+  // --- EVALUATION ---
   setTimeout(()=>{
     centerMsg.innerText = "Evaluating hands...";
-  }, agents.length * 300 + 800);
+  }, agents.length * 400 + 800);
 
-  /* --- REVEAL HANDS --- */
+  // --- REVEAL ---
   setTimeout(()=>{
     results.forEach(r=>{
-      document.getElementById(`result-${r.index}`).innerText = r.rank.name;
+      const el = document.getElementById(`result-${r.index}`);
+      if(el) el.innerText = r.rank.name;
     });
-  }, agents.length * 300 + 2000);
+  }, agents.length * 400 + 1800);
 
-  /* --- DETERMINE WINNER --- */
+  // --- WINNER ---
   setTimeout(()=>{
     let winner = results.reduce((a,b)=> a.rank.value > b.rank.value ? a : b);
 
     const winnerSeat = document.getElementById("seat-" + winner.index);
-    winnerSeat.classList.add("winner");
+    if(winnerSeat) winnerSeat.classList.add("winner");
 
     centerMsg.innerHTML = `🏆 WINNER: ${winner.name} (${codenames[winner.name]})`;
-    
-    /* --- BEST MAN ADVANTAGE --- */
+
     setTimeout(()=>{
       if(roles[winner.name] === "Best Man"){
         centerMsg.innerHTML += `<br><br>🎯 BEST MAN ADVANTAGE UNLOCKED<br>Command authority granted.`;
-              } else {
+      } else {
         centerMsg.innerHTML += `<br><br>Elite status granted.`;
       }
     },1500);
 
-  }, agents.length * 300 + 3500);
+  }, agents.length * 400 + 3200);
 }
 
-/* DEAL FUNCTION */
+// --- DEAL CARD ---
 function dealCard(origin, target, value){
-
-  // 🛑 SAFETY CHECK (prevents blank screen crash)
   if(!target || !origin) return;
 
   const rect = target.getBoundingClientRect();
@@ -233,15 +244,13 @@ function dealCard(origin, target, value){
   },10);
 
   setTimeout(()=>{
-    if(target){
-      target.innerText = value;
-      target.classList.add("dealt");
-    }
+    target.innerText = value;
+    target.classList.add("dealt");
     card.remove();
   },500);
 }
 
-/* SAFE HOUSE */
+// --- SAFE HOUSE ---
 function safeHouse(){
   render(`
     <h3>Safe House</h3>
@@ -252,7 +261,7 @@ function safeHouse(){
   `);
 }
 
-/* GOOGLE FORM */
+// --- FORM ---
 function submitForm(attending){
 
   if(roles[agentName] === "Groom"){
@@ -264,7 +273,7 @@ function submitForm(attending){
 
   const data = new URLSearchParams();
   data.append("entry.385675046", agentName);
-  data.append("entry.1160902778", attending ? "Yes" : "No");
+  data.append("entry.1160902778", attending ? "Yes":"No");
   data.append("entry.794497838", roles[agentName]);
 
   fetch(url,{
@@ -276,9 +285,10 @@ function submitForm(attending){
   render(`<h2>✔ Response Submitted</h2>`);
 }
 
+// --- INIT ---
 start();
 
-/* GLOBAL */
+// --- GLOBAL ---
 window.safeHouse = safeHouse;
 window.submitForm = submitForm;
 window.checkAnswer = checkAnswer;
