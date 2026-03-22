@@ -196,9 +196,8 @@ setTimeout(()=>{
     /* --- BEST MAN ADVANTAGE --- */
     setTimeout(()=>{
       if(roles[winner.name] === "Best Man"){
-        centerMsg.innerHTML += `<br><br>🎯 BEST MAN ADVANTAGE UNLOCKED<br>
-        Command authority granted.`;
-      } else {
+        centerMsg.innerHTML += `<br><br>🎯 BEST MAN ADVANTAGE UNLOCKED<br>Command authority granted.`;
+              } else {
         centerMsg.innerHTML += `<br><br>Elite status granted.`;
       }
     },1500);
