@@ -157,12 +157,8 @@ function pokerTable(){
       table.appendChild(dealer);
     }
 
-    seat.onclick = () => {
-      chipSound.currentTime = 0;
-      chipSound.play();
-      showPopup(name);
-    };
-
+    seat.onclick = null;
+    
     table.appendChild(seat);
 
     // DEAL CARDS
