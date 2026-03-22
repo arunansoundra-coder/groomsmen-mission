@@ -1,3 +1,6 @@
+const dealSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3");
+const chipSound = new Audio("https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3");
+
 const app = document.getElementById('app');
 
 const agentName = new URLSearchParams(window.location.search).get('agent') || 'Agent';
