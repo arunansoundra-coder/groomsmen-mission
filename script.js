@@ -162,14 +162,15 @@ function pokerTable(){
     table.appendChild(seat);
 
     // DEAL CARDS
-    setTimeout(()=>{
-      dealCard(origin, document.getElementById(`c1-${i}`), card1);
-    }, i * 300);
+ setTimeout(()=>{
+  const t1 = document.getElementById(`c1-${i}`);
+  if(t1) dealCard(origin, t1, card1);
+}, i * 400 + 200);
 
-    setTimeout(()=>{
-      dealCard(origin, document.getElementById(`c2-${i}`), card2);
-    }, i * 300 + 150);
-  });
+setTimeout(()=>{
+  const t2 = document.getElementById(`c2-${i}`);
+  if(t2) dealCard(origin, t2, card2);
+}, i * 400 + 350);
 
   /* --- EVALUATION PHASE --- */
   setTimeout(()=>{
