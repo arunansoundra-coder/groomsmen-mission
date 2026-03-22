@@ -192,6 +192,58 @@ function pokerTable(){
   }, agents.length*300+2500);
 }
 
+agents.forEach((name,i)=>{
+
+  const angle = (i / agents.length) * Math.PI * 2;
+
+  // Elliptical table (more realistic proportions)
+  const radiusX = 145;
+  const radiusY = 95;
+
+  const x = cx + Math.cos(angle) * radiusX;
+  const y = cy + Math.sin(angle) * radiusY;
+
+  let seat = document.createElement('div');
+  seat.className = 'seat';
+  seat.style.left = x + "px";
+  seat.style.top = y + "px";
+  seat.id = "seat-" + i;
+
+  // Calculate rotation so cards face center
+  const rotation = angle * (180 / Math.PI) + 90;
+
+  const card1 = randomCard();
+  const card2 = randomCard();
+
+  const rank = evaluateHand();
+  results.push({name, rank, index:i});
+
+  seat.innerHTML = `
+    <div class="player-area">
+
+      <div class="result-text" id="result-${i}"></div>
+
+      <!-- CARDS (ROTATE TO FACE CENTER) -->
+      <div class="cards" style="transform: rotate(${rotation}deg);">
+        <div class="card" id="c1-${i}"></div>
+        <div class="card" id="c2-${i}"></div>
+      </div>
+
+      <!-- NAME ALWAYS STRAIGHT -->
+      <div class="player-name">
+        <b>${name}</b>
+        <div>${codenames[name]}</div>
+      </div>
+
+    </div>
+  `;
+
+  table.appendChild(seat);
+
+  setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), card1), i*300+200);
+  setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), card2), i*300+350);
+});
+
 // --- DEAL CARD ---
 function dealCard(origin, target, value){
   if(!origin || !target) return;
@@ -255,6 +307,12 @@ function submitForm(attending){
   });
 
   render(`<h2>✔ Response Submitted</h2>`);
+}
+
+function randomCard(){
+  const suits = ["♠","♥","♦","♣"];
+  const values = ["A","K","Q","J","10","9","8","7"];
+  return values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
 }
 
 // --- INIT ---
