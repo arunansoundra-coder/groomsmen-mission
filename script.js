@@ -52,9 +52,8 @@ function showQuestion(){
 
   render(`<h3>LEVEL ${q.level}</h3>
   <p>${q.q}</p>
-  ${q.options.map(o=>`<button onclick="checkAnswer('${o}')">${o}</button>`).join('')}
-  <div id="fb"></div>`);
-}
+  ${q.options.map(o=>`<button onclick="checkAnswer(&quot;${o}&quot;)">${o}</button>`).join('')}
+
 
 function checkAnswer(a){
   const q = innerCircle[currentQ];
