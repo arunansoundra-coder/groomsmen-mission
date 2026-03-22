@@ -206,3 +206,24 @@ button{
   justify-content:center;
   margin-top:4px;
 }
+/* --- STAGE 4 WINNER EFFECTS --- */
+
+.winner {
+  box-shadow: 0 0 15px gold, 0 0 30px gold;
+  border-radius:10px;
+}
+
+.result-text {
+  position:absolute;
+  top:-18px;
+  width:100%;
+  text-align:center;
+  font-size:0.6rem;
+  color:#ffd700;
+}
+
+.center-message {
+  margin-top:20px;
+  font-size:1rem;
+  color:#66fcf1;
+}
