@@ -67,17 +67,28 @@ function pokerTable(){
     <h3>MISSION BRIEFING</h3>
     <div class="table-wrapper" id="table">
       <div class="table"></div>
+      <div class="deal-origin" id="origin"></div>
+
+      <div class="pot">
+        POT
+        <div class="chips-center">
+          <div class="chip red"></div>
+          <div class="chip blue"></div>
+          <div class="chip gold"></div>
+        </div>
+      </div>
     </div>
     <button onclick="safeHouse()">Continue</button>
   `);
 
   const table = document.getElementById('table');
+  const origin = document.getElementById('origin');
+
   const cx = 175, cy = 110;
 
   const suits = ["♠","♥","♦","♣"];
   const values = ["A","K","Q","J","10","9","8","7"];
 
-  // Random dealer
   const dealerIndex = Math.floor(Math.random() * agents.length);
 
   agents.forEach((name,i)=>{
@@ -90,11 +101,9 @@ function pokerTable(){
     seat.style.left = x + "px";
     seat.style.top = y + "px";
 
-    // Random 2 cards
     const card1 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
     const card2 = values[Math.floor(Math.random()*values.length)] + suits[Math.floor(Math.random()*suits.length)];
 
-    // Random chips
     const chipCount = Math.floor(Math.random()*4)+2;
     let chipsHTML = '';
     for(let c=0;c<chipCount;c++){
@@ -106,20 +115,17 @@ function pokerTable(){
     seat.innerHTML = `
       <div class="player-area">
         <div class="cards">
-          <div class="card">${card1}</div>
-          <div class="card">${card2}</div>
+          <div class="card" id="c1-${i}"></div>
+          <div class="card" id="c2-${i}"></div>
         </div>
 
-        <div class="chip-stack">
-          ${chipsHTML}
-        </div>
+        <div class="chip-stack">${chipsHTML}</div>
 
         <b>${name}</b>
         <div>${codenames[name]}</div>
       </div>
     `;
 
-    // Dealer button
     if(i === dealerIndex){
       const dealer = document.createElement('div');
       dealer.className = 'dealer-btn';
@@ -129,11 +135,53 @@ function pokerTable(){
       table.appendChild(dealer);
     }
 
-    seat.onclick = () => showPopup(name);
+    seat.onclick = () => {
+      chipSound.currentTime = 0;
+      chipSound.play();
+      showPopup(name);
+    };
+
     table.appendChild(seat);
+
+    // DEAL ANIMATION
+    setTimeout(()=>{
+      dealCard(origin, document.getElementById(`c1-${i}`), card1);
+    }, i * 300);
+
+    setTimeout(()=>{
+      dealCard(origin, document.getElementById(`c2-${i}`), card2);
+    }, i * 300 + 150);
   });
 }
 
+/* DEAL FUNCTION */
+function dealCard(origin, target, value){
+  const rect = target.getBoundingClientRect();
+  const tableRect = origin.parentElement.getBoundingClientRect();
+
+  const card = document.createElement('div');
+  card.className = 'dealing-card';
+  card.innerText = value;
+
+  card.style.left = "50%";
+  card.style.top = "50%";
+
+  origin.parentElement.appendChild(card);
+
+  dealSound.currentTime = 0;
+  dealSound.play();
+
+  setTimeout(()=>{
+    card.style.left = (rect.left - tableRect.left) + "px";
+    card.style.top = (rect.top - tableRect.top) + "px";
+  },10);
+
+  setTimeout(()=>{
+    target.innerText = value;
+    target.classList.add("dealt");
+    card.remove();
+  },500);
+}
 /* POPUP */
 function showPopup(name){
   document.getElementById('overlay').style.display = 'block';
