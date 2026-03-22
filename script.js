@@ -1,6 +1,15 @@
 const dealSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3");
 const chipSound = new Audio("https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3");
 
+const handRanks = [
+  {name:"High Card", value:1},
+  {name:"Pair", value:2},
+  {name:"Two Pair", value:3},
+  {name:"Three of a Kind", value:4},
+  {name:"Straight", value:5},
+  {name:"Flush", value:6}
+];
+
 const app = document.getElementById('app');
 
 const agentName = new URLSearchParams(window.location.search).get('agent') || 'Agent';
