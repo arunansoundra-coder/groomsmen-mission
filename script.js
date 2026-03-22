@@ -192,7 +192,7 @@ setTimeout(()=>{
     winnerSeat.classList.add("winner");
 
     centerMsg.innerHTML = `🏆 WINNER: ${winner.name} (${codenames[winner.name]})`;
-
+    
     /* --- BEST MAN ADVANTAGE --- */
     setTimeout(()=>{
       if(roles[winner.name] === "Best Man"){
