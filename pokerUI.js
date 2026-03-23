@@ -104,10 +104,10 @@ players.forEach((p, i) => {
     <div class="codename">Codename: ${p.codename}</div>
     <div class="role">${p.role}</div>
     <div class="cards">
-      ${renderCard(p.hand[0], i * 200)}
-      ${renderCard(p.hand[1], i * 200 + 200)}
+      ${renderCard(p.hand[0])}
+      ${renderCard(p.hand[1])}
     </div>
-    <div class="chips" id="chips-${i}">100</div>
+    <div class="chips" id="chips-${i}">${p.chips}</div>
   `;
 });
 
