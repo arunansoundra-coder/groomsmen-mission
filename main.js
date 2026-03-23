@@ -1,17 +1,20 @@
 import { startQuestions } from './questionsUI.js';
 import { startPoker } from './pokerUI.js';
-
-console.log("MAIN JS LOADED");
+import { startBriefing } from './briefingUI.js';
 
 const app = document.getElementById('app');
 
 function loadScreen(screen) {
-  console.log("Loading screen:", screen);
-
   app.innerHTML = '';
 
   if (screen === 'questions') {
     startQuestions(app, () => {
+      loadScreen('briefing'); // 👈 NEW STEP
+    });
+  }
+
+  if (screen === 'briefing') {
+    startBriefing(app, () => {
       loadScreen('poker');
     });
   }
