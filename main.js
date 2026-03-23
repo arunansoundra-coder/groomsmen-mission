@@ -3,6 +3,7 @@ import { startPoker } from './pokerUI.js';
 import { startBriefing } from './briefingUI.js';
 // Optional: sound system hook (safe to ignore if not implemented)
 import { playAmbient } from './sounds.js';
+import { startDashboard } from './dashboard.js';
 
 const app = document.getElementById('app');
 
