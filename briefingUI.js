@@ -1,122 +1,82 @@
-export function startBriefing(app, agentName, onComplete) {
+import { playAmbient } from "./sounds.js";
 
-const isJason = agentName === "Jason";
-const role = isJason ? "Best Man" : "Groomsman";
+export function startBriefing(app, agentName, onComplete){
 
-app.classList.add("briefing");
+  const isJason = agentName === "Jason";
+  const role = isJason ? "Best Man" : "Groomsman";
 
-if (isJason) {
-  app.classList.add("jason-zoom");
-} else {
-  app.classList.remove("jason-zoom");
-}
-  const roleMap = {
-    "Jason": "Best Man",
-    "Josh": "Groomsman",
-    "Duran": "Groomsman",
-    "Taylor": "Groomsman",
-    "Gill": "Groomsman",
-    "Prathap": "Groomsman"
-  };
-
-  const role = roleMap[agentName] || "Agent";
-  const isBestMan = agentName === "Jason";
-
-  const message = `
-🛰 MI6 SECURE CHANNEL
-
-ACCESS GRANTED
-
-----------------------------------------
-
-Agent: ${agentName}
-Assignment: ${role}
-
-----------------------------------------
-
-This is not a routine operation.
-
-It is a high-stakes game.
-
-Every seat at the table matters.
-
-----------------------------------------
-
-${isBestMan 
-  ? `You are being asked to take your place as Best Man.`
-  : `You are being asked to take your place as a Groomsman.`
-}
-
-----------------------------------------
-
-🏠 SAFE HOUSE:
-Location to be disclosed.
-
-📅 OPERATION DATE:
-[INSERT DATE]
-
-----------------------------------------
-
-Your seat has been reserved.
-
-Your presence is expected.
-
-----------------------------------------
-
-The table awaits.
-`;
+  app.classList.add("briefing");
+  app.classList.toggle("jason-zoom", isJason);
 
   app.innerHTML = `
-    <div class="briefing">
-      <h1>CLASSIFIED</h1>
-      <h2>FINAL BRIEFING</h2>
-      <div id="typewriter"></div>
-      <button id="continueBtn" style="display:none;">ACCEPT MISSION</button>
+    <div class="briefing-container">
+      <h1>FILE DOSSIER</h1>
+      <div class="dossier">
+        <p class="typed-text"></p>
+      </div>
+      <button id="acceptBtn" class="hidden">ACCEPT MISSION</button>
     </div>
   `;
 
-  const typeEl = document.getElementById("typewriter");
-  const btn = document.getElementById("continueBtn");
+  const typedText = document.querySelector(".typed-text");
+  const acceptBtn = document.getElementById("acceptBtn");
 
+  const textContent = `
+AGENT: ${agentName}
+
+STATUS: ACTIVE
+
+MISSION: Operation: Always and Forever
+
+ROLE ASSIGNED: ${role}
+
+LOCATION:
+6233 Muirfield Dr SW
+Cedar Rapids, IA 52404
+
+ATTIRE:
+Covert Navy
+
+INSTRUCTIONS:
+Further instructions will be sent via secure transmission.
+
+CONTACT:
+Confirm attendance with Agent Ghost.
+
+ACCOMMODATIONS:
+The Hotel at Kirkwood Center is available if needed.
+  `;
+
+  typeWriterSafe(typedText, textContent, () => {
+    acceptBtn.classList.remove("hidden");
+  });
+
+  acceptBtn.onclick = () => {
+    acceptBtn.innerText = isJason
+      ? "Jason, do you accept this mission as Best Man?"
+      : `${agentName}, do you accept this mission as Groomsman?`;
+
+    setTimeout(() => {
+      if (onComplete) onComplete();
+    }, 800);
+  };
+
+  // start ambient sound safely
+  playAmbient();
+}
+
+function typeWriterSafe(el, text, callback){
   let i = 0;
 
-  function typeWriter() {
-    if (i < message.length) {
-      typeEl.innerHTML += message.charAt(i);
-
-      const currentText = message.slice(0, i);
-
+  function type(){
+    if (i < text.length){
+      el.textContent += text.charAt(i); // SAFE: no HTML injection
       i++;
-
-      // 🎬 Dynamic pacing (THIS is what made it feel cinematic)
-      let delay = 14;
-
-      if (currentText.endsWith("ACCESS GRANTED")) delay = 300;
-      else if (currentText.endsWith("high-stakes game.")) delay = 300;
-      else if (currentText.endsWith("Every seat at the table matters.")) delay = 300;
-      else if (currentText.endsWith("Your presence is expected.")) delay = 300;
-      else if (currentText.endsWith("The table awaits.")) delay = 500;
-
-      setTimeout(typeWriter, delay);
-
+      setTimeout(type, 25);
     } else {
-      btn.style.display = "block";
+      if (callback) callback();
     }
   }
 
-  typeWriter();
-
-  btn.addEventListener("click", () => {
-    // ✅ log acceptance
-    localStorage.setItem(`mission_${agentName}`, "accepted");
-
-    // 🎬 cinematic transition
-    app.classList.add("fade-out");
-
-    setTimeout(() => {
-      onComplete();
-      app.classList.remove("fade-out");
-      app.classList.add("fade-in");
-    }, 400);
-  });
+  type();
 }
