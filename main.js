@@ -1,6 +1,10 @@
 import { startQuestions } from './questionsUI.js';
 import { startPoker } from './pokerUI.js';
-import { startBriefing } from './briefingUI.js';
+const agentName = "Jason"; // 👈 change per person (or make dynamic later)
+
+startBriefing(app, agentName, () => {
+  loadScreen('poker');
+});
 
 const app = document.getElementById('app');
 
