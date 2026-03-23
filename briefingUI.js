@@ -1,4 +1,5 @@
 export function startBriefing(app, agentName, onComplete) {
+
 const isJason = agentName === "Jason";
 const role = isJason ? "Best Man" : "Groomsman";
 
