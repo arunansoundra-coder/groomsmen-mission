@@ -14,7 +14,7 @@ const app = document.getElementById('app');
 // 👥 AGENTS
 // =======================
 const codenames = {
-  "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
+  "Arunan":"Ghost","Jason":"Viper","Gill":"Architect",
   "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
 };
 
