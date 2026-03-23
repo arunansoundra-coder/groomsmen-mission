@@ -1,58 +1,112 @@
-export function startBriefing(app, agentName, onComplete){
+export function startBriefing(app, agentName, onComplete) {
 
-  const missionObjective = `
-MISSION OBJECTIVE:
+  const roleMap = {
+    "Jason": "Best Man",
+    "Josh": "Groomsman",
+    "Duran": "Groomsman",
+    "Taylor": "Groomsman",
+    "Gill": "Groomsman",
+    "Prathap": "Groomsman"
+  };
 
-Secure the operation.
-Maintain cover.
-Ensure all agents complete their roles.
+  const role = roleMap[agentName] || "Agent";
+  const isBestMan = agentName === "Jason";
 
-Failure is not an option.
+  const message = `
+🛰 MI6 SECURE CHANNEL
+
+ACCESS GRANTED
+
+----------------------------------------
+
+Agent: ${agentName}
+Assignment: ${role}
+
+----------------------------------------
+
+This is not a routine operation.
+
+It is a high-stakes game.
+
+Every seat at the table matters.
+
+----------------------------------------
+
+${isBestMan 
+  ? `You are being asked to take your place as Best Man.`
+  : `You are being asked to take your place as a Groomsman.`
+}
+
+----------------------------------------
+
+🏠 SAFE HOUSE:
+Location to be disclosed.
+
+📅 OPERATION DATE:
+[INSERT DATE]
+
+----------------------------------------
+
+Your seat has been reserved.
+
+Your presence is expected.
+
+----------------------------------------
+
+The table awaits.
 `;
 
   app.innerHTML = `
     <div class="briefing">
-      <h2>🛰 MISSION BRIEFING</h2>
-
+      <h1>CLASSIFIED</h1>
+      <h2>FINAL BRIEFING</h2>
       <div id="typewriter"></div>
-
-      <pre id="objective" style="margin-top:20px; opacity:0;"></pre>
-
-      <button id="continueBtn" style="display:none;">CONTINUE</button>
+      <button id="continueBtn" style="display:none;">ACCEPT MISSION</button>
     </div>
   `;
 
-  const text = `Agent ${agentName},
-
-You have been selected for this operation.
-
-Your role is critical.
-
-Await further instructions...`;
-
-  const typewriter = document.getElementById("typewriter");
-  const objective = document.getElementById("objective");
+  const typeEl = document.getElementById("typewriter");
   const btn = document.getElementById("continueBtn");
 
   let i = 0;
 
-  function type(){
-    if (i < text.length){
-      typewriter.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(type, 25);
-    } else {
-      // reveal mission objective
-      objective.innerText = missionObjective;
-      objective.style.opacity = 1;
+  function typeWriter() {
+    if (i < message.length) {
+      typeEl.innerHTML += message.charAt(i);
 
-      btn.style.display = "inline-block";
+      const currentText = message.slice(0, i);
+
+      i++;
+
+      // 🎬 Dynamic pacing (THIS is what made it feel cinematic)
+      let delay = 14;
+
+      if (currentText.endsWith("ACCESS GRANTED")) delay = 300;
+      else if (currentText.endsWith("high-stakes game.")) delay = 300;
+      else if (currentText.endsWith("Every seat at the table matters.")) delay = 300;
+      else if (currentText.endsWith("Your presence is expected.")) delay = 300;
+      else if (currentText.endsWith("The table awaits.")) delay = 500;
+
+      setTimeout(typeWriter, delay);
+
+    } else {
+      btn.style.display = "block";
     }
   }
 
-  btn.onclick = () => {
-    onComplete();
-  };
+  typeWriter();
 
-  type();
+  btn.addEventListener("click", () => {
+    // ✅ log acceptance
+    localStorage.setItem(`mission_${agentName}`, "accepted");
+
+    // 🎬 cinematic transition
+    app.classList.add("fade-out");
+
+    setTimeout(() => {
+      onComplete();
+      app.classList.remove("fade-out");
+      app.classList.add("fade-in");
+    }, 400);
+  });
 }
