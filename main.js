@@ -21,5 +21,4 @@ function loadScreen(screen) {
   }
 }
 
-// Start app
 loadScreen('questions');
