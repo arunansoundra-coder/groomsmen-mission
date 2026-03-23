@@ -112,3 +112,19 @@ const players = names.map((name, i) => {
     `;
   }, 5500);
 }
+function positionSeats(players, tableWidth, tableHeight){
+  const centerX = tableWidth / 2;
+  const centerY = tableHeight / 2;
+  const radiusX = tableWidth * 0.38;
+  const radiusY = tableHeight * 0.38;
+
+  players.forEach((p, i) => {
+    const angle = (i / players.length) * 2 * Math.PI - Math.PI / 2;
+
+    const x = centerX + radiusX * Math.cos(angle);
+    const y = centerY + radiusY * Math.sin(angle);
+
+    p.el.style.left = `${x}px`;
+    p.el.style.top = `${y}px`;
+  });
+}
