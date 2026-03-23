@@ -6,14 +6,21 @@ import { playAmbient } from './sounds.js';
 
 const app = document.getElementById('app');
 
-// 🔗 Get agent from URL
+let isTransitioning = false;
+
+// 🔗 Get agent from URL (sanitized)
 function getAgentFromURL(){
   const params = new URLSearchParams(window.location.search);
-  return params.get("agent") || "Agent";
+  return (params.get("agent") || "Agent")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 // 🎬 Cinematic transition helper
 function transitionToScreen(callback) {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
   app.classList.add('fade-out');
 
   setTimeout(() => {
@@ -21,11 +28,16 @@ function transitionToScreen(callback) {
     app.classList.remove('fade-out');
     app.classList.add('fade-in');
 
-    callback();
-
+    // Small cinematic pause before rendering next screen
     setTimeout(() => {
-      app.classList.remove('fade-in');
-    }, 500);
+      callback();
+
+      setTimeout(() => {
+        app.classList.remove('fade-in');
+        isTransitioning = false;
+      }, 500);
+
+    }, 100);
 
   }, 400); // fade duration
 }
@@ -38,9 +50,8 @@ function loadScreen(screen) {
         loadScreen('briefing');
       });
     });
-  }
-
-  if (screen === 'briefing') {
+  } 
+  else if (screen === 'briefing') {
     const agentName = getAgentFromURL();
 
     transitionToScreen(() => {
@@ -48,20 +59,24 @@ function loadScreen(screen) {
         loadScreen('poker');
       });
     });
-  }
-
-  if (screen === 'poker') {
+  } 
+  else if (screen === 'poker') {
     transitionToScreen(() => {
       startPoker(app);
     });
+  } 
+  else {
+    console.warn("Unknown screen:", screen);
+    loadScreen('questions'); // safe fallback
   }
 }
 
 // 🎬 Initialize Experience
 function init() {
-  // Optional ambient sound (safe if file exists)
   try {
-    playAmbient && playAmbient();
+    if (typeof playAmbient === "function") {
+      playAmbient();
+    }
   } catch (e) {
     console.log("Ambient sound not available");
   }
