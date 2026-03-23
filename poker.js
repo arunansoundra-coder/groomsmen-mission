@@ -1,3 +1,5 @@
+// poker.js
+
 const suits = ["♠","♥","♦","♣"];
 const values = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
@@ -29,6 +31,7 @@ function getSuit(card){
   return card.slice(-1);
 }
 
+/* ---------------- COMBINATIONS ---------------- */
 function combinations(arr, k){
   const result = [];
 
@@ -45,34 +48,26 @@ function combinations(arr, k){
   return result;
 }
 
-/* ---------------- 5-CARD EVALUATION ---------------- */
+/* ---------------- 5-CARD EVAL ---------------- */
 function eval5(cards){
   const vals = cards.map(getValue).sort((a,b) => a - b);
   const suitsArr = cards.map(getSuit);
 
-  // Safety check
   if (vals.includes(-1)) return 0;
 
   const isFlush = suitsArr.every(s => s === suitsArr[0]);
 
-  // Handle straight (including A-low straight)
-  let isStraight = false;
+  // Straight (including A-2-3-4-5)
+  const normalStraight = vals.every((v, i) => i === 0 || v === vals[i-1] + 1);
+  const wheelStraight = JSON.stringify(vals) === JSON.stringify([0,1,2,3,12]);
+  const isStraight = normalStraight || wheelStraight;
 
-  // Normal straight
-  let normalStraight = vals.every((v, i) => i === 0 || v === vals[i-1] + 1);
-
-  // Ace-low straight (A,2,3,4,5)
-  let wheelStraight = JSON.stringify(vals) === JSON.stringify([0,1,2,3,12]);
-
-  isStraight = normalStraight || wheelStraight;
-
-  // Count occurrences
+  // Count values
   const counts = {};
   vals.forEach(v => counts[v] = (counts[v] || 0) + 1);
 
   const freq = Object.values(counts).sort((a,b) => b - a);
 
-  // Hand ranking
   if (isStraight && isFlush) return 9;
   if (freq[0] === 4) return 8;
   if (freq[0] === 3 && freq[1] === 2) return 7;
@@ -82,10 +77,10 @@ function eval5(cards){
   if (freq[0] === 2 && freq[1] === 2) return 3;
   if (freq[0] === 2) return 2;
 
-  return 1; // High card
+  return 1;
 }
 
-/* ---------------- 7-CARD EVALUATION ---------------- */
+/* ---------------- 7-CARD EVAL ---------------- */
 export function eval7(cards){
 
   if (!Array.isArray(cards) || cards.length < 5){
