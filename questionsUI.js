@@ -1,18 +1,18 @@
-console.log("questionsUI loaded");
-
 import { questions } from './questions.js';
 
 let currentQ = 0;
 
 export function startQuestions(app, onComplete){
 
- function render(){
-  const q = questions[currentQ];
+  currentQ = 0;
 
-  if (!q) {
-    console.error("No question found at index:", currentQ);
-    return;
-  }
+  function render(){
+    const q = questions[currentQ];
+
+    if (!q) {
+      console.error("No question found");
+      return;
+    }
 
     app.innerHTML = `
       <h2>MISSION LEVEL ${currentQ+1}</h2>
@@ -42,7 +42,10 @@ export function startQuestions(app, onComplete){
 
       if(currentQ === questions.length){
         fb.innerText = "✓ Access Granted";
-        setTimeout(onComplete, 800);
+        setTimeout(() => {
+          console.log("Transitioning to poker...");
+          onComplete();
+        }, 800);
       } else {
         fb.innerText = "✓ Correct";
         setTimeout(render, 500);
