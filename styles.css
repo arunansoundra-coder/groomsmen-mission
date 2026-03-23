@@ -190,3 +190,46 @@ body {
     transform: translateY(0) scale(1);
   }
 }
+.briefing {
+  max-width: 700px;
+  margin: 60px auto;
+  padding: 30px;
+  background: black;
+  color: #00ffcc;
+  font-family: "Courier New", monospace;
+  border: 1px solid #00ffcc;
+  box-shadow: 0 0 20px #00ffcc;
+  text-align: left;
+}
+
+.briefing h1 {
+  text-align: center;
+  color: red;
+  margin-bottom: 10px;
+}
+
+.briefing h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.briefing p {
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.final-line {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+#continueBtn {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 20px;
+  background: #00ffcc;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
