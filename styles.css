@@ -230,3 +230,73 @@ body {
   background: #00e6b8;
   transform: scale(1.05);
 }
+/* ---------------- DASHBOARD ---------------- */
+.dashboard {
+  min-height: 100vh;
+  padding: 40px;
+  background: radial-gradient(circle, #050505, #000);
+  color: #00ffcc;
+  font-family: "Courier New", monospace;
+}
+
+.dashboard h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dashboard h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+#agentList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.agent {
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.agent.accepted {
+  border-color: #00ffcc;
+  box-shadow: 0 0 15px rgba(0,255,204,0.3);
+}
+
+.agent.pending {
+  border-color: #555;
+  opacity: 0.6;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.role {
+  font-size: 14px;
+  color: #ffd700;
+  margin-top: 5px;
+}
+
+.status {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* LIVE indicator */
+.online {
+  color: #00ffcc;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
