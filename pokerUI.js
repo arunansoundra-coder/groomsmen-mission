@@ -95,19 +95,20 @@ function renderCard(card, delay = 0){
   `;
 }
 
-  players.forEach(p => {
-    if (!p.el) return;
+players.forEach((p, i) => {
+  if (!p.el) return;
 
-    p.el.innerHTML = `
-      <div class="name">${p.name}</div>
-      <div class="codename">Codename: ${p.codename}</div>
-      <div class="role">${p.role}</div>
-      <div class="cards">
-        ${renderCard(p.hand[0])}
-        ${renderCard(p.hand[1])}
-      </div>
-    `;
-  });
+  p.el.innerHTML = `
+    <div class="name">${p.name}</div>
+    <div class="codename">Codename: ${p.codename}</div>
+    <div class="role">${p.role}</div>
+    <div class="cards">
+      ${renderCard(p.hand[0], i * 200)}
+      ${renderCard(p.hand[1], i * 200 + 200)}
+    </div>
+    <div class="chips" id="chips-${i}">100</div>
+  `;
+});
 
   function renderCommunity(){
     communityEl.innerHTML = community.map(renderCard).join("");
