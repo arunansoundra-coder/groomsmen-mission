@@ -258,3 +258,19 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
+/* 🎬 Screen Transitions */
+#app {
+  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+}
+
+.fade-out {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.98);
+}
+
+.fade-in {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
