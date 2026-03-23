@@ -1,11 +1,65 @@
+/* ---------------- BODY ---------------- */
 body {
   background: #111;
   color: white;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* TABLE */
+/* ---------------- QUESTIONS SCREEN ---------------- */
+.question-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.level {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.question-text {
+  font-size: 22px;
+  margin-bottom: 25px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.option-btn {
+  margin: 10px 0;
+  padding: 12px 25px;
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  cursor: pointer;
+  width: 260px;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.option-btn:hover {
+  background: #444;
+}
+
+.feedback {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* ---------------- POKER TABLE ---------------- */
 .table {
   width: 900px;
   height: 500px;
@@ -14,9 +68,10 @@ body {
   border-radius: 50%;
   position: relative;
   box-shadow: 0 0 40px black;
+  overflow: hidden;
 }
 
-/* SEATS */
+/* ---------------- SEATS ---------------- */
 .seat {
   position: absolute;
   width: 140px;
@@ -25,19 +80,21 @@ body {
 
 .seat .name {
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
 /* POSITIONING */
-.seat-1 { top: 20px; left: 380px; }
-.seat-2 { bottom: 20px; left: 380px; }
-.seat-3 { top: 200px; left: 50px; }
-.seat-4 { top: 200px; right: 50px; }
+.seat-1 { top: 30px; left: 50%; transform: translateX(-50%); }
+.seat-2 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+.seat-3 { top: 50%; left: 40px; transform: translateY(-50%); }
+.seat-4 { top: 50%; right: 40px; transform: translateY(-50%); }
 
-/* CARDS */
+/* ---------------- CARDS ---------------- */
 .cards {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   justify-content: center;
+  margin-top: 5px;
 }
 
 .card {
@@ -49,73 +106,38 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 18px;
 }
 
 .card.red { color: red; }
 .card.black { color: black; }
 
-/* COMMUNITY */
+/* ---------------- COMMUNITY CARDS ---------------- */
 .community {
   position: absolute;
-  top: 200px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* POT */
+/* ---------------- POT ---------------- */
 .pot {
   position: absolute;
-  top: 140px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-/* MESSAGE */
+/* ---------------- MESSAGE ---------------- */
 .msg {
   position: absolute;
   bottom: 10px;
   width: 100%;
-}
-.question-screen {
-  color: white;
   text-align: center;
-  padding: 40px;
-}
-
-.level {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.question-text {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.option-btn {
-  margin: 8px;
-  padding: 12px 20px;
-  background: #222;
-  color: white;
-  border: 1px solid #555;
-  cursor: pointer;
-  width: 250px;
-}
-
-.option-btn:hover {
-  background: #444;
-}
-
-.feedback {
-  margin-top: 15px;
+  font-size: 18px;
   font-weight: bold;
 }
