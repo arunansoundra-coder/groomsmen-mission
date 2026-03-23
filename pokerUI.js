@@ -110,9 +110,11 @@ players.forEach((p, i) => {
   `;
 });
 
-  function renderCommunity(){
-    communityEl.innerHTML = community.map(renderCard).join("");
-  }
+ function renderCommunity(){
+  communityEl.innerHTML = community
+    .map((c, i) => renderCard(c, i * 200))
+    .join("");
+}
 
   function bet(){
     pot += Math.floor(Math.random()*50)+20;
