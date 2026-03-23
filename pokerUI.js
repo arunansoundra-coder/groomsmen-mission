@@ -59,6 +59,7 @@ export function startPoker(app){
       codename: codenameMap[name],
       role: roleMap[name],
       el,
+      chips: 100,
       hand: [deck.pop(), deck.pop()]
     };
   });
