@@ -80,13 +80,24 @@ body {
 }
 
 /* Circle layout using trig positions */
-.seat:nth-child(3) { top: 10%; left: 50%; }   /* p0 */
-.seat:nth-child(4) { top: 25%; left: 85%; }   /* p1 */
-.seat:nth-child(5) { top: 65%; left: 85%; }   /* p2 */
-.seat:nth-child(6) { top: 90%; left: 50%; }   /* p3 */
-.seat:nth-child(7) { top: 65%; left: 15%; }   /* p4 */
-.seat:nth-child(8) { top: 25%; left: 15%; }   /* p5 */
-.seat:nth-child(9) { top: 5%; left: 50%; }    /* p6 */
+.table {
+  width: 900px;
+  height: 500px;
+  margin: 40px auto;
+  background: radial-gradient(circle, #0b5d1e, #083d14);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 40px black;
+  overflow: hidden;
+}
+
+/* Seat base */
+.seat {
+  position: absolute;
+  width: 120px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
 
 /* ---------------- CARDS ---------------- */
 .cards {
