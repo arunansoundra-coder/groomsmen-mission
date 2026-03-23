@@ -1,3 +1,6 @@
+const typeSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2353/2353-preview.mp3");
+typeSound.volume = 0.4;
+
 export function startBriefing(app, agentName, onComplete){
 
   const isJason = agentName === "Jason";
