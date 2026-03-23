@@ -74,20 +74,19 @@ body {
 /* ---------------- SEATS ---------------- */
 .seat {
   position: absolute;
-  width: 140px;
+  width: 120px;
   text-align: center;
+  transform: translate(-50%, -50%);
 }
 
-.seat .name {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-/* POSITIONING */
-.seat-1 { top: 30px; left: 50%; transform: translateX(-50%); }
-.seat-2 { bottom: 30px; left: 50%; transform: translateX(-50%); }
-.seat-3 { top: 50%; left: 40px; transform: translateY(-50%); }
-.seat-4 { top: 50%; right: 40px; transform: translateY(-50%); }
+/* Circle layout using trig positions */
+.seat:nth-child(3) { top: 10%; left: 50%; }   /* p0 */
+.seat:nth-child(4) { top: 25%; left: 85%; }   /* p1 */
+.seat:nth-child(5) { top: 65%; left: 85%; }   /* p2 */
+.seat:nth-child(6) { top: 90%; left: 50%; }   /* p3 */
+.seat:nth-child(7) { top: 65%; left: 15%; }   /* p4 */
+.seat:nth-child(8) { top: 25%; left: 15%; }   /* p5 */
+.seat:nth-child(9) { top: 5%; left: 50%; }    /* p6 */
 
 /* ---------------- CARDS ---------------- */
 .cards {
