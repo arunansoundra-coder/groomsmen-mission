@@ -32,8 +32,15 @@ app.innerHTML = `
 const names = ["Josh","Duran","Taylor","Arunan","Jason","Gill","Prathap"];
 const roles = ["Mirage","Anomaly","Shadow","Ghost","Viper","Architect","Midnight"];
 
-const players = names.map((name, i) => {
-  const el = document.getElementById(`p${i}`);
+const roleMap = {
+  "Arunan": "Groom",
+  "Jason": "Best Man",
+  "Josh": "Groomsman",
+  "Duran": "Groomsman",
+  "Taylor": "Groomsman",
+  "Gill": "Groomsman",
+  "Prathap": "Groomsman"
+};
 
   return {
     name,
