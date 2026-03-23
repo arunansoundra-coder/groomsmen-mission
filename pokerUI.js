@@ -1,4 +1,4 @@
-import { createDeck, eval7 } from './poker.js';
+ import { createDeck, eval7 } from './poker.js';
 import { chipSound } from './sounds.js';
 
 export function startPoker(app){
@@ -52,7 +52,6 @@ export function startPoker(app){
 
   const players = names.map((name, i) => {
     const el = document.getElementById(`p${i}`);
-
     return {
       name,
       codename: codenameMap[name],
@@ -63,7 +62,7 @@ export function startPoker(app){
     };
   });
 
-  // position seats in a circle
+  // Seat positioning
   function positionSeats(players, tableWidth, tableHeight){
     const centerX = tableWidth / 2;
     const centerY = tableHeight / 2;
@@ -83,7 +82,7 @@ export function startPoker(app){
 
   positionSeats(players, 900, 500);
 
-  // 🃏 Card Render
+  // Card render
   function renderCard(card, delay = 0){
     const value = card.slice(0,-1);
     const suit = card.slice(-1);
@@ -96,7 +95,7 @@ export function startPoker(app){
     `;
   }
 
-  // 🎬 Render players
+  // Render players
   players.forEach((p, i) => {
     if (!p.el) return;
 
@@ -118,32 +117,38 @@ export function startPoker(app){
       .join("");
   }
 
-  // 🪙 Enhanced chip animation into pot
-  function animateBet(playerIndex, amount){
+  // 🪙 FIXED chip animation
+  function animateBet(playerIndex){
     const chip = document.createElement("div");
     chip.className = "chip-fly";
 
     const start = players[playerIndex].el.getBoundingClientRect();
     const end = potEl.getBoundingClientRect();
 
+    chip.style.position = "fixed";
     chip.style.left = start.left + "px";
     chip.style.top = start.top + "px";
+    chip.style.width = "20px";
+    chip.style.height = "20px";
+    chip.style.borderRadius = "50%";
+    chip.style.background = "gold";
+    chip.style.transition = "transform 0.8s ease, opacity 0.8s";
 
     document.body.appendChild(chip);
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       chip.style.transform = `translate(${end.left - start.left}px, ${end.top - start.top}px) scale(0.5)`;
       chip.style.opacity = "0";
-    }, 10);
+    });
 
-    setTimeout(() => chip.remove(), 800);
+    setTimeout(() => chip.remove(), 900);
   }
 
   function bet(){
     players.forEach((p, i) => {
-      const betAmount = Math.floor(Math.random()*20)+10;
-
       if (p.chips <= 0) return;
+
+      const betAmount = Math.floor(Math.random()*20)+10;
 
       p.chips -= betAmount;
       pot += betAmount;
@@ -151,28 +156,26 @@ export function startPoker(app){
       const chipEl = document.getElementById(`chips-${i}`);
       if (chipEl) chipEl.innerText = p.chips;
 
-      animateBet(i, betAmount);
+      animateBet(i);
     });
 
     potEl.innerText = "POT: " + pot;
 
-    chipSound?.play().catch(()=>{});
+    if (chipSound) {
+      chipSound.currentTime = 0;
+      chipSound.play().catch(()=>{});
+    }
   }
 
-  // 🎯 Active player glow (simple visual cue)
   function highlightPlayer(index){
     players.forEach((p, i) => {
       if (p.el) p.el.classList.toggle("active", i === index);
     });
   }
 
-  // INITIAL BET
-  setTimeout(()=>{
-    highlightPlayer(0);
-    bet();
-  }, 800);
+  // Initial deal (slightly staggered)
+  setTimeout(()=>{ highlightPlayer(0); bet(); }, 800);
 
-  // FLOP
   setTimeout(()=>{
     community.push(deck.pop(), deck.pop(), deck.pop());
     renderCommunity();
@@ -180,7 +183,6 @@ export function startPoker(app){
     bet();
   }, 2000);
 
-  // TURN
   setTimeout(()=>{
     community.push(deck.pop());
     renderCommunity();
@@ -188,7 +190,6 @@ export function startPoker(app){
     bet();
   }, 3500);
 
-  // RIVER
   setTimeout(()=>{
     community.push(deck.pop());
     renderCommunity();
@@ -196,18 +197,18 @@ export function startPoker(app){
     bet();
   }, 5000);
 
-  // SHOWDOWN
+  // Showdown (FIXED)
   setTimeout(()=>{
     let results = players.map(p=>{
       const res = eval7([...p.hand, ...community]);
-      return { name: p.name, ...res };
+      return { name: p.name, score: res.score, hand: res.name };
     });
 
     results.sort((a,b)=>b.score - a.score);
 
     msg.innerHTML = `
       <h3>Showdown</h3>
-      ${results.map(r => `<p>${r.name} - ${r.name}</p>`).join("")}
+      ${results.map(r => `<p>${r.name} — ${r.hand}</p>`).join("")}
     `;
   }, 5500);
 }
