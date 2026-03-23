@@ -1,5 +1,14 @@
 export function startBriefing(app, agentName, onComplete) {
+const isJason = agentName === "Jason";
+const role = isJason ? "Best Man" : "Groomsman";
 
+app.classList.add("briefing");
+
+if (isJason) {
+  app.classList.add("jason-zoom");
+} else {
+  app.classList.remove("jason-zoom");
+}
   const roleMap = {
     "Jason": "Best Man",
     "Josh": "Groomsman",
