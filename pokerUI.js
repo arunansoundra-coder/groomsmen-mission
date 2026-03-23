@@ -42,9 +42,13 @@ const roleMap = {
   "Prathap": "Groomsman"
 };
 
+const players = names.map((name, i) => {
+  const el = document.getElementById(`p${i}`);
+
   return {
     name,
-    codename: `${roles[i]} ${name}`,
+    role: roleMap[name],
+    codename: `${name} (${roleMap[name]})`,
     el,
     hand: [deck.pop(), deck.pop()]
   };
