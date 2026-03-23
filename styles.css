@@ -1,15 +1,31 @@
-/* ---------------- BODY ---------------- */
+/* ---------------- GLOBAL ---------------- */
 body {
-  background: #111;
+  background: #0b0b0b;
   color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* ---------------- QUESTIONS SCREEN ---------------- */
+/* ---------------- APP TRANSITIONS ---------------- */
+#app {
+  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+}
+
+.fade-out {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.98);
+}
+
+.fade-in {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
+/* ---------------- QUESTIONS ---------------- */
 .question-screen {
   display: flex;
   flex-direction: column;
@@ -17,7 +33,6 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 40px;
-  box-sizing: border-box;
 }
 
 .level {
@@ -28,12 +43,6 @@ body {
 .question-text {
   font-size: 22px;
   margin-bottom: 25px;
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .option-btn {
@@ -51,12 +60,7 @@ body {
 
 .option-btn:hover {
   background: #444;
-}
-
-.feedback {
-  margin-top: 20px;
-  font-weight: bold;
-  font-size: 18px;
+  transform: scale(1.03);
 }
 
 /* ---------------- POKER TABLE ---------------- */
@@ -64,11 +68,21 @@ body {
   width: 900px;
   height: 500px;
   margin: 40px auto;
-  background: radial-gradient(circle, #0b5d1e, #083d14);
+  background: radial-gradient(circle, #0f6b28, #05210c);
   border-radius: 50%;
   position: relative;
-  box-shadow: 0 0 40px black;
+  box-shadow: 0 0 60px black, inset 0 0 40px rgba(0,0,0,0.6);
   overflow: hidden;
+}
+
+/* Subtle table glow */
+.table::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+  pointer-events: none;
 }
 
 /* ---------------- SEATS ---------------- */
@@ -77,6 +91,31 @@ body {
   width: 120px;
   text-align: center;
   transform: translate(-50%, -50%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Active player */
+.seat.active {
+  box-shadow: 0 0 25px rgba(0,255,150,0.9);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* ---------------- PLAYER TEXT ---------------- */
+.codename {
+  font-size: 12px;
+  color: #ccc;
+  margin-bottom: 4px;
+}
+
+.role {
+  font-size: 12px;
+  color: #ffd700;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.name {
+  font-weight: bold;
 }
 
 /* ---------------- CARDS ---------------- */
@@ -87,6 +126,7 @@ body {
   margin-top: 5px;
 }
 
+/* Card animation */
 .card {
   width: 40px;
   height: 60px;
@@ -97,19 +137,31 @@ body {
   justify-content: center;
   font-weight: bold;
   font-size: 18px;
+
+  opacity: 0;
+  transform: translateY(-40px) scale(0.6);
+  animation: dealCard 0.4s ease forwards;
 }
 
 .card.red { color: red; }
 .card.black { color: black; }
 
-/* ---------------- CENTER AREA ---------------- */
+@keyframes dealCard {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------------- CENTER (POT + COMMUNITY) ---------------- */
 .pot {
   position: absolute;
   top: 45%;
   left: 50%;
   transform: translate(-50%, -120%);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
+  text-shadow: 0 0 10px black;
 }
 
 .community {
@@ -119,9 +171,9 @@ body {
   transform: translate(-50%, -50%);
   display: flex;
   gap: 12px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);
-  padding: 5px 10px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(255,255,255,0.08);
 }
 
 /* ---------------- MESSAGE ---------------- */
@@ -134,17 +186,16 @@ body {
   font-weight: bold;
 }
 
-.codename {
-  font-size: 12px;
-  color: #ccc;
-  margin-bottom: 4px;
-}
-
-.role {
-  font-size: 12px;
-  color: #ffd700;
-  margin-bottom: 4px;
-  font-weight: bold;
+/* ---------------- CHIP ANIMATION ---------------- */
+.chip-fly {
+  position: fixed;
+  width: 16px;
+  height: 16px;
+  background: gold;
+  border-radius: 50%;
+  z-index: 999;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  box-shadow: 0 0 10px rgba(255,215,0,0.9);
 }
 
 /* ---------------- BRIEFING ---------------- */
@@ -172,4 +223,10 @@ body {
   border: none;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+#continueBtn:hover {
+  background: #00e6b8;
+  transform: scale(1.05);
 }
