@@ -42,7 +42,9 @@ const players = names.map((name, i) => {
     hand: [deck.pop(), deck.pop()]
   };
 });
-
+  
+positionSeats(players, 900, 500);
+  
   // render cards
   function renderCard(card){
     const value = card.slice(0,-1);
