@@ -5,7 +5,6 @@ export function startPoker(app){
 
   app.innerHTML = `
     <div class="table">
-      
       <div class="pot" id="pot">POT: 0</div>
       <div class="community" id="community"></div>
 
@@ -84,82 +83,120 @@ export function startPoker(app){
 
   positionSeats(players, 900, 500);
 
-function renderCard(card, delay = 0){
-  const value = card.slice(0,-1);
-  const suit = card.slice(-1);
-  const color = (suit === "♥" || suit === "♦") ? "red" : "black";
+  // 🃏 Card Render
+  function renderCard(card, delay = 0){
+    const value = card.slice(0,-1);
+    const suit = card.slice(-1);
+    const color = (suit === "♥" || suit === "♦") ? "red" : "black";
 
-  return `
-    <div class="card ${color}" style="animation-delay:${delay}ms">
-      ${value}${suit}
-    </div>
-  `;
-}
+    return `
+      <div class="card ${color}" style="animation-delay:${delay}ms">
+        ${value}${suit}
+      </div>
+    `;
+  }
 
-players.forEach((p, i) => {
-  if (!p.el) return;
-
-  p.el.innerHTML = `
-    <div class="name">${p.name}</div>
-    <div class="codename">Codename: ${p.codename}</div>
-    <div class="role">${p.role}</div>
-    <div class="cards">
-      ${renderCard(p.hand[0])}
-      ${renderCard(p.hand[1])}
-    </div>
-    <div class="chips" id="chips-${i}">${p.chips}</div>
-  `;
-});
-
- function renderCommunity(){
-  communityEl.innerHTML = community
-    .map((c, i) => renderCard(c, i * 200))
-    .join("");
-}
-
-function bet(){
+  // 🎬 Render players
   players.forEach((p, i) => {
-    const betAmount = Math.floor(Math.random()*20)+10;
+    if (!p.el) return;
 
-    if (p.chips <= 0) return;
-
-    p.chips -= betAmount;
-    pot += betAmount;
-
-    const chipEl = document.getElementById(`chips-${i}`);
-    if (chipEl) chipEl.innerText = p.chips;
+    p.el.innerHTML = `
+      <div class="name">${p.name}</div>
+      <div class="codename">Codename: ${p.codename}</div>
+      <div class="role">${p.role}</div>
+      <div class="cards">
+        ${renderCard(p.hand[0])}
+        ${renderCard(p.hand[1])}
+      </div>
+      <div class="chips" id="chips-${i}">${p.chips}</div>
+    `;
   });
 
-  potEl.innerText = "POT: " + pot;
-  chipSound.play().catch(()=>{});
-}
+  function renderCommunity(){
+    communityEl.innerHTML = community
+      .map((c, i) => renderCard(c, i * 200))
+      .join("");
+  }
 
-// INITIAL BET (pre-flop)
-setTimeout(()=>{
-  bet();
-}, 800);
+  // 🪙 Enhanced chip animation into pot
+  function animateBet(playerIndex, amount){
+    const chip = document.createElement("div");
+    chip.className = "chip-fly";
 
-// FLOP
-setTimeout(()=>{
-  community.push(deck.pop(), deck.pop(), deck.pop());
-  renderCommunity();
-  bet();
-}, 2000);
+    const start = players[playerIndex].el.getBoundingClientRect();
+    const end = potEl.getBoundingClientRect();
 
-// TURN
-setTimeout(()=>{
-  community.push(deck.pop());
-  renderCommunity();
-  bet();
-}, 3500);
+    chip.style.left = start.left + "px";
+    chip.style.top = start.top + "px";
 
-// RIVER
-setTimeout(()=>{
-  community.push(deck.pop());
-  renderCommunity();
-  bet();
-}, 5000);
-  
+    document.body.appendChild(chip);
+
+    setTimeout(() => {
+      chip.style.transform = `translate(${end.left - start.left}px, ${end.top - start.top}px) scale(0.5)`;
+      chip.style.opacity = "0";
+    }, 10);
+
+    setTimeout(() => chip.remove(), 800);
+  }
+
+  function bet(){
+    players.forEach((p, i) => {
+      const betAmount = Math.floor(Math.random()*20)+10;
+
+      if (p.chips <= 0) return;
+
+      p.chips -= betAmount;
+      pot += betAmount;
+
+      const chipEl = document.getElementById(`chips-${i}`);
+      if (chipEl) chipEl.innerText = p.chips;
+
+      animateBet(i, betAmount);
+    });
+
+    potEl.innerText = "POT: " + pot;
+
+    chipSound?.play().catch(()=>{});
+  }
+
+  // 🎯 Active player glow (simple visual cue)
+  function highlightPlayer(index){
+    players.forEach((p, i) => {
+      if (p.el) p.el.classList.toggle("active", i === index);
+    });
+  }
+
+  // INITIAL BET
+  setTimeout(()=>{
+    highlightPlayer(0);
+    bet();
+  }, 800);
+
+  // FLOP
+  setTimeout(()=>{
+    community.push(deck.pop(), deck.pop(), deck.pop());
+    renderCommunity();
+    highlightPlayer(1);
+    bet();
+  }, 2000);
+
+  // TURN
+  setTimeout(()=>{
+    community.push(deck.pop());
+    renderCommunity();
+    highlightPlayer(2);
+    bet();
+  }, 3500);
+
+  // RIVER
+  setTimeout(()=>{
+    community.push(deck.pop());
+    renderCommunity();
+    highlightPlayer(3);
+    bet();
+  }, 5000);
+
+  // SHOWDOWN
   setTimeout(()=>{
     let results = players.map(p=>{
       const res = eval7([...p.hand, ...community]);
