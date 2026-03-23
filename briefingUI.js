@@ -1,27 +1,44 @@
-export function startBriefing(app, onContinue){
+export function startBriefing(app, agentName, onContinue){
+
+  const roleMap = {
+    "Jason": "Best Man",
+    "Josh": "Groomsman",
+    "Duran": "Groomsman",
+    "Taylor": "Groomsman",
+    "Gill": "Groomsman",
+    "Prathap": "Groomsman"
+  };
+
+  let roleLine = "";
+
+  if (agentName === "Arunan") {
+    roleLine = `<p>You are the principal asset. All operations center around you.</p>`;
+  } else {
+    const role = roleMap[agentName] || "Groomsman";
+
+    roleLine = `
+      <p>
+        Agent ${agentName}, you are formally requested to serve as 
+        <strong>${role}</strong> for this operation.
+      </p>
+    `;
+  }
 
   app.innerHTML = `
     <div class="briefing">
       <h1>MI6 SECURE CHANNEL</h1>
       <h2>MISSION BRIEFING</h2>
 
-      <p>
-        Agent, your presence is requested for a high-stakes operation.
-      </p>
+      ${roleLine}
 
       <p>
-        You are to accept your role as either <strong>Best Man</strong> or <strong>Groomsman</strong> 
-        and prepare accordingly. Your loyalty and execution will be critical to mission success.
-      </p>
-
-      <p>
-        A high-stakes poker engagement is scheduled for <strong>1200 hours, September 18, 2026</strong>.
+        A high-stakes poker engagement is scheduled for 
+        <strong>1200 hours, September 18, 2026</strong>.
       </p>
 
       <p>
         Your covert attire will be a <strong>navy suit</strong>, to be acquired through 
-        <strong>The Suit Shop</strong>. Further intel regarding attire specifications 
-        will be transmitted via secure email.
+        <strong>The Suit Shop</strong>. Further instructions will follow via secure transmission.
       </p>
 
       <p>
