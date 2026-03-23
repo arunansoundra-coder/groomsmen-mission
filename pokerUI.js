@@ -82,18 +82,19 @@ positionSeats(players, 900, 500);
   }
 
   // render players
-  players.forEach(p => {
-    if (!p.el) return;
+players.forEach(p => {
+  if (!p.el) return;
 
-    p.el.innerHTML = `
-      <div class="name">${p.name}</div>
-      <div class="codename">${p.codename}</div>
-      <div class="cards">
-        ${renderCard(p.hand[0])}
-        ${renderCard(p.hand[1])}
-      </div>
-    `;
-  });
+  p.el.innerHTML = `
+    <div class="name">${p.name}</div>
+    <div class="codename">${p.codename}</div>
+    <div class="role">${p.role}</div>
+    <div class="cards">
+      ${renderCard(p.hand[0])}
+      ${renderCard(p.hand[1])}
+    </div>
+  `;
+});
 
   function renderCommunity(){
     communityEl.innerHTML = community.map(renderCard).join("");
