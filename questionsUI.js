@@ -6,17 +6,23 @@ export function startQuestions(app, onComplete) {
   let attempts = 6;
 
   app.innerHTML = `
-    <div class="question-screen">
-      <div class="level">🔐 SECURITY CLEARANCE</div>
-      <div class="question-text">
-        Loyalty makes a family, and family is ____.
+    <div class="terminal">
+      <div class="terminal-header">MI6 SECURE SYSTEM</div>
+
+      <div class="terminal-body">
+        <div class="prompt">> Initiating Level 5 Clearance...</div>
+        <div class="prompt">> Decryption Required</div>
+
+        <div class="question-text">
+          Loyalty makes a family, and family is ____.
+        </div>
+
+        <div id="word" class="word"></div>
+
+        <div id="letters" class="letters"></div>
+
+        <div id="status" class="status"></div>
       </div>
-
-      <div id="word" class="word"></div>
-
-      <div id="letters" class="letters"></div>
-
-      <div id="status" class="feedback"></div>
     </div>
   `;
 
@@ -24,12 +30,17 @@ export function startQuestions(app, onComplete) {
   const lettersEl = document.getElementById("letters");
   const statusEl = document.getElementById("status");
 
+  // 🔊 Sounds
+  const typeSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+  const correctSound = new Audio("https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3");
+  const wrongSound = new Audio("https://assets.mixkit.co/active_storage/sfx/171/171-preview.mp3");
+
   function renderWord() {
     wordEl.innerHTML = answer
       .split("")
       .map(letter => (
         guessed.includes(letter)
-          ? `<span class="letter">${letter}</span>`
+          ? `<span class="letter reveal">${letter}</span>`
           : `<span class="letter blank">_</span>`
       ))
       .join("");
@@ -41,14 +52,19 @@ export function startQuestions(app, onComplete) {
       .every(letter => guessed.includes(letter));
 
     if (isComplete) {
-      statusEl.innerText = "✅ ACCESS GRANTED";
-      setTimeout(onComplete, 1000);
+      statusEl.innerHTML = `<span class="granted">ACCESS GRANTED</span>`;
+      
+      document.body.classList.add("glitch");
+
+      setTimeout(() => {
+        onComplete();
+      }, 1200);
     }
   }
 
   function checkLose() {
     if (attempts <= 0) {
-      statusEl.innerText = "❌ ACCESS DENIED";
+      statusEl.innerHTML = `<span class="denied">ACCESS DENIED</span>`;
     }
   }
 
@@ -66,14 +82,25 @@ export function startQuestions(app, onComplete) {
         const letter = btn.dataset.letter;
 
         btn.disabled = true;
+        typeSound.currentTime = 0;
+        typeSound.play().catch(()=>{});
 
         if (answer.includes(letter)) {
           guessed.push(letter);
+          correctSound.play().catch(()=>{});
           renderWord();
           checkWin();
         } else {
           attempts--;
-          statusEl.innerText = `Attempts left: ${attempts}`;
+          wrongSound.play().catch(()=>{});
+          statusEl.innerText = `Attempts remaining: ${attempts}`;
+
+          // ⚠️ screen flicker
+          document.body.classList.add("flicker");
+          setTimeout(() => {
+            document.body.classList.remove("flicker");
+          }, 150);
+
           checkLose();
         }
       });
