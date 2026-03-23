@@ -1,3 +1,5 @@
+console.log("MAIN JS LOADED");
+
 import { startQuestions } from './questionsUI.js';
 import { startPoker } from './pokerUI.js';
 
