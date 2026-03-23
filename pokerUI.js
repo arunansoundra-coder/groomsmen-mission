@@ -117,30 +117,49 @@ players.forEach((p, i) => {
     .join("");
 }
 
-  function bet(){
-    pot += Math.floor(Math.random()*50)+20;
-    potEl.innerText = "POT: " + pot;
-    chipSound.play().catch(()=>{});
-  }
+function bet(){
+  players.forEach((p, i) => {
+    const betAmount = Math.floor(Math.random()*20)+10;
 
-  setTimeout(()=>{
-    community.push(deck.pop(), deck.pop(), deck.pop());
-    renderCommunity();
-    bet();
-  },1000);
+    if (p.chips <= 0) return;
 
-  setTimeout(()=>{
-    community.push(deck.pop());
-    renderCommunity();
-    bet();
-  },2500);
+    p.chips -= betAmount;
+    pot += betAmount;
 
-  setTimeout(()=>{
-    community.push(deck.pop());
-    renderCommunity();
-    bet();
-  },4000);
+    const chipEl = document.getElementById(`chips-${i}`);
+    if (chipEl) chipEl.innerText = p.chips;
+  });
 
+  potEl.innerText = "POT: " + pot;
+  chipSound.play().catch(()=>{});
+}
+
+// INITIAL BET (pre-flop)
+setTimeout(()=>{
+  bet();
+}, 800);
+
+// FLOP
+setTimeout(()=>{
+  community.push(deck.pop(), deck.pop(), deck.pop());
+  renderCommunity();
+  bet();
+}, 2000);
+
+// TURN
+setTimeout(()=>{
+  community.push(deck.pop());
+  renderCommunity();
+  bet();
+}, 3500);
+
+// RIVER
+setTimeout(()=>{
+  community.push(deck.pop());
+  renderCommunity();
+  bet();
+}, 5000);
+  
   setTimeout(()=>{
     let results = players.map(p=>{
       const res = eval7([...p.hand, ...community]);
