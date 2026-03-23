@@ -2,7 +2,7 @@ import { startQuestions } from './questionsUI.js';
 import { startPoker } from './pokerUI.js';
 import { startBriefing } from './briefingUI.js';
 // Optional: sound system hook (safe to ignore if not implemented)
-import { playAmbient } from './sounds.js';
+import { chipSound } from './sounds.js';
 
 const app = document.getElementById('app');
 
