@@ -15,10 +15,12 @@ export function startQuestions(app, onComplete){
     }
 
     app.innerHTML = `
-      <h2>MISSION LEVEL ${currentQ+1}</h2>
-      <p>${q.q}</p>
-      <div id="options"></div>
-      <div id="feedback"></div>
+      <div class="question-screen">
+        <h2 class="level">MISSION LEVEL ${currentQ+1}</h2>
+        <p class="question-text">${q.q}</p>
+        <div id="options" class="options"></div>
+        <div id="feedback" class="feedback"></div>
+      </div>
     `;
 
     const optionsDiv = document.getElementById("options");
@@ -26,6 +28,7 @@ export function startQuestions(app, onComplete){
     q.options.forEach(option => {
       const btn = document.createElement("button");
       btn.innerText = option;
+      btn.classList.add("option-btn");
 
       btn.addEventListener("click", () => checkAnswer(option));
 
@@ -56,33 +59,5 @@ export function startQuestions(app, onComplete){
     }
   }
 
-function render(){
-  const q = questions[currentQ];
-
-  if (!q) {
-    console.error("No question found");
-    return;
-  }
-
-  app.innerHTML = `
-    <div class="question-screen">
-      <h2 class="level">MISSION LEVEL ${currentQ+1}</h2>
-      <p class="question-text">${q.q}</p>
-      <div id="options" class="options"></div>
-      <div id="feedback" class="feedback"></div>
-    </div>
-  `;
+  render();
 }
-  
-  const optionsDiv = document.getElementById("options");
-
-  q.options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.innerText = option;
-    btn.classList.add("option-btn");
-
-    btn.addEventListener("click", () => checkAnswer(option));
-
-    optionsDiv.appendChild(btn);
-  });
-} //
