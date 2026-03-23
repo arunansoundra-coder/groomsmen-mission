@@ -83,3 +83,6 @@
     onContinue();
   });
 }
+const agentName = agent; // already passed into briefing
+
+localStorage.setItem(`mission_${agentName}`, "accepted");
