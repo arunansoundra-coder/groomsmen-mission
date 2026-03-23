@@ -1,4 +1,4 @@
-export function startBriefing(app, agentName, onContinue){
+  export function startBriefing(app, agentName, onContinue){
 
   const roleMap = {
     "Jason": "Best Man",
@@ -9,63 +9,77 @@ export function startBriefing(app, agentName, onContinue){
     "Prathap": "Groomsman"
   };
 
-  let roleLine = "";
+  let roleText = "";
 
   if (agentName === "Arunan") {
-    roleLine = `<p>You are the principal asset. All operations center around you.</p>`;
+    roleText = "You are the principal asset. All operations revolve around you.";
   } else {
     const role = roleMap[agentName] || "Groomsman";
-
-    roleLine = `
-      <p>
-        Agent ${agentName}, you are formally requested to serve as 
-        <strong>${role}</strong> for this operation.
-      </p>
-    `;
+    roleText = `Agent ${agentName}, you are requested to serve as ${role}.`;
   }
 
   app.innerHTML = `
     <div class="briefing">
-      <h1>MI6 SECURE CHANNEL</h1>
-      <h2>MISSION BRIEFING</h2>
-
-      ${roleLine}
-
-      <p>
-        A high-stakes poker engagement is scheduled for 
-        <strong>1200 hours, September 18, 2026</strong>.
-      </p>
-
-      <p>
-        Your covert attire will be a <strong>navy suit</strong>, to be acquired through 
-        <strong>The Suit Shop</strong>. Further instructions will follow via email.
-      </p>
-
-      <p>
-        The designated safe house is located at:<br/>
-        <strong>6233 Muirfield Dr SW, Cedar Rapids, IA 52404</strong>
-      </p>
-
-      <p>
-        Should accommodations be required, coordinate directly with 
-        <strong>Agent Ghost</strong>.
-      </p>
-
-      <p>
-        Independent lodging is authorized. A nearby option includes:<br/>
-        <strong>The Hotel at Kirkwood Center</strong><br/>
-        7725 Kirkwood Blvd SW, Cedar Rapids, IA 52404
-      </p>
-
-      <p class="final-line">
-        Confirm your readiness. The table awaits.
-      </p>
-
-      <button id="continueBtn">ACCEPT MISSION</button>
+      <div id="typewriter"></div>
+      <button id="continueBtn" style="display:none;">ACCEPT MISSION</button>
     </div>
   `;
 
-  document.getElementById("continueBtn").addEventListener("click", () => {
+  const lines = [
+    "MI6 SECURE CHANNEL INITIATED...",
+    "Decrypting transmission...",
+    "",
+    roleText,
+    "",
+    "A high-stakes poker engagement is scheduled for 1200 hours, September 18, 2026.",
+    "",
+    "Dress code: Navy suit.",
+    "Procurement available via The Suit Shop.",
+    "Further instructions will be transmitted via secure email.",
+    "",
+    "Safe house location:",
+    "6233 Muirfield Dr SW, Cedar Rapids, IA 52404",
+    "",
+    "Accommodation protocol:",
+    "Coordinate with Agent Ghost if required.",
+    "",
+    "Alternate lodging:",
+    "The Hotel at Kirkwood Center",
+    "7725 Kirkwood Blvd SW, Cedar Rapids, IA",
+    "",
+    "Confirm readiness...",
+    "The table awaits."
+  ];
+
+  const el = document.getElementById("typewriter");
+  const btn = document.getElementById("continueBtn");
+
+  let lineIndex = 0;
+  let charIndex = 0;
+
+  function typeLine(){
+    if (lineIndex >= lines.length) {
+      btn.style.display = "block";
+      return;
+    }
+
+    let currentLine = lines[lineIndex];
+
+    if (charIndex < currentLine.length) {
+      el.innerHTML += currentLine.charAt(charIndex);
+      charIndex++;
+      setTimeout(typeLine, 25);
+    } else {
+      el.innerHTML += "<br/>";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeLine, 400);
+    }
+  }
+
+  typeLine();
+
+  btn.addEventListener("click", () => {
     onContinue();
   });
 }
