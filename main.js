@@ -1,6 +1,8 @@
 import { startQuestions } from './questionsUI.js';
 import { startPoker } from './pokerUI.js';
 import { startBriefing } from './briefingUI.js';
+// Optional: sound system hook (safe to ignore if not implemented)
+import { playAmbient } from './sounds.js';
 
 const app = document.getElementById('app');
 
@@ -10,26 +12,61 @@ function getAgentFromURL(){
   return params.get("agent") || "Agent";
 }
 
-function loadScreen(screen) {
-  app.innerHTML = '';
+// 🎬 Cinematic transition helper
+function transitionToScreen(callback) {
+  app.classList.add('fade-out');
 
+  setTimeout(() => {
+    app.innerHTML = '';
+    app.classList.remove('fade-out');
+    app.classList.add('fade-in');
+
+    callback();
+
+    setTimeout(() => {
+      app.classList.remove('fade-in');
+    }, 500);
+
+  }, 400); // fade duration
+}
+
+// 🎯 Screen Loader
+function loadScreen(screen) {
   if (screen === 'questions') {
-    startQuestions(app, () => {
-      loadScreen('briefing');
+    transitionToScreen(() => {
+      startQuestions(app, () => {
+        loadScreen('briefing');
+      });
     });
   }
 
   if (screen === 'briefing') {
     const agentName = getAgentFromURL();
 
-    startBriefing(app, agentName, () => {
-      loadScreen('poker');
+    transitionToScreen(() => {
+      startBriefing(app, agentName, () => {
+        loadScreen('poker');
+      });
     });
   }
 
   if (screen === 'poker') {
-    startPoker(app);
+    transitionToScreen(() => {
+      startPoker(app);
+    });
   }
 }
 
-loadScreen('questions');
+// 🎬 Initialize Experience
+function init() {
+  // Optional ambient sound (safe if file exists)
+  try {
+    playAmbient && playAmbient();
+  } catch (e) {
+    console.log("Ambient sound not available");
+  }
+
+  loadScreen('questions');
+}
+
+init();
