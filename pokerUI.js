@@ -83,13 +83,17 @@ export function startPoker(app){
 
   positionSeats(players, 900, 500);
 
-  function renderCard(card){
-    const value = card.slice(0,-1);
-    const suit = card.slice(-1);
-    const color = (suit === "♥" || suit === "♦") ? "red" : "black";
+function renderCard(card, delay = 0){
+  const value = card.slice(0,-1);
+  const suit = card.slice(-1);
+  const color = (suit === "♥" || suit === "♦") ? "red" : "black";
 
-    return `<div class="card ${color}">${value}${suit}</div>`;
-  }
+  return `
+    <div class="card ${color}" style="animation-delay:${delay}ms">
+      ${value}${suit}
+    </div>
+  `;
+}
 
   players.forEach(p => {
     if (!p.el) return;
