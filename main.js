@@ -4,6 +4,12 @@ import { startBriefing } from './briefingUI.js';
 
 const app = document.getElementById('app');
 
+// 🔗 Get agent from URL
+function getAgentFromURL(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("agent") || "Agent";
+}
+
 function loadScreen(screen) {
   app.innerHTML = '';
 
@@ -14,7 +20,7 @@ function loadScreen(screen) {
   }
 
   if (screen === 'briefing') {
-    const agentName = "Jason"; // 👈 change per person
+    const agentName = getAgentFromURL();
 
     startBriefing(app, agentName, () => {
       loadScreen('poker');
