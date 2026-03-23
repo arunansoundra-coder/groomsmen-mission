@@ -9,7 +9,10 @@ export function startQuestions(app, onComplete){
   function render(){
     const q = questions[currentQ];
 
-    if (!q) return;
+    if (!q) {
+      app.innerHTML = "<p>No question found</p>";
+      return;
+    }
 
     app.innerHTML = `
       <div class="question-screen">
@@ -21,6 +24,7 @@ export function startQuestions(app, onComplete){
     `;
 
     const optionsDiv = document.getElementById("options");
+    if (!optionsDiv) return;
 
     q.options.forEach(option => {
       const btn = document.createElement("button");
@@ -37,10 +41,12 @@ export function startQuestions(app, onComplete){
     const q = questions[currentQ];
     const fb = document.getElementById("feedback");
 
+    if (!fb) return;
+
     if(ans === q.answer){
       currentQ++;
 
-      if(currentQ === questions.length){
+      if(currentQ >= questions.length){
         fb.innerText = "✓ Access Granted";
         setTimeout(onComplete, 800);
       } else {
