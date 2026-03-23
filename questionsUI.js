@@ -72,7 +72,8 @@ function render(){
       <div id="feedback" class="feedback"></div>
     </div>
   `;
-
+}
+  
   const optionsDiv = document.getElementById("options");
 
   q.options.forEach(option => {
