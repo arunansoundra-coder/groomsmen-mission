@@ -38,7 +38,7 @@ export function startBriefing(app, agentName, onContinue){
 
       <p>
         Your covert attire will be a <strong>navy suit</strong>, to be acquired through 
-        <strong>The Suit Shop</strong>. Further instructions will follow via secure transmission.
+        <strong>The Suit Shop</strong>. Further instructions will follow via email.
       </p>
 
       <p>
