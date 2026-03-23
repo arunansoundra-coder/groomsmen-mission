@@ -1,3 +1,5 @@
+console.log("questionsUI loaded");
+
 import { questions } from './questions.js';
 
 let currentQ = 0;
