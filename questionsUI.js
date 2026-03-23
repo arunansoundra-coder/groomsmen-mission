@@ -9,10 +9,7 @@ export function startQuestions(app, onComplete){
   function render(){
     const q = questions[currentQ];
 
-    if (!q) {
-      console.error("No question found");
-      return;
-    }
+    if (!q) return;
 
     app.innerHTML = `
       <div class="question-screen">
@@ -30,7 +27,7 @@ export function startQuestions(app, onComplete){
       btn.innerText = option;
       btn.classList.add("option-btn");
 
-      btn.addEventListener("click", () => checkAnswer(option));
+      btn.onclick = () => checkAnswer(option);
 
       optionsDiv.appendChild(btn);
     });
@@ -45,10 +42,7 @@ export function startQuestions(app, onComplete){
 
       if(currentQ === questions.length){
         fb.innerText = "✓ Access Granted";
-        setTimeout(() => {
-          console.log("Transitioning to poker...");
-          onComplete();
-        }, 800);
+        setTimeout(onComplete, 800);
       } else {
         fb.innerText = "✓ Correct";
         setTimeout(render, 500);
