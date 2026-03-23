@@ -81,3 +81,23 @@ export function startBriefing(app, agentName, onComplete){
     onComplete && onComplete();
   };
 }
+function typeWriterEffect(element, text, speed = 25) {
+  element.innerHTML = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+
+      // play sound per character (lightly throttled)
+      if (i % 3 === 0) {
+        typeSound.currentTime = 0;
+        typeSound.play().catch(() => {});
+      }
+
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, speed);
+}
