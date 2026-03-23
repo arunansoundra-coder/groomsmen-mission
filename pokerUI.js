@@ -29,19 +29,19 @@ app.innerHTML = `
   let pot = 0;
   let community = [];
 
-  const names = ["Arunan","Jason","Gill","Prathap"];
-  const roles = ["Agent","Driver","Hacker","Strategist"];
+const names = ["Josh","Duran","Taylor","Arunan","Jason","Gill","Prathap"];
+const roles = ["Mirage","Anomaly","Shadow","Ghost","Viper","Architect","Midnight"];
 
-  const players = names.map((name, i) => {
-    const el = document.getElementById(`p${i}`);
+const players = names.map((name, i) => {
+  const el = document.getElementById(`p${i}`);
 
-    return {
-      name,
-      codename: `${roles[i]} ${name}`,
-      el,
-      hand: [deck.pop(), deck.pop()]
-    };
-  });
+  return {
+    name,
+    codename: `${roles[i]} ${name}`,
+    el,
+    hand: [deck.pop(), deck.pop()]
+  };
+});
 
   // render cards
   function renderCard(card){
