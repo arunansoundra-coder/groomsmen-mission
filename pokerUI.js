@@ -3,81 +3,99 @@ import { chipSound } from './sounds.js';
 
 export function startPoker(app){
 
-  console.log("Poker started");
-
   app.innerHTML = `
-    <div class="table-wrapper">
-      <div class="community" id="community"></div>
+    <div class="table">
+      
       <div class="pot" id="pot">POT: 0</div>
-      <div id="players"></div>
-      <div id="msg"></div>
+      <div class="community" id="community"></div>
+
+      <div class="seat seat-1" id="p0"></div>
+      <div class="seat seat-2" id="p1"></div>
+      <div class="seat seat-3" id="p2"></div>
+      <div class="seat seat-4" id="p3"></div>
+
+      <div id="msg" class="msg"></div>
     </div>
   `;
 
   const communityEl = document.getElementById('community');
   const potEl = document.getElementById('pot');
   const msg = document.getElementById('msg');
-  const playersEl = document.getElementById('players');
 
   let deck = createDeck();
   let pot = 0;
   let community = [];
 
-  const players = ["Arunan","Jason","Gill","Prathap"].map(name => ({
+  const names = ["Arunan","Jason","Gill","Prathap"];
+
+  const players = names.map((name,i)=>({
     name,
+    el: document.getElementById(`p${i}`),
     hand: [deck.pop(), deck.pop()]
   }));
 
-  players.forEach(p => {
-    const div = document.createElement('div');
-    div.className = "player";
-
-    div.innerHTML = `
-      <div>${p.name}</div>
-      <div>${p.hand[0]} ${p.hand[1]}</div>
+  // 🎴 Render players
+  players.forEach(p=>{
+    p.el.innerHTML = `
+      <div class="name">${p.name}</div>
+      <div class="cards">
+        ${renderCard(p.hand[0])}
+        ${renderCard(p.hand[1])}
+      </div>
     `;
-
-    playersEl.appendChild(div);
   });
 
-  function renderCommunity(){
-    communityEl.innerHTML = "";
-    community.forEach(card => {
-      const c = document.createElement("div");
-      c.className = "card";
-      c.innerText = card;
-      communityEl.appendChild(c);
-    });
+  function renderCard(card){
+    const value = card.slice(0,-1);
+    const suit = card.slice(-1);
+
+    const color = (suit === "♥" || suit === "♦") ? "red" : "black";
+
+    return `<div class="card ${color}">${value}${suit}</div>`;
   }
 
-  function betting(){
-    pot += Math.floor(Math.random()*50)+10;
+  function renderCommunity(){
+    communityEl.innerHTML = community.map(renderCard).join("");
+  }
+
+  function bet(){
+    pot += Math.floor(Math.random()*50)+20;
     potEl.innerText = "POT: " + pot;
     chipSound.play().catch(()=>{});
   }
 
+  // FLOP
   setTimeout(()=>{
     community.push(deck.pop(), deck.pop(), deck.pop());
     renderCommunity();
-    betting();
+    bet();
   },1000);
 
+  // TURN
   setTimeout(()=>{
     community.push(deck.pop());
     renderCommunity();
-    betting();
+    bet();
   },2500);
 
+  // RIVER
   setTimeout(()=>{
     community.push(deck.pop());
     renderCommunity();
-    betting();
+    bet();
   },4000);
 
+  // SHOWDOWN
   setTimeout(()=>{
-    players.forEach(p=>{
+    let results = players.map(p=>{
       const res = eval7([...p.hand, ...community]);
-      msg.innerHTML += `${p.name}: ${res.name}<br>`;
+      return {name:p.name, ...res};
     });
+
+    results.sort((a,b)=>b.score - a.score);
+
+    msg.innerHTML = `
+      ${results.map(r=>`${r.name}: ${r.name ? r.name : ''} ${r.name && r.score ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}${r.name}: ${r.name ? '' : ''}${r.name ? '' : ''}${r.name ? '' : ''}
+    `;
   },5500);
 }
