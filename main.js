@@ -58,6 +58,10 @@ function loadScreen(screen) {
   }
 }
 
+  if (screen === 'dashboard') {
+  startDashboard(app);
+}
+
 // 🎬 Initialize Experience
 function init() {
   // Optional ambient sound (safe if file exists)
