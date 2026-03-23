@@ -1,3 +1,5 @@
+console.log("pokerUI loaded");
+
 import { createDeck, eval7 } from './poker.js';
 import { chipSound } from './sounds.js';
 
