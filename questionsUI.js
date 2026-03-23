@@ -6,8 +6,13 @@ let currentQ = 0;
 
 export function startQuestions(app, onComplete){
 
-  function render(){
-    const q = questions[currentQ];
+ function render(){
+  const q = questions[currentQ];
+
+  if (!q) {
+    console.error("No question found at index:", currentQ);
+    return;
+  }
 
     app.innerHTML = `
       <h2>MISSION LEVEL ${currentQ+1}</h2>
