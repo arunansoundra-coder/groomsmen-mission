@@ -3,20 +3,23 @@ import { chipSound } from './sounds.js';
 
 export function startPoker(app){
 
-  app.innerHTML = `
-    <div class="table">
-      
-      <div class="pot" id="pot">POT: 0</div>
-      <div class="community" id="community"></div>
+app.innerHTML = `
+  <div class="table">
+    
+    <div class="pot" id="pot">POT: 0</div>
+    <div class="community" id="community"></div>
 
-      <div class="seat seat-1" id="p0"></div>
-      <div class="seat seat-2" id="p1"></div>
-      <div class="seat seat-3" id="p2"></div>
-      <div class="seat seat-4" id="p3"></div>
+    <div class="seat" id="p0"></div>
+    <div class="seat" id="p1"></div>
+    <div class="seat" id="p2"></div>
+    <div class="seat" id="p3"></div>
+    <div class="seat" id="p4"></div>
+    <div class="seat" id="p5"></div>
+    <div class="seat" id="p6"></div>
 
-      <div id="msg" class="msg"></div>
-    </div>
-  `;
+    <div id="msg" class="msg"></div>
+  </div>
+`;
 
   const communityEl = document.getElementById('community');
   const potEl = document.getElementById('pot');
