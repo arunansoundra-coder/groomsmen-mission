@@ -1,3 +1,7 @@
+const app = document.getElementById('app');
+
+app.innerHTML = "<h1 style='color:white'>App Loaded ✅</h1>";
+
 console.log("MAIN JS LOADED");
 
 import { startQuestions } from './questionsUI.js';
