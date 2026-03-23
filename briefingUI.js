@@ -1,88 +1,41 @@
-  export function startBriefing(app, agentName, onContinue){
-
-  const roleMap = {
-    "Jason": "Best Man",
-    "Josh": "Groomsman",
-    "Duran": "Groomsman",
-    "Taylor": "Groomsman",
-    "Gill": "Groomsman",
-    "Prathap": "Groomsman"
-  };
-
-  let roleText = "";
-
-  if (agentName === "Arunan") {
-    roleText = "You are the principal asset. All operations revolve around you.";
-  } else {
-    const role = roleMap[agentName] || "Groomsman";
-    roleText = `Agent ${agentName}, you are requested to serve as ${role}.`;
-  }
+export function startBriefing(app, agentName, onComplete){
 
   app.innerHTML = `
     <div class="briefing">
+      <h2>MISSION BRIEFING</h2>
       <div id="typewriter"></div>
-      <button id="continueBtn" style="display:none;">ACCEPT MISSION</button>
+      <button id="continueBtn" style="display:none;">CONTINUE</button>
     </div>
   `;
 
-  const lines = [
-    "MI6 SECURE CHANNEL INITIATED...",
-    "Decrypting transmission...",
-    "",
-    roleText,
-    "",
-    "A high-stakes poker engagement is scheduled for 1200 hours, September 18, 2026.",
-    "",
-    "Dress code: Navy suit.",
-    "Procurement available via The Suit Shop.",
-    "Further instructions will be transmitted via secure email.",
-    "",
-    "Safe house location:",
-    "6233 Muirfield Dr SW, Cedar Rapids, IA 52404",
-    "",
-    "Accommodation protocol:",
-    "Coordinate with Agent Ghost if required.",
-    "",
-    "Alternate lodging:",
-    "The Hotel at Kirkwood Center",
-    "7725 Kirkwood Blvd SW, Cedar Rapids, IA",
-    "",
-    "Confirm readiness...",
-    "The table awaits."
-  ];
+  const text = `Agent ${agentName},
 
-  const el = document.getElementById("typewriter");
+Your mission is about to begin.
+
+Complete the challenge. Stay sharp.
+
+This message will self-destruct...`;
+
+  const typewriter = document.getElementById("typewriter");
   const btn = document.getElementById("continueBtn");
 
-  let lineIndex = 0;
-  let charIndex = 0;
+  if (!typewriter) return;
 
-  function typeLine(){
-    if (lineIndex >= lines.length) {
-      btn.style.display = "block";
-      return;
-    }
+  let i = 0;
 
-    let currentLine = lines[lineIndex];
-
-    if (charIndex < currentLine.length) {
-      el.innerHTML += currentLine.charAt(charIndex);
-      charIndex++;
-      setTimeout(typeLine, 25);
+  function type(){
+    if (i < text.length){
+      typewriter.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, 25);
     } else {
-      el.innerHTML += "<br/>";
-      lineIndex++;
-      charIndex = 0;
-      setTimeout(typeLine, 400);
+      btn.style.display = "inline-block";
     }
   }
 
-  typeLine();
+  btn.onclick = () => {
+    onComplete();
+  };
 
-  btn.addEventListener("click", () => {
-    onContinue();
-  });
+  type();
 }
-const agentName = agent; // already passed into briefing
-
-localStorage.setItem(`mission_${agentName}`, "accepted");
