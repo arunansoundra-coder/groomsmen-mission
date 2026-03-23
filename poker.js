@@ -1,5 +1,3 @@
-// poker.js
-
 const suits = ["♠","♥","♦","♣"];
 const values = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
@@ -22,12 +20,12 @@ function shuffle(arr){
 
 /* ---------------- HELPERS ---------------- */
 function getValue(card){
-  if (!card) return -1;
+  if (!card) throw new Error("Invalid card");
   return values.indexOf(card.slice(0, -1));
 }
 
 function getSuit(card){
-  if (!card) return null;
+  if (!card) throw new Error("Invalid card");
   return card.slice(-1);
 }
 
@@ -48,19 +46,33 @@ function combinations(arr, k){
   return result;
 }
 
+/* ---------------- STRAIGHT CHECK ---------------- */
+function isStraight(vals){
+  const unique = [...new Set(vals)].sort((a,b)=>a-b);
+
+  // standard straight
+  let isSeq = true;
+  for(let i = 1; i < unique.length; i++){
+    if(unique[i] !== unique[i-1] + 1){
+      isSeq = false;
+      break;
+    }
+  }
+
+  // wheel straight (A-2-3-4-5)
+  const wheel = JSON.stringify(unique) === JSON.stringify([0,1,2,3,12]);
+
+  return isSeq || wheel;
+}
+
 /* ---------------- 5-CARD EVAL ---------------- */
 function eval5(cards){
   const vals = cards.map(getValue).sort((a,b) => a - b);
   const suitsArr = cards.map(getSuit);
 
-  if (vals.includes(-1)) return 0;
-
   const isFlush = suitsArr.every(s => s === suitsArr[0]);
 
-  // Straight (including A-2-3-4-5)
-  const normalStraight = vals.every((v, i) => i === 0 || v === vals[i-1] + 1);
-  const wheelStraight = JSON.stringify(vals) === JSON.stringify([0,1,2,3,12]);
-  const isStraight = normalStraight || wheelStraight;
+  const straight = isStraight(vals);
 
   // Count values
   const counts = {};
@@ -68,11 +80,11 @@ function eval5(cards){
 
   const freq = Object.values(counts).sort((a,b) => b - a);
 
-  if (isStraight && isFlush) return 9;
+  if (straight && isFlush) return 9;
   if (freq[0] === 4) return 8;
   if (freq[0] === 3 && freq[1] === 2) return 7;
   if (isFlush) return 6;
-  if (isStraight) return 5;
+  if (straight) return 5;
   if (freq[0] === 3) return 4;
   if (freq[0] === 2 && freq[1] === 2) return 3;
   if (freq[0] === 2) return 2;
@@ -90,7 +102,8 @@ export function eval7(cards){
   let best = 0;
 
   combinations(cards, 5).forEach(combo => {
-    best = Math.max(best, eval5(combo));
+    const score = eval5(combo);
+    if (score > best) best = score;
   });
 
   const names = {
