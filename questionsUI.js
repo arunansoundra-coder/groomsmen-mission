@@ -12,16 +12,23 @@ export function startQuestions(app, onComplete){
     app.innerHTML = `
       <h2>MISSION LEVEL ${currentQ+1}</h2>
       <p>${q.q}</p>
-
-      ${q.options.map(o=>`
-        <button onclick="checkAnswer('${o}')">${o}</button>
-      `).join('')}
-
+      <div id="options"></div>
       <div id="feedback"></div>
     `;
+
+    const optionsDiv = document.getElementById("options");
+
+    q.options.forEach(option => {
+      const btn = document.createElement("button");
+      btn.innerText = option;
+
+      btn.addEventListener("click", () => checkAnswer(option));
+
+      optionsDiv.appendChild(btn);
+    });
   }
 
-  window.checkAnswer = function(ans){
+  function checkAnswer(ans){
     const q = questions[currentQ];
     const fb = document.getElementById("feedback");
 
@@ -39,7 +46,7 @@ export function startQuestions(app, onComplete){
     } else {
       fb.innerText = "✖ Try Again";
     }
-  };
+  }
 
   render();
 }
