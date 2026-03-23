@@ -2,15 +2,14 @@
 const dealSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3");
 const chipSound = new Audio("https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3");
 
-// --- APP ROOT ---
+// --- ROOT ---
 const app = document.getElementById('app');
 
 // --- AGENTS ---
 const codenames = {
-  "Arunan":"Ghost","Jason":"Viper","Gill":"Architect",
+  "Arunan":"Alpha","Jason":"Viper","Gill":"Architect",
   "Prathap":"Midnight","Taylor":"Shadow","Duran":"Anomaly","Josh":"Mirage"
 };
-
 const agents = Object.keys(codenames);
 
 // --- DECK ---
@@ -18,152 +17,138 @@ const suits = ["♠","♥","♦","♣"];
 const values = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 
 function createDeck(){
-  let deck = [];
-  for(let s of suits){
-    for(let v of values){
-      deck.push(v+s);
-    }
-  }
+  let deck=[];
+  suits.forEach(s=>values.forEach(v=>deck.push(v+s)));
   return shuffle(deck);
 }
 
 function shuffle(deck){
   for(let i=deck.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
+    let j=Math.floor(Math.random()*(i+1));
     [deck[i],deck[j]]=[deck[j],deck[i]];
   }
   return deck;
 }
 
-// --- HAND EVALUATION (REAL) ---
-function getValue(card){
-  const v = card.slice(0,-1);
-  return values.indexOf(v);
+// --- HAND EVAL (7-card best of 5) ---
+function getValue(card){ return values.indexOf(card.slice(0,-1)); }
+
+function combinations(arr,k){
+  let result=[];
+  function comb(start,path){
+    if(path.length===k){ result.push(path); return; }
+    for(let i=start;i<arr.length;i++) comb(i+1,[...path,arr[i]]);
+  }
+  comb(0,[]);
+  return result;
 }
 
-function evaluateHand(cards){
-  const vals = cards.map(getValue).sort((a,b)=>a-b);
-  const suitsArr = cards.map(c=>c.slice(-1));
+function eval5(cards){
+  let vals=cards.map(getValue).sort((a,b)=>a-b);
+  let suitsArr=cards.map(c=>c.slice(-1));
 
-  const isFlush = suitsArr.every(s=>s===suitsArr[0]);
+  let isFlush=suitsArr.every(s=>s===suitsArr[0]);
+  let isStraight=vals.every((v,i)=>i===0||v===vals[i-1]+1);
 
-  let isStraight = true;
-  for(let i=1;i<vals.length;i++){
-    if(vals[i] !== vals[i-1]+1){
-      isStraight = false;
-      break;
-    }
-  }
-
-  let counts = {};
+  let counts={};
   vals.forEach(v=>counts[v]=(counts[v]||0)+1);
-  const freq = Object.values(counts).sort((a,b)=>b-a);
+  let freq=Object.values(counts).sort((a,b)=>b-a);
 
-  if(isStraight && isFlush) return {name:"Straight Flush", score:9};
-  if(freq[0]===4) return {name:"Four of a Kind", score:8};
-  if(freq[0]===3 && freq[1]===2) return {name:"Full House", score:7};
-  if(isFlush) return {name:"Flush", score:6};
-  if(isStraight) return {name:"Straight", score:5};
-  if(freq[0]===3) return {name:"Three of a Kind", score:4};
-  if(freq[0]===2 && freq[1]===2) return {name:"Two Pair", score:3};
-  if(freq[0]===2) return {name:"Pair", score:2};
+  if(isStraight&&isFlush) return 9;
+  if(freq[0]===4) return 8;
+  if(freq[0]===3&&freq[1]===2) return 7;
+  if(isFlush) return 6;
+  if(isStraight) return 5;
+  if(freq[0]===3) return 4;
+  if(freq[0]===2&&freq[1]===2) return 3;
+  if(freq[0]===2) return 2;
+  return 1;
+}
 
-  return {name:"High Card", score:1};
+function evaluate7(cards){
+  let combos=combinations(cards,5);
+  let best=0;
+  combos.forEach(c=> best=Math.max(best,eval5(c)));
+
+  const names={
+    9:"Straight Flush",8:"Four of a Kind",7:"Full House",
+    6:"Flush",5:"Straight",4:"Three of a Kind",
+    3:"Two Pair",2:"Pair",1:"High Card"
+  };
+
+  return {score:best,name:names[best]};
 }
 
 // --- RENDER ---
-function render(html){
-  app.innerHTML = html;
-}
+function render(html){ app.innerHTML=html; }
 
-// --- MAIN TABLE ---
-function pokerTable(){
+// --- MAIN GAME ---
+function startGame(){
 
   render(`
     <div class="table-wrapper" id="table">
       <div class="table"></div>
-      <div class="deal-origin" id="origin"></div>
+
+      <div class="community" id="community"></div>
       <div class="pot" id="pot">POT: 0</div>
+      <div class="deal-origin" id="origin"></div>
     </div>
+
     <div id="centerMsg"></div>
   `);
 
-  const table = document.getElementById('table');
-  const origin = document.getElementById('origin');
-  const potEl = document.getElementById('pot');
-  const centerMsg = document.getElementById('centerMsg');
+  const table=document.getElementById('table');
+  const origin=document.getElementById('origin');
+  const communityEl=document.getElementById('community');
+  const potEl=document.getElementById('pot');
+  const centerMsg=document.getElementById('centerMsg');
 
-  const cx = 180, cy = 120;
-  const radiusX = 150, radiusY = 95;
+  let deck=createDeck();
+  let pot=0;
+  let community=[];
 
-  let deck = createDeck();
-  let pot = 0;
+  const cx=180, cy=120;
+  const rx=150, ry=95;
 
-  const dealerIndex = Math.floor(Math.random()*agents.length);
+  const dealerIndex=Math.floor(Math.random()*agents.length);
+  let players=[];
 
-  let players = [];
-
-  // --- CREATE SEATS ---
+  // --- SEATS ---
   agents.forEach((name,i)=>{
+    let angle=(i/agents.length)*Math.PI*2;
+    let x=cx+Math.cos(angle)*rx;
+    let y=cy+Math.sin(angle)*ry;
 
-    const angle = (i/agents.length)*Math.PI*2;
-    const x = cx + Math.cos(angle)*radiusX;
-    const y = cy + Math.sin(angle)*radiusY;
+    let rot=angle*(180/Math.PI)+90;
 
-    const rotation = angle*(180/Math.PI)+90;
-
-    const seat = document.createElement('div');
+    let seat=document.createElement('div');
     seat.className="seat";
     seat.style.left=x+"px";
     seat.style.top=y+"px";
     seat.id="seat-"+i;
 
-    const hand = [deck.pop(),deck.pop()];
-    const community = [deck.pop(),deck.pop(),deck.pop()];
-    const fullHand = [...hand,...community];
+    let hand=[deck.pop(),deck.pop()];
 
-    const evalResult = evaluateHand(fullHand);
-
-    players.push({name, hand, evalResult, index:i});
+    players.push({name,hand,index:i});
 
     seat.innerHTML=`
-      <div class="player-area">
-
-        <div class="cards" 
-          style="transform: rotate(${rotation}deg) skewY(${Math.sin(angle)*10}deg);">
-
-          <div class="card" id="c1-${i}"></div>
-          <div class="card" id="c2-${i}"></div>
-        </div>
-
-        <div class="player-name">
-          <b>${name}</b><br>${codenames[name]}
-        </div>
-
-        <div class="result-text" id="r-${i}"></div>
-
+      <div class="cards" style="transform:rotate(${rot}deg)">
+        <div class="card" id="c1-${i}"></div>
+        <div class="card" id="c2-${i}"></div>
       </div>
+
+      <div class="player-name">${name}<br>${codenames[name]}</div>
+      <div class="result-text" id="r-${i}"></div>
     `;
 
     table.appendChild(seat);
 
-    // DEAL
-    setTimeout(()=>dealCard(origin, document.getElementById(`c1-${i}`), hand[0]), i*200);
-    setTimeout(()=>dealCard(origin, document.getElementById(`c2-${i}`), hand[1]), i*200+150);
+    setTimeout(()=>deal(origin,`c1-${i}`,hand[0]),i*150);
+    setTimeout(()=>deal(origin,`c2-${i}`,hand[1]),i*150+100);
 
-    // BETTING
-    const bet = Math.floor(Math.random()*50)+10;
-    pot += bet;
-
-    setTimeout(()=>{
-      animateChips(seat);
-      chipSound.play().catch(()=>{});
-      potEl.innerText="POT: "+pot;
-    }, i*200+400);
-
-    // DEALER BUTTON
+    // Dealer
     if(i===dealerIndex){
-      const d = document.createElement('div');
+      let d=document.createElement('div');
       d.className="dealer-btn";
       d.innerText="D";
       d.style.left=(x+20)+"px";
@@ -172,36 +157,66 @@ function pokerTable(){
     }
   });
 
-  // --- REVEAL ---
+  // --- BETTING ROUND ---
+  function betRound(){
+    players.forEach((p,i)=>{
+      let bet=Math.floor(Math.random()*40)+10;
+      pot+=bet;
+      setTimeout(()=>{
+        chipSound.play().catch(()=>{});
+        potEl.innerText="POT: "+pot;
+      },i*100);
+    });
+  }
+
+  // --- COMMUNITY DEAL ---
+  function dealCommunity(count,delay){
+    setTimeout(()=>{
+      for(let i=0;i<count;i++){
+        let card=deck.pop();
+        community.push(card);
+
+        let c=document.createElement('div');
+        c.className="card";
+        communityEl.appendChild(c);
+
+        deal(origin,null,card,c);
+      }
+    },delay);
+  }
+
+  // --- FLOW ---
+  betRound(); // preflop
+
+  dealCommunity(3,1200); // flop
+  setTimeout(betRound,1800);
+
+  dealCommunity(1,2600); // turn
+  setTimeout(betRound,3000);
+
+  dealCommunity(1,3800); // river
+  setTimeout(betRound,4200);
+
+  // --- SHOWDOWN ---
   setTimeout(()=>{
     players.forEach(p=>{
-      document.getElementById(`r-${p.index}`).innerText=p.evalResult.name;
+      let full=[...p.hand,...community];
+      let res=evaluate7(full);
+      p.result=res;
+      document.getElementById(`r-${p.index}`).innerText=res.name;
     });
-  },2000);
 
-  // --- WINNER ---
-  setTimeout(()=>{
-    const winner = players.sort((a,b)=>b.evalResult.score-a.evalResult.score)[0];
+    let winner=players.sort((a,b)=>b.result.score-a.result.score)[0];
 
     document.getElementById("seat-"+winner.index).classList.add("winner");
 
-    centerMsg.innerHTML=`🏆 ${winner.name} wins with ${winner.evalResult.name}`;
-  },3000);
+    centerMsg.innerHTML=`🏆 ${winner.name} wins with ${winner.result.name}`;
+  },5200);
 }
 
-// --- CHIP ANIMATION ---
-function animateChips(seat){
-  const chip = document.createElement('div');
-  chip.className="chip";
-  chip.style.left="0px";
-  chip.style.top="0px";
-  seat.appendChild(chip);
-
-  setTimeout(()=>chip.remove(),500);
-}
-
-// --- DEAL CARD ---
-function dealCard(origin,target,value){
+// --- DEAL ---
+function deal(origin,id,value,customEl){
+  const target=customEl||document.getElementById(id);
   if(!target)return;
 
   const card=document.createElement('div');
@@ -210,14 +225,14 @@ function dealCard(origin,target,value){
 
   origin.parentElement.appendChild(card);
 
-  const rect=target.getBoundingClientRect();
-  const parentRect=origin.parentElement.getBoundingClientRect();
+  let rect=target.getBoundingClientRect();
+  let parent=origin.parentElement.getBoundingClientRect();
 
   dealSound.play().catch(()=>{});
 
   setTimeout(()=>{
-    card.style.left=(rect.left-parentRect.left)+"px";
-    card.style.top=(rect.top-parentRect.top)+"px";
+    card.style.left=(rect.left-parent.left)+"px";
+    card.style.top=(rect.top-parent.top)+"px";
   },20);
 
   setTimeout(()=>{
@@ -227,4 +242,4 @@ function dealCard(origin,target,value){
 }
 
 // --- START ---
-pokerTable();
+startGame();
