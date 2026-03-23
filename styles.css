@@ -458,3 +458,48 @@ button {
     opacity: 1;
   }
 }
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: monospace;
+}
+
+.briefing-container {
+  padding: 40px;
+  text-align: center;
+}
+
+.dossier {
+  margin-top: 20px;
+  white-space: pre-wrap;
+  min-height: 200px;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: gold;
+  border: none;
+  cursor: pointer;
+}
+
+/* 🎬 Jason cinematic zoom */
+.jason-zoom {
+  animation: zoomIn 1.5s ease forwards;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(1.2);
+    filter: blur(4px);
+  }
+  to {
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
