@@ -6,6 +6,7 @@ import { startPoker } from './pokerUI.js';
 const app = document.getElementById('app');
 
 function loadScreen(screen) {
+  console.log("Loading screen:", screen);
   app.innerHTML = '';
 
   if (screen === 'questions') startQuestions(app, () => {
