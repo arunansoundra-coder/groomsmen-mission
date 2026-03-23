@@ -1,3 +1,5 @@
+// questions.js
+
 export const questions = [
   {
     q: "The operation begins in which city?",
@@ -12,7 +14,7 @@ export const questions = [
   {
     q: "What follows the ceremony?",
     options: ["Homecoming","Rehearsal","Reception","Brunch"],
-    answer: "Homecoming"
+    answer: "Reception"
   },
   {
     q: "Where is the safe house?",
