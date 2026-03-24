@@ -5,7 +5,7 @@ export const questions = [
     stage: "Identity Authentication",
     level: 1,
     q: "What poker hand did James Bond win with in Montenegro?",
-    options: ["Royal Flush","Straight Flush","Full House","Four of a Kind"]
+    options: ["Royal Flush","Straight Flush","Full House","Four of a Kind"],
     answer: "Straight Flush"
   },
   {
