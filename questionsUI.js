@@ -35,15 +35,19 @@ export function startQuestions(app, onComplete, agentName){
 
          const normalize = str => str.replace(/[^a-z0-9]/g, "");
 
-        if (normalize(val).includes(normalize(q.answer))){
-          next();
-        } else {
-          alert("Access Denied");
-        }
-      };
+        const normalize = str => str.replace(/[^a-z0-9]/g, "");
 
-      return;
-    }
+const user = normalize(val);
+const correct = normalize(q.answer);
+
+// Require at least 90% match
+const similarity = user.length / correct.length;
+
+if (user === correct || (user.includes(correct) && similarity > 0.9)){
+  next();
+} else {
+  alert("Access Denied");
+}
 
     // 🧠 MULTIPLE CHOICE
     app.innerHTML = `
