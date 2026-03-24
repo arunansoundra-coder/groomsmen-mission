@@ -3,6 +3,9 @@ import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
+const params = new URLSearchParams(window.location.search);
+const agentName = params.get("agent") || "Agent";
+
 const agents = ["Jason","Josh","Duran","Taylor","Gill","Prathap"];
 
 let index = 0;
