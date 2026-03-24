@@ -83,14 +83,19 @@ players.forEach((p, i) => {
   if (!p.el) return;
 
   p.el.innerHTML = `
-    <div class="name">${p.name}</div>
-    <div class="codename">${p.codename}</div>
-    <div class="role">${p.role}</div>
-    <div class="cards">
-      ${renderCard(p.hand[0])}
-      ${renderCard(p.hand[1])}
+    <div class="seat-label">
+      <div class="name">${p.name}</div>
+      <div class="codename">${p.codename}</div>
+      <div class="role">${p.role}</div>
     </div>
-    <div class="chips" id="chips-${i}">${p.chips}</div>
+
+    <div class="seat-hand">
+      <div class="cards">
+        ${renderCard(p.hand[0])}
+        ${renderCard(p.hand[1])}
+      </div>
+      <div class="chips" id="chips-${i}">${p.chips}</div>
+    </div>
   `;
 });
 
