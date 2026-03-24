@@ -2,6 +2,9 @@ export function startBriefing(app, agentName, onComplete){
 
   const isJason = agentName === "Jason";
   const role = isJason ? "Best Man" : "Groomsman";
+  const roleText = isJason 
+    ? "Will you be my Best Man?" 
+    : "Will you be my Groomsman?";
 
   app.innerHTML = `
     <div class="briefing">
@@ -10,8 +13,10 @@ export function startBriefing(app, agentName, onComplete){
       <p>
         Agent ${agentName},<br><br>
         You are tasked with assisting the Groom in an upcoming operation.<br><br>
-        Will you accept the role of <strong>${role}</strong>?
+        ${roleText}
       </p>
+
+      <p><strong>Role: ${role}</strong></p>
 
       <div class="choices">
         <button class="choice">Pour the whiskey.</button>
@@ -28,4 +33,5 @@ export function startBriefing(app, agentName, onComplete){
       setTimeout(() => onComplete(), 1000);
     };
   });
+
 }
