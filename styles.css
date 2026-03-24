@@ -503,3 +503,10 @@ button {
     filter: blur(0);
   }
 }
+.mission-info {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+}
