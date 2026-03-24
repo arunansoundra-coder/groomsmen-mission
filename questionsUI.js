@@ -5,6 +5,9 @@ export function startQuestions(app, onComplete, agentName){
   let index = 0;
   let stage = "Identity Authentication";
 
+  // ✅ Helper (DEFINED ONCE — FIXES YOUR ERROR)
+  const normalize = str => str.replace(/[^a-z0-9]/g, "");
+
   function render(){
 
     const filteredQuestions = questions.filter(q => q.stage === stage);
@@ -18,6 +21,7 @@ export function startQuestions(app, onComplete, agentName){
 
     const agent = getAgent();
 
+    // ✅ Detect final question
     const isFinal = (q.stage === "Security Clearance" && q.level === 3);
 
     // 🧠 TEXT INPUT
@@ -28,31 +32,42 @@ export function startQuestions(app, onComplete, agentName){
           <div class="level">${q.stage} - Level ${q.level}</div>
 
           ${isFinal ? `<div class="warning">⚠ FINAL CLEARANCE REQUIRED</div>` : ""}
-          
+
           <div class="question-text">${q.q}</div>
           <input id="input" placeholder="Type answer..." />
           <button id="submit">Submit</button>
         </div>
       `;
 
-      document.getElementById("submit").onclick = () => {
-        const val = document.getElementById("input").value.toLowerCase().trim();
+      const inputEl = document.getElementById("input");
+      const submitBtn = document.getElementById("submit");
 
-         const normalize = str => str.replace(/[^a-z0-9]/g, "");
+      function handleSubmit(){
+        const val = inputEl.value.toLowerCase().trim();
 
-        const normalize = str => str.replace(/[^a-z0-9]/g, "");
+        const user = normalize(val);
+        const correct = normalize(q.answer);
 
-const user = normalize(val);
-const correct = normalize(q.answer);
+        const similarity = user.length / correct.length;
 
-// Require at least 90% match
-const similarity = user.length / correct.length;
+        if (user === correct || (user.includes(correct) && similarity > 0.9)){
+          next();
+        } else {
+          alert("Access Denied");
+        }
+      }
 
-if (user === correct || (user.includes(correct) && similarity > 0.9)){
-  next();
-} else {
-  alert("Access Denied");
-}
+      submitBtn.onclick = handleSubmit;
+
+      // ✅ ENTER KEY SUPPORT
+      inputEl.addEventListener("keypress", (e) => {
+        if (e.key === "Enter"){
+          handleSubmit();
+        }
+      });
+
+      return;
+    }
 
     // 🧠 MULTIPLE CHOICE
     app.innerHTML = `
