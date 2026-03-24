@@ -7,16 +7,53 @@ export function startQuestions(app, onComplete){
 
   function render(){
 
-    const q = questions[index];
+    const filteredQuestions = questions.filter(q => q.stage === stage);
+    const q = filteredQuestions[index];
 
     // ✅ END
-    if (!q){
-      onComplete();
-      return;
-    }
+   if (!q){
+  onComplete();
+  return;
+}
 
+function changeStage(newStage){
+  stage = newStage;
+  index = 0;
+  render();
+}
+    
     // ✅ STAGE TRANSITION (FIXED)
     if (stage === "Identity" && q.stage === "Security Clearance"){
+  const agent = getAgent();
+
+  app.innerHTML = `
+    <div class="question-screen">
+      <h2>Welcome Agent ${agent}</h2>
+      <p>Identity Authentication Successful</p>
+    </div>
+  `;
+
+  setTimeout(() => {
+    changeStage("Security");
+  }, 1500);
+
+  return;
+}
+  const agent = getAgent();
+
+  app.innerHTML = `
+    <div class="question-screen">
+      <h2>Welcome Agent ${agent}</h2>
+      <p>Identity Authentication Successful</p>
+    </div>
+  `;
+
+  setTimeout(() => {
+    changeStage("Security");
+  }, 1500);
+
+  return;
+}
       stage = "Security";
 
       const agent = getAgent();
