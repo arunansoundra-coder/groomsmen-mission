@@ -3,19 +3,19 @@ import { questions } from "./questions.js";
 export function startQuestions(app, onComplete){
 
   let index = 0;
-  let stage = "Identity"; // Identity → Security → Done
+  let stage = "Identity";
 
   function render(){
 
     const q = questions[index];
 
-    // ✅ END OF ALL QUESTIONS
+    // ✅ END
     if (!q){
       onComplete();
       return;
     }
 
-    // ✅ STAGE TRANSITION: Identity → Security
+    // ✅ STAGE TRANSITION (FIXED)
     if (stage === "Identity" && q.stage === "Security Clearance"){
       stage = "Security";
 
@@ -28,11 +28,14 @@ export function startQuestions(app, onComplete){
         </div>
       `;
 
-      setTimeout(() => render(), 1500);
+      setTimeout(() => {
+        render(); // now safely continues to SAME index
+      }, 1500);
+
       return;
     }
 
-    // 🧠 TEXT INPUT (FINAL SECURITY)
+    // 🧠 TEXT INPUT
     if (q.type === "text"){
       app.innerHTML = `
         <div class="question-screen">
@@ -44,7 +47,7 @@ export function startQuestions(app, onComplete){
       `;
 
       document.getElementById("submit").onclick = () => {
-        const val = document.getElementById("input").value.toLowerCase();
+        const val = document.getElementById("input").value.toLowerCase().trim();
 
         if (val.includes(q.answer)){
           next();
