@@ -1,4 +1,4 @@
-loadScreen('questions');
+import { loadScreen } from "./screenManager.js";
 import { startBriefing } from "./briefingUI.js";
 import { startPoker } from "./pokerUI.js";
 
