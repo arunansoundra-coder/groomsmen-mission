@@ -18,6 +18,8 @@ export function startQuestions(app, onComplete, agentName){
 
     const agent = getAgent();
 
+    const isFinal = (q.stage === "Security Clearance" && q.level === 3);
+
     // 🧠 TEXT INPUT
     if (q.type === "text"){
       app.innerHTML = `
