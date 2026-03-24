@@ -7,11 +7,9 @@ const app = document.getElementById("app");
 let agents = ["Jason","Josh","Duran","Taylor","Gill","Prathap"];
 let index = 0;
 
-function startFlow() {
-  startQuestions(app, () => {
-    nextAgent();
-  });
-}
+startQuestions(app, () => {
+  nextAgent();
+}, agentName);
 
 function nextAgent(){
   if (index < agents.length){
