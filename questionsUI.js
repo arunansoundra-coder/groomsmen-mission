@@ -3,7 +3,7 @@ import { questions } from "./questions.js";
 export function startQuestions(app, onComplete){
 
   let index = 0;
-  let stage = "Identity";
+  let stage = "Identity Authentication";
 
   function render(){
 
