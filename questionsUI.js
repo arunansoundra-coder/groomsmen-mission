@@ -3,27 +3,36 @@ import { questions } from "./questions.js";
 export function startQuestions(app, onComplete){
 
   let index = 0;
+  let stage = "Identity"; // Identity → Security → Done
 
   function render(){
 
     const q = questions[index];
 
+    // ✅ END OF ALL QUESTIONS
     if (!q){
+      onComplete();
+      return;
+    }
+
+    // ✅ STAGE TRANSITION: Identity → Security
+    if (stage === "Identity" && q.stage === "Security Clearance"){
+      stage = "Security";
+
       const agent = getAgent();
 
       app.innerHTML = `
         <div class="question-screen">
           <h2>Welcome Agent ${agent}</h2>
           <p>Identity Authentication Successful</p>
-          <p>Security Clearance Confirmed</p>
         </div>
       `;
 
-      setTimeout(() => onComplete(), 1500);
+      setTimeout(() => render(), 1500);
       return;
     }
 
-    // TEXT INPUT
+    // 🧠 TEXT INPUT (FINAL SECURITY)
     if (q.type === "text"){
       app.innerHTML = `
         <div class="question-screen">
@@ -36,6 +45,7 @@ export function startQuestions(app, onComplete){
 
       document.getElementById("submit").onclick = () => {
         const val = document.getElementById("input").value.toLowerCase();
+
         if (val.includes(q.answer)){
           next();
         } else {
@@ -46,7 +56,7 @@ export function startQuestions(app, onComplete){
       return;
     }
 
-    // MULTIPLE CHOICE
+    // 🧠 MULTIPLE CHOICE
     app.innerHTML = `
       <div class="question-screen">
         <div class="level">${q.stage} - Level ${q.level}</div>
