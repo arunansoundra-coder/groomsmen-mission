@@ -79,20 +79,20 @@ export function startPoker(app){
     return `<div class="card ${color}">${value}${suit}</div>`;
   }
 
-  players.forEach((p, i) => {
-    if (!p.el) return;
+players.forEach((p, i) => {
+  if (!p.el) return;
 
-    p.el.innerHTML = `
-      <div class="name">${p.name}</div>
-      <div class="codename">${p.codename}</div>
-      <div class="role">${p.role}</div>
-      <div class="cards">
-        ${renderCard(p.hand[0])}
-        ${renderCard(p.hand[1])}
-      </div>
-      <div class="chips" id="chips-${i}">${p.chips}</div>
-    `;
-  });
+  p.el.innerHTML = `
+    <div class="name">${p.name}</div>
+    <div class="codename">${p.codename}</div>
+    <div class="role">${p.role}</div>
+    <div class="cards">
+      ${renderCard(p.hand[0])}
+      ${renderCard(p.hand[1])}
+    </div>
+    <div class="chips" id="chips-${i}">${p.chips}</div>
+  `;
+});
 
   function renderCommunity(){
     communityEl.innerHTML = community.map(renderCard).join("");
