@@ -26,6 +26,9 @@ export function startQuestions(app, onComplete, agentName){
         <div class="question-screen ${isFinal ? "final-question" : ""}">
           <h2>Welcome Agent ${agent}</h2>
           <div class="level">${q.stage} - Level ${q.level}</div>
+
+          ${isFinal ? `<div class="warning">⚠ FINAL CLEARANCE REQUIRED</div>` : ""}
+          
           <div class="question-text">${q.q}</div>
           <input id="input" placeholder="Type answer..." />
           <button id="submit">Submit</button>
