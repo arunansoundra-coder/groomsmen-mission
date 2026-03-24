@@ -212,3 +212,8 @@ export function startPoker(app){
     `;
   }, 5500);
 }
+<div class="mission-info">
+  <h3>Mission Begins: September 18, 2026 - 1200 Hours</h3>
+  <p>Objective: Defeat the Groom</p>
+  <p>Prize: MI6 Poker Champion</p>
+</div>
