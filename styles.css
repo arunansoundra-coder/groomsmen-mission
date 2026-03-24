@@ -114,15 +114,106 @@ body::after {
 }
 
 /* ---------------- POKER TABLE ---------------- */
-.table {
-  width: 900px;
-  height: 500px;
-  margin: 40px auto;
-  background: radial-gradient(circle, #0f6b28, #05210c);
-  border-radius: 50%;
-  position: relative;
-  box-shadow: 0 0 60px black, inset 0 0 40px rgba(0,0,0,0.6);
+/* FULL SCREEN CENTERING */
+body {
+  margin: 0;
+  background: #021a12;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   overflow: hidden;
+}
+
+/* RESPONSIVE TABLE */
+.table {
+  position: relative;
+  width: min(95vw, 1100px);
+  aspect-ratio: 16 / 10;
+  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
+  border-radius: 50% / 40%;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
+/* SEATS SCALE WITH SCREEN */
+.seat {
+  position: absolute;
+  width: 12%;
+  min-width: 100px;
+  text-align: center;
+  font-size: clamp(10px, 1vw, 14px);
+}
+
+/* OUTSIDE LABEL (ALWAYS VISIBLE) */
+.seat-label {
+  position: absolute;
+  width: 100%;
+  top: -3.5em;
+  line-height: 1.2;
+}
+
+/* INSIDE HAND */
+.seat-hand {
+  position: absolute;
+  top: 0.5em;
+  width: 100%;
+}
+
+/* BETTER OVAL POSITIONS (BALANCED) */
+#p0 { top: 2%; left: 50%; transform: translateX(-50%); }
+#p1 { top: 18%; left: 85%; }
+#p2 { top: 65%; left: 85%; }
+#p3 { top: 88%; left: 50%; transform: translateX(-50%); }
+#p4 { top: 65%; left: 2%; }
+#p5 { top: 18%; left: 2%; }
+#p6 { top: 45%; left: 50%; transform: translateX(-50%); }
+
+/* CARDS SCALE */
+.card {
+  display: inline-block;
+  background: white;
+  border-radius: 6px;
+  padding: 0.4em 0.5em;
+  margin: 2px;
+  font-weight: bold;
+  font-size: clamp(10px, 1vw, 14px);
+}
+
+.card.red { color: red; }
+.card.black { color: black; }
+
+/* CHIPS */
+.chips {
+  margin-top: 0.3em;
+  font-size: clamp(10px, 1vw, 13px);
+}
+
+/* COMMUNITY CENTER */
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* POT */
+.pot {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(12px, 1.2vw, 18px);
+}
+
+/* MISSION TEXT (TOP CENTER SAFE AREA) */
+.mission-info {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(12px, 1vw, 16px);
+}
 
   /* 🎬 3D cinematic tilt */
   transform: perspective(1000px) rotateX(8deg);
