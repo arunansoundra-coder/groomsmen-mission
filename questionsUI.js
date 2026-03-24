@@ -116,10 +116,22 @@ function changeStage(newStage){
     });
   }
 
-  function next(){
-    index++;
-    render();
+ function next(){
+  index++;
+
+  const filteredQuestions = questions.filter(q => q.stage === stage);
+
+  if (index >= filteredQuestions.length){
+    if (stage === "Identity"){
+      changeStage("Security");
+    } else {
+      onComplete();
+    }
+    return;
   }
+
+  render();
+}
 
   function getAgent(){
     const params = new URLSearchParams(window.location.search);
