@@ -23,7 +23,7 @@ export function startQuestions(app, onComplete, agentName){
     // 🧠 TEXT INPUT
     if (q.type === "text"){
       app.innerHTML = `
-        <div class="question-screen">
+        <div class="question-screen ${isFinal ? "final-question" : ""}">
           <h2>Welcome Agent ${agent}</h2>
           <div class="level">${q.stage} - Level ${q.level}</div>
           <div class="question-text">${q.q}</div>
