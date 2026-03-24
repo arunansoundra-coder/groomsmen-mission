@@ -55,3 +55,4 @@ export const questions = [
   q: "Reconstruct the phrase (no hints):\nB___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
   answer: "blood makes us related loyalty makes us family and family is forever"
 }
+]; // ✅ THIS LINE IS CRITICAL
