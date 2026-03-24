@@ -166,7 +166,8 @@ body {
 #p3 { top: 88%; left: 50%; transform: translateX(-50%); }
 #p4 { top: 65%; left: 2%; }
 #p5 { top: 18%; left: 2%; }
-#p6 { top: 45%; left: 50%; transform: translateX(-50%); }
+#p6 { top: 10%; left: 50%; transform: translate(-50%, -50%);
+}
 
 /* CARDS SCALE */
 .card {
