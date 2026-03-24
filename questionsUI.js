@@ -1,6 +1,6 @@
 import { questions } from "./questions.js";
 
-export function startQuestions(app, onComplete){
+export function startQuestions(app, onComplete, agentName){
 
   let index = 0;
   let stage = "Identity Authentication";
