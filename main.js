@@ -1,3 +1,4 @@
+loadScreen('questions');
 import { startBriefing } from "./briefingUI.js";
 import { startPoker } from "./pokerUI.js";
 
