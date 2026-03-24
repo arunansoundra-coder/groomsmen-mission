@@ -7,7 +7,7 @@ export function startPoker(app){
     <div class="table">
 
      <div class="mission-info">
-  <h3>Mission Begins: September 18, 2026 - 12:00 PM</h3>
+     <h3>Mission Begins: September 18, 2026 - 12:00 PM</h3>
   <p>High Stakes Poker Game</p>
   <p>Objective: Defeat the Groom</p>
   <p>Prize: MI6 Poker Champion</p>
