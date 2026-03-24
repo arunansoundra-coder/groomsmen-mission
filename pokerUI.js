@@ -6,11 +6,12 @@ export function startPoker(app){
   app.innerHTML = `
     <div class="table">
 
-      <div class="mission-info">
-        <h3>Mission Begins: September 18, 2026 - 1200 Hours</h3>
-        <p>Objective: Defeat the Groom</p>
-        <p>Prize: MI6 Poker Champion</p>
-      </div>
+     <div class="mission-info">
+  <h3>Mission Begins: September 18, 2026 - 12:00 PM</h3>
+  <p>High Stakes Poker Game</p>
+  <p>Objective: Defeat the Groom</p>
+  <p>Prize: MI6 Poker Champion</p>
+</div>
 
       <div class="pot" id="pot">POT: 0</div>
       <div class="community" id="community"></div>
