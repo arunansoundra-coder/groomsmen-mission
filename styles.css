@@ -510,3 +510,70 @@ button {
   text-align: center;
   font-size: 14px;
 }
+.table {
+  position: relative;
+  width: 900px;
+  height: 550px;
+  margin: 0 auto;
+  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
+  border-radius: 50% / 40%;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+/* Seat container */
+.seat {
+  position: absolute;
+  width: 140px;
+  text-align: center;
+}
+
+/* OUTSIDE (names/codename/role) */
+.seat-label {
+  position: absolute;
+  width: 100%;
+  top: -70px;
+  font-size: 14px;
+}
+
+/* INSIDE (cards + chips) */
+.seat-hand {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+}
+
+/* Oval positions */
+#p0 { top: 8%; left: 50%; transform: translateX(-50%); }
+#p1 { top: 25%; left: 82%; }
+#p2 { top: 65%; left: 82%; }
+#p3 { top: 85%; left: 50%; transform: translateX(-50%); }
+#p4 { top: 65%; left: 8%; }
+#p5 { top: 25%; left: 8%; }
+#p6 { top: 45%; left: 50%; transform: translateX(-50%); }
+
+/* Cards */
+.card {
+  display: inline-block;
+  background: white;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 2px;
+  font-weight: bold;
+}
+
+.card.red { color: red; }
+.card.black { color: black; }
+
+/* Chips */
+.chips {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+/* Community cards (center of table) */
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
