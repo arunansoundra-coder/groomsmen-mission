@@ -33,7 +33,9 @@ export function startQuestions(app, onComplete, agentName){
       document.getElementById("submit").onclick = () => {
         const val = document.getElementById("input").value.toLowerCase().trim();
 
-        if (val.includes(q.answer)){
+         const normalize = str => str.replace(/[^a-z0-9]/g, "");
+
+        if (normalize(val).includes(normalize(q.answer))){
           next();
         } else {
           alert("Access Denied");
