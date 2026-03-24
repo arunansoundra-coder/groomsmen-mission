@@ -1,112 +1,74 @@
-export function startQuestions(app, onComplete) {
+import { questions } from "./questions.js";
 
-  const answer = "FOREVER";
-  const revealed = ["F", "R"];
-  let guessed = [...revealed];
-  let attempts = 6;
+export function startQuestions(app, onComplete){
 
-  app.innerHTML = `
-    <div class="terminal">
-      <div class="terminal-header">MI6 SECURE SYSTEM</div>
+  let index = 0;
+  let score = 0;
 
-      <div class="terminal-body">
-        <div class="prompt">> Initiating Level 5 Clearance...</div>
-        <div class="prompt">> Decryption Required</div>
+  function render(){
 
-        <div class="question-text">
-          Loyalty makes a family, and family is ____.
+    const q = questions[index];
+
+    if (!q){
+      app.innerHTML = `
+        <div class="question-screen">
+          <h2>Welcome Agent</h2>
+          <p>Identity and Security Clearance Confirmed</p>
         </div>
+      `;
 
-        <div id="word" class="word"></div>
-
-        <div id="letters" class="letters"></div>
-
-        <div id="status" class="status"></div>
-      </div>
-    </div>
-  `;
-
-  const wordEl = document.getElementById("word");
-  const lettersEl = document.getElementById("letters");
-  const statusEl = document.getElementById("status");
-
-  // 🔊 Sounds
-  const typeSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-  const correctSound = new Audio("https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3");
-  const wrongSound = new Audio("https://assets.mixkit.co/active_storage/sfx/171/171-preview.mp3");
-
-  function renderWord() {
-    wordEl.innerHTML = answer
-      .split("")
-      .map(letter => (
-        guessed.includes(letter)
-          ? `<span class="letter reveal">${letter}</span>`
-          : `<span class="letter blank">_</span>`
-      ))
-      .join("");
-  }
-
-  function checkWin() {
-    const isComplete = answer
-      .split("")
-      .every(letter => guessed.includes(letter));
-
-    if (isComplete) {
-      statusEl.innerHTML = `<span class="granted">ACCESS GRANTED</span>`;
-      
-      document.body.classList.add("glitch");
-
-      setTimeout(() => {
-        onComplete();
-      }, 1200);
+      setTimeout(() => onComplete(), 1500);
+      return;
     }
-  }
 
-  function checkLose() {
-    if (attempts <= 0) {
-      statusEl.innerHTML = `<span class="denied">ACCESS DENIED</span>`;
-    }
-  }
+    // TEXT INPUT QUESTION
+    if (q.type === "text"){
+      app.innerHTML = `
+        <div class="question-screen">
+          <div class="level">${q.stage} - Level ${q.level}</div>
+          <div class="question-text">${q.q}</div>
+          <input id="textAnswer" placeholder="Type answer..." />
+          <button id="submitBtn">Submit</button>
+        </div>
+      `;
 
-  function renderLetters() {
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      document.getElementById("submitBtn").onclick = () => {
+        const val = document.getElementById("textAnswer").value.toLowerCase();
 
-    lettersEl.innerHTML = alphabet.map(letter => `
-      <button class="letter-btn" data-letter="${letter}">
-        ${letter}
-      </button>
-    `).join("");
-
-    document.querySelectorAll(".letter-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const letter = btn.dataset.letter;
-
-        btn.disabled = true;
-        typeSound.currentTime = 0;
-        typeSound.play().catch(()=>{});
-
-        if (answer.includes(letter)) {
-          guessed.push(letter);
-          correctSound.play().catch(()=>{});
-          renderWord();
-          checkWin();
+        if (val.includes(q.answer)){
+          next();
         } else {
-          attempts--;
-          wrongSound.play().catch(()=>{});
-          statusEl.innerText = `Attempts remaining: ${attempts}`;
-
-          // ⚠️ screen flicker
-          document.body.classList.add("flicker");
-          setTimeout(() => {
-            document.body.classList.remove("flicker");
-          }, 150);
-
-          checkLose();
+          alert("Access Denied");
         }
-      });
+      };
+
+      return;
+    }
+
+    // MULTIPLE CHOICE
+    app.innerHTML = `
+      <div class="question-screen">
+        <div class="level">${q.stage} - Level ${q.level}</div>
+        <div class="question-text">${q.q}</div>
+        ${q.options.map(o => `<button class="option-btn">${o}</button>`).join("")}
+      </div>
+    `;
+
+    document.querySelectorAll(".option-btn").forEach(btn=>{
+      btn.onclick = () => {
+        if (btn.innerText === q.answer){
+          next();
+        } else {
+          btn.style.background = "red";
+        }
+      };
     });
   }
 
-  renderWord();
-  renderLetters();
+  function next(){
+    index++;
+    render();
+  }
+
+  render();
 }
