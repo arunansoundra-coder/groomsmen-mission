@@ -11,71 +11,18 @@ export function startQuestions(app, onComplete){
     const q = filteredQuestions[index];
 
     // ✅ END
-   if (!q){
-  onComplete();
-  return;
-}
-
-function changeStage(newStage){
-  stage = newStage;
-  index = 0;
-  render();
-}
-    
-    // ✅ STAGE TRANSITION (FIXED)
-    if (stage === "Identity" && q.stage === "Security Clearance"){
-  const agent = getAgent();
-
-  app.innerHTML = `
-    <div class="question-screen">
-      <h2>Welcome Agent ${agent}</h2>
-      <p>Identity Authentication Successful</p>
-    </div>
-  `;
-
-  setTimeout(() => {
-    changeStage("Security");
-  }, 1500);
-
-  return;
-}
-  const agent = getAgent();
-
-  app.innerHTML = `
-    <div class="question-screen">
-      <h2>Welcome Agent ${agent}</h2>
-      <p>Identity Authentication Successful</p>
-    </div>
-  `;
-
-  setTimeout(() => {
-    changeStage("Security");
-  }, 1500);
-
-  return;
-}
-      stage = "Security";
-
-      const agent = getAgent();
-
-      app.innerHTML = `
-        <div class="question-screen">
-          <h2>Welcome Agent ${agent}</h2>
-          <p>Identity Authentication Successful</p>
-        </div>
-      `;
-
-      setTimeout(() => {
-        render(); // now safely continues to SAME index
-      }, 1500);
-
+    if (!q){
+      onComplete();
       return;
     }
+
+    const agent = getAgent();
 
     // 🧠 TEXT INPUT
     if (q.type === "text"){
       app.innerHTML = `
         <div class="question-screen">
+          <h2>Welcome Agent ${agent}</h2>
           <div class="level">${q.stage} - Level ${q.level}</div>
           <div class="question-text">${q.q}</div>
           <input id="input" placeholder="Type answer..." />
@@ -99,6 +46,7 @@ function changeStage(newStage){
     // 🧠 MULTIPLE CHOICE
     app.innerHTML = `
       <div class="question-screen">
+        <h2>Welcome Agent ${agent}</h2>
         <div class="level">${q.stage} - Level ${q.level}</div>
         <div class="question-text">${q.q}</div>
         ${q.options.map(o => `<button class="option-btn">${o}</button>`).join("")}
@@ -116,22 +64,42 @@ function changeStage(newStage){
     });
   }
 
- function next(){
-  index++;
+  function next(){
+    index++;
 
-  const filteredQuestions = questions.filter(q => q.stage === stage);
+    const filteredQuestions = questions.filter(q => q.stage === stage);
 
-  if (index >= filteredQuestions.length){
-    if (stage === "Identity"){
-      changeStage("Security");
-    } else {
-      onComplete();
+    // ✅ Move to next stage
+    if (index >= filteredQuestions.length){
+      if (stage === "Identity Authentication"){
+        changeStage("Security Clearance");
+      } else {
+        onComplete();
+      }
+      return;
     }
-    return;
+
+    render();
   }
 
-  render();
-}
+  function changeStage(newStage){
+    stage = newStage;
+    index = 0;
+
+    const agent = getAgent();
+
+    app.innerHTML = `
+      <div class="question-screen">
+        <h2>Access Granted</h2>
+        <p>${stage} complete</p>
+        <p>Welcome Agent ${agent}</p>
+      </div>
+    `;
+
+    setTimeout(() => {
+      render();
+    }, 1500);
+  }
 
   function getAgent(){
     const params = new URLSearchParams(window.location.search);
