@@ -1,18 +1,14 @@
-const params = new URLSearchParams(window.location.search);
-const agentName = params.get("agent") || "Agent";
-
 import { startQuestions } from "./questionsUI.js";
 import { startBriefing } from "./briefingUI.js";
 import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
-let agents = ["Jason","Josh","Duran","Taylor","Gill","Prathap"];
-let index = 0;
+const params = new URLSearchParams(window.location.search);
+const agentName = params.get("agent") || "Agent";
 
-startQuestions(app, () => {
-  nextAgent();
-}, agentName);
+let index = 0;
+const agents = ["Jason","Josh","Duran","Taylor","Gill","Prathap"];
 
 function nextAgent(){
   if (index < agents.length){
@@ -28,4 +24,4 @@ function nextAgent(){
   }
 }
 
-startFlow();
+nextAgent();
