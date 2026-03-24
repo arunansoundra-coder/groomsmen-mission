@@ -8,9 +8,9 @@ export function startBriefing(app, agentName, onComplete){
       <h2>Operation: Always and Forever</h2>
 
       <p>
-      Agent ${agentName},<br><br>
-      You are being called upon for a mission of great importance.<br><br>
-      Will you assist the Groom as ${role}?
+        Agent ${agentName},<br><br>
+        You are tasked with assisting the Groom in an upcoming operation.<br><br>
+        Will you accept the role of <strong>${role}</strong>?
       </p>
 
       <div class="choices">
