@@ -144,11 +144,12 @@ export function startPoker(app){
 
     results.sort((a,b)=>b.score - a.score);
 
-    msg.innerHTML = `
-      <h3>Showdown</h3>
-      ${results.map(r => `<p>${r.name} — ${r.hand}</p>`).join("")}
-      <p>Await further instructions via email.</p>
-      <p>Safe House: 6233 Muirfield Dr SW</p>
-    `;
-  }, 5500);
-}
+   msg.innerHTML = `
+  <h3>Showdown</h3>
+  ${results.map(r => `<p>${r.name} — ${r.hand}</p>`).join("")}
+
+  <p>Await further instructions via email.</p>
+  <p>Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA</p>
+  <p>Confirm with Agent Ghost</p>
+  <p>Hotel: The Hotel at Kirkwood Center</p>
+`;
