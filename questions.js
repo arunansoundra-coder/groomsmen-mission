@@ -48,11 +48,10 @@ export const questions = [
     options: ["Frost","Cloud","Phantom","Glacier"],
     answer: "Cloud"
   },
-  {
-    stage: "Security Clearance",
-    level: 3,
-    type: "text",
-    q: "Complete the phrase:",
-    answer: "family is forever"
-  }
-];
+{
+  stage: "Security Clearance",
+  level: 3,
+  type: "text",
+  q: "Reconstruct the phrase (no hints):\nB___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
+  answer: "blood makes us related loyalty makes us family and family is forever"
+}
