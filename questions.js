@@ -1,19 +1,17 @@
-// questions.js
-
 export const questions = [
 
   // 🧠 IDENTITY AUTHENTICATION
   {
-    stage: "Identity",
+    stage: "Identity Authentication",
     level: 1,
     q: "What poker hand did James Bond win with in Montenegro?",
     options: ["Royal Flush","Straight Flush","Full House","Straight Flush"],
     answer: "Straight Flush"
   },
   {
-    stage: "Identity",
+    stage: "Identity Authentication",
     level: 2,
-    q: "What is James Bond’s preferred drink?",
+    q: "What is James Bond’s favorite drink?",
     options: [
       "Vodka Martini — Shaken, not stirred",
       "Scotch Neat",
@@ -23,9 +21,9 @@ export const questions = [
     answer: "Vodka Martini — Shaken, not stirred"
   },
   {
-    stage: "Identity",
+    stage: "Identity Authentication",
     level: 3,
-    q: "Identify Bond’s key love interests.",
+    q: "Name all of James Bond’s love interests.",
     options: [
       "Vesper Lynd, Tracy Bond, Madeleine Swann",
       "Domino, Tiffany Case, Natalya Simonova",
@@ -37,21 +35,21 @@ export const questions = [
 
   // 🔒 SECURITY CLEARANCE
   {
-    stage: "Security",
+    stage: "Security Clearance",
     level: 1,
-    q: "What was the name of the horse Arunan owned?",
+    q: "What was the name of the horse that Arunan had?",
     options: ["Luna","Bella","Maya","Shadow"],
     answer: "Maya"
   },
   {
-    stage: "Security",
+    stage: "Security Clearance",
     level: 2,
-    q: "Arunan owned a grey 2023 BMW 330i. What was its name?",
+    q: "Arunan had a Grey 2023 BMW 330i. What was its name?",
     options: ["Frost","Cloud","Phantom","Glacier"],
     answer: "Cloud"
   },
   {
-    stage: "Security",
+    stage: "Security Clearance",
     level: 3,
     type: "text",
     q: "Complete the phrase:",
