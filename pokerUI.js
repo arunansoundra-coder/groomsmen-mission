@@ -217,3 +217,11 @@ export function startPoker(app){
   <p>Objective: Defeat the Groom</p>
   <p>Prize: MI6 Poker Champion</p>
 </div>
+setTimeout(()=>{
+  msg.innerHTML += `
+    <p>Await further instructions via email.</p>
+    <p>Safe House: 6233 Muirfield Dr SW, Cedar Rapids</p>
+    <p>Confirm with Agent Ghost</p>
+    <p>Hotel: The Hotel at Kirkwood Center</p>
+  `;
+}, 7000);
