@@ -71,10 +71,12 @@ export function startQuestions(app, onComplete, agentName){
 // =========================
 // FINAL MODE (GLOBAL REVEAL)
 // =========================
+// =========================
+// FINAL MODE (PHRASE REVEAL)
+// =========================
 if (isFinal){
 
   const answer = normalize(q.answer);
-  let current = Array(answer.length).fill("_");
 
   const answerBox = document.getElementById("answerBox");
   const keyboard = document.getElementById("keyboard");
@@ -85,56 +87,60 @@ if (isFinal){
     `<button class="key">${l}</button>`
   ).join("");
 
-  function renderAnswer(){
-    answerBox.innerText = current.join(" ");
-  }
+  // original masked phrase stored once
+  let displayed = answerBox.innerText;
 
-  renderAnswer();
+  function updateDisplay(newText){
+    answerBox.innerText = newText;
+  }
 
   document.querySelectorAll(".key").forEach(btn => {
     btn.onclick = () => {
 
       const letter = btn.innerText.toLowerCase();
 
-      let found = false;
+      let newText = "";
 
-      // 🔥 reveal ALL matching letters
-      for (let i = 0; i < answer.length; i++){
-        if (answer[i] === letter){
-          current[i] = letter;
-          found = true;
+      // 🔥 reveal letter inside the EXISTING phrase
+      for (let i = 0; i < displayed.length; i++){
+
+        const originalChar = answer[i];
+
+        if (originalChar === letter){
+          newText += letter;
+        } else {
+          newText += displayed[i];
         }
       }
 
-      renderAnswer();
+      displayed = newText;
+      updateDisplay(displayed);
 
-      // disable key after use
       btn.disabled = true;
-
-      // optional feedback
-      if (!found){
-        btn.style.background = "red";
-        setTimeout(() => btn.style.background = "", 300);
-      }
     };
   });
 
   document.getElementById("backspace").onclick = () => {
-    current = Array(answer.length).fill("_");
+    answerBox.innerText =
+      "B___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______";
+
+    displayed = answerBox.innerText;
+
     document.querySelectorAll(".key").forEach(b => b.disabled = false);
-    renderAnswer();
   };
 
   document.getElementById("clear").onclick = () => {
-    current = Array(answer.length).fill("_");
+    answerBox.innerText =
+      "B___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______";
+
+    displayed = answerBox.innerText;
+
     document.querySelectorAll(".key").forEach(b => b.disabled = false);
-    renderAnswer();
   };
 
   document.getElementById("submit").onclick = () => {
-    const final = current.join("");
 
-    if (normalize(final) === answer){
+    if (normalize(displayed) === answer){
       next();
     } else {
       alert("Access Denied");
