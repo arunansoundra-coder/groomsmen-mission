@@ -1,4 +1,4 @@
-import { questions } from "./questions.js";
+  import { questions } from "./questions.js";
 
 export function startQuestions(app, onComplete, agentName){
 
@@ -28,6 +28,9 @@ export function startQuestions(app, onComplete, agentName){
 
     const agent = getAgent();
 
+    // =========================
+    // RENDER UI
+    // =========================
     app.innerHTML = `
       <div class="question-screen ${isFinal ? "final-question" : ""}">
         <h2>Welcome Agent ${agent}</h2>
@@ -53,112 +56,109 @@ export function startQuestions(app, onComplete, agentName){
               </div>
             `
             : `
-              <input id="input" placeholder="Type answer..." />
-              <button id="submit">Submit</button>
+              <div class="options">
+                ${q.options.map(o =>
+                  `<button class="option-btn">${o}</button>`
+                ).join("")}
+              </div>
             `
         }
       </div>
     `;
 
     // =========================
-    // NORMAL QUESTIONS
+    // FINAL MODE (KEYBOARD)
     // =========================
-    if (!isFinal){
+    if (isFinal){
 
-      const input = document.getElementById("input");
+      const answer = normalize(q.answer);
+      let displayed = q.answerMask;
 
-      document.getElementById("submit").onclick = () => {
-        const val = normalize(input.value);
-        const correct = normalize(q.answer);
+      const answerBox = document.getElementById("answerBox");
+      const keyboard = document.getElementById("keyboard");
 
-        if (val === correct) next();
-        else alert("Access Denied");
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+      keyboard.innerHTML = letters
+        .map(l => `<button class="key">${l}</button>`)
+        .join("");
+
+      function renderText(){
+        answerBox.innerText = displayed;
+      }
+
+      renderText();
+
+      document.querySelectorAll(".key").forEach(btn => {
+        btn.onclick = () => {
+
+          const letter = btn.innerText.toLowerCase();
+
+          let updated = "";
+
+          for (let i = 0; i < displayed.length; i++){
+            const correctChar = answer[i] || "";
+
+            if (correctChar === letter){
+              updated += letter;
+            } else {
+              updated += displayed[i];
+            }
+          }
+
+          displayed = updated;
+          renderText();
+
+          btn.disabled = true;
+        };
+      });
+
+      const reset = () => {
+        displayed = q.answerMask;
+        renderText();
+        document.querySelectorAll(".key").forEach(b => b.disabled = false);
       };
 
-      input.addEventListener("keypress", e => {
-        if (e.key === "Enter") {
-          document.getElementById("submit").click();
+      document.getElementById("reset").onclick = reset;
+      document.getElementById("clear").onclick = reset;
+
+      document.getElementById("submit").onclick = () => {
+
+        if (normalize(displayed) === answer){
+
+          document.querySelectorAll(".key")
+            .forEach(b => b.disabled = true);
+
+          answerBox.classList.add("glitch");
+
+          setTimeout(() => next(), 900);
+
+        } else {
+          alert("Access Denied");
         }
-      });
+      };
 
       return;
     }
 
     // =========================
-    // FINAL MODE (SECURITY CLEARANCE)
+    // NORMAL MODE (MULTIPLE CHOICE)
     // =========================
-
-    const answer = normalize(q.answer);
-    let displayed = q.answerMask;
-
-    const answerBox = document.getElementById("answerBox");
-    const keyboard = document.getElementById("keyboard");
-
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-    keyboard.innerHTML = letters
-      .map(l => `<button class="key">${l}</button>`)
-      .join("");
-
-    function renderText(){
-      answerBox.innerText = displayed;
-    }
-
-    renderText();
-
-    document.querySelectorAll(".key").forEach(btn => {
+    document.querySelectorAll(".option-btn").forEach(btn => {
       btn.onclick = () => {
 
-        const letter = btn.innerText.toLowerCase();
-
-        let updated = "";
-
-        for (let i = 0; i < displayed.length; i++){
-
-          const correctChar = answer[i] || "";
-
-          if (correctChar === letter){
-            updated += letter;
-          } else {
-            updated += displayed[i];
-          }
+        if (normalize(btn.innerText) === normalize(q.answer)){
+          next();
+        } else {
+          btn.style.background = "red";
         }
-
-        displayed = updated;
-        renderText();
-
-        btn.disabled = true;
       };
     });
-
-    function reset(){
-      displayed = q.answerMask;
-      renderText();
-      document.querySelectorAll(".key").forEach(b => b.disabled = false);
-    }
-
-    document.getElementById("reset").onclick = reset;
-    document.getElementById("clear").onclick = reset;
-
-    document.getElementById("submit").onclick = () => {
-
-      if (normalize(displayed) === answer){
-
-        answerBox.classList.add("glitch");
-
-        document.querySelectorAll(".key")
-          .forEach(b => b.disabled = true);
-
-        setTimeout(() => {
-          next(); // 🔥 PROCEED TO NEXT SCREEN
-        }, 900);
-
-      } else {
-        alert("Access Denied");
-      }
-    };
   }
 
+  // =========================
+  // NEXT LOGIC
+  // =========================
   function next(){
 
     index++;
@@ -180,4 +180,4 @@ export function startQuestions(app, onComplete, agentName){
   }
 
   render();
-}
+}   
