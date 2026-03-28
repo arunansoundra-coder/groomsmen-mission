@@ -51,8 +51,8 @@ export const questions = [
 {
   stage: "Security Clearance",
   level: 3,
-  type: "text",
-  q: "Reconstruct the phrase (no hints):\nB___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
-  answer: "blood makes us related loyalty makes us family and family is forever"
+  q: "Reconstruct the phrase (no hints):",
+  answerMask: "B___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
+  answer: "blind message ur received , launch mission u follow and finish in failure"
 }
 ]; // ✅ THIS LINE IS CRITICAL
