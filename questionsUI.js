@@ -65,46 +65,70 @@ export function startQuestions(app, onComplete, agentName){
       // =========================
       // FINAL MODE (KEYBOARD)
       // =========================
-      if (isFinal){
+     // =========================
+// FINAL MODE (KEYBOARD FIXED)
+// =========================
+if (isFinal){
 
-        let current = "";
+  const answer = normalize(q.answer); // target phrase
+  let current = Array(answer.length).fill("_");
 
-        const answerBox = document.getElementById("answerBox");
-        const keyboard = document.getElementById("keyboard");
+  const answerBox = document.getElementById("answerBox");
+  const keyboard = document.getElementById("keyboard");
 
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-        keyboard.innerHTML = letters.map(l =>
-          `<button class="key">${l}</button>`
-        ).join("");
+  keyboard.innerHTML = letters.map(l =>
+    `<button class="key">${l}</button>`
+  ).join("");
 
-        function update(){
-          answerBox.innerText = current;
-        }
+  function renderAnswer(){
+    answerBox.innerText = current.join(" ");
+  }
 
-        document.querySelectorAll(".key").forEach(btn=>{
-          btn.onclick = () => {
-            current += btn.innerText.toLowerCase();
-            update();
-          };
-        });
+  renderAnswer();
 
-        document.getElementById("backspace").onclick = () => {
-          current = current.slice(0, -1);
-          update();
-        };
+  document.querySelectorAll(".key").forEach((btn, index) => {
+    btn.onclick = () => {
 
-        document.getElementById("clear").onclick = () => {
-          current = "";
-          update();
-        };
+      const letter = btn.innerText.toLowerCase();
 
-        document.getElementById("submit").onclick = () => {
-          handleSubmit(current);
-        };
+      // find next empty slot
+      const pos = answer.indexOf(letter);
 
-        return;
+      if (pos !== -1){
+        current[pos] = letter;
+        renderAnswer();
       }
+
+      // optional: disable used key
+      btn.disabled = true;
+    };
+  });
+
+  document.getElementById("backspace").onclick = () => {
+    current = Array(answer.length).fill("_");
+    document.querySelectorAll(".key").forEach(b => b.disabled = false);
+    renderAnswer();
+  };
+
+  document.getElementById("clear").onclick = () => {
+    current = Array(answer.length).fill("_");
+    document.querySelectorAll(".key").forEach(b => b.disabled = false);
+    renderAnswer();
+  };
+
+  document.getElementById("submit").onclick = () => {
+    const final = current.join("");
+
+    if (normalize(final) === answer){
+      next();
+    } else {
+      alert("Access Denied");
+    }
+  };
+
+}
 
       // =========================
       // NORMAL MODE
