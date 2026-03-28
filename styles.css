@@ -1,14 +1,17 @@
-/* ---------------- GLOBAL ---------------- */
+/* =========================
+   GLOBAL BASE
+========================= */
+
 body {
+  margin: 0;
+  padding: 0;
   background: #0b0b0b;
   color: white;
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
 }
 
-/* 🖥 Cinematic vignette */
+/* vignette */
 body::after {
   content: "";
   position: fixed;
@@ -17,24 +20,14 @@ body::after {
   background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.85));
 }
 
-/* ---------------- APP TRANSITIONS ---------------- */
+/* =========================
+   APP
+========================= */
+
 #app {
-  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.fade-out {
-  opacity: 0;
-  filter: blur(8px) brightness(0.6);
-  transform: scale(0.97);
-}
-
-.fade-in {
-  opacity: 1;
-  filter: blur(0);
-  transform: scale(1);
-}
-
-/* ---------------- QUESTIONS ---------------- */
 .question-screen {
   display: flex;
   flex-direction: column;
@@ -44,631 +37,83 @@ body::after {
   padding: 40px;
 }
 
-.word {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin: 25px 0;
-  font-size: 32px;
-}
-
-.letter {
-  width: 30px;
-  border-bottom: 2px solid #00ffcc;
-  text-align: center;
-}
-
-.blank {
-  color: #555;
-}
-
-.letters {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 500px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.letter-btn {
-  margin: 5px;
-  padding: 10px;
-  width: 40px;
-  background: #222;
-  color: white;
-  border: 1px solid #555;
-  cursor: pointer;
-}
-
-.letter-btn:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
+/* =========================
+   QUESTIONS
+========================= */
 
 .level {
-  font-size: 28px;
-  margin-bottom: 20px;
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
 .question-text {
-  font-size: 22px;
-  margin-bottom: 25px;
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 .option-btn {
-  margin: 10px 0;
-  padding: 12px 25px;
+  margin: 8px 0;
+  padding: 12px 20px;
+  width: 260px;
   background: #222;
   color: white;
   border: 1px solid #555;
-  cursor: pointer;
-  width: 260px;
-  font-size: 16px;
   border-radius: 6px;
+  cursor: pointer;
   transition: 0.2s;
 }
 
 .option-btn:hover {
   background: #444;
-  transform: scale(1.03);
 }
 
-/* ---------------- POKER TABLE ---------------- */
-/* FULL SCREEN CENTERING */
-body {
-  margin: 0;
-  background: #021a12;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-}
+/* =========================
+   FINAL KEYBOARD SYSTEM
+========================= */
 
-/* RESPONSIVE TABLE */
-.table {
-  position: relative;
-  width: min(95vw, 1100px);
-  aspect-ratio: 16 / 10;
-  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
-  border-radius: 50% / 40%;
-  box-shadow: 0 0 60px rgba(0,0,0,0.8);
-}
-
-/* SEATS SCALE WITH SCREEN */
-.seat {
-  position: absolute;
-  width: 12%;
-  min-width: 100px;
+.answer-box {
+  font-size: 24px;
+  letter-spacing: 2px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #444;
+  min-height: 40px;
+  width: 260px;
   text-align: center;
-  font-size: clamp(10px, 1vw, 14px);
 }
 
-/* OUTSIDE LABEL (ALWAYS VISIBLE) */
-.seat-label {
-  position: absolute;
-  width: 100%;
-  top: -3.5em;
-  line-height: 1.2;
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  max-width: 320px;
 }
 
-/* INSIDE HAND */
-.seat-hand {
-  position: absolute;
-  top: 0.5em;
-  width: 100%;
-}
-
-/* BETTER OVAL POSITIONS (BALANCED) */
-#p0 { top: 2%; left: 50%; transform: translateX(-50%); }
-#p1 { top: 18%; left: 85%; }
-#p2 { top: 65%; left: 85%; }
-#p3 { top: 88%; left: 50%; transform: translateX(-50%); }
-#p4 { top: 65%; left: 2%; }
-#p5 { top: 18%; left: 2%; }
-#p6 { top: 10%; left: 50%; transform: translate(-50%, -50%);
-}
-
-/* CARDS SCALE */
-.card {
-  display: inline-block;
-  background: white;
-  border-radius: 6px;
-  padding: 0.4em 0.5em;
-  margin: 2px;
-  font-weight: bold;
-  font-size: clamp(10px, 1vw, 14px);
-}
-
-.card.red { color: red; }
-.card.black { color: black; }
-
-/* CHIPS */
-.chips {
-  margin-top: 0.3em;
-  font-size: clamp(10px, 1vw, 13px);
-}
-
-/* COMMUNITY CENTER */
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* POT */
-.pot {
-  position: absolute;
-  top: 58%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(12px, 1.2vw, 18px);
-}
-
-/* MISSION TEXT (TOP CENTER SAFE AREA) */
-.mission-info {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  font-size: clamp(12px, 1vw, 16px);
-}
-
-  /* 🎬 3D cinematic tilt */
-  transform: perspective(1000px) rotateX(8deg);
-}
-
-/* Subtle table glow */
-.table::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
-  pointer-events: none;
-}
-
-/* ---------------- SEATS ---------------- */
-.seat {
-  position: absolute;
-  width: 120px;
-  text-align: center;
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Active player */
-.seat.active {
-  box-shadow: 0 0 30px rgba(0,255,150,0.9), 0 0 60px rgba(0,255,150,0.4);
-  transform: translate(-50%, -50%) scale(1.08);
-}
-
-/* ---------------- PLAYER TEXT ---------------- */
-.codename {
-  font-size: 12px;
-  color: #ccc;
-  margin-bottom: 4px;
-}
-
-.role {
-  font-size: 12px;
-  color: #ffd700;
-  margin-bottom: 4px;
-  font-weight: bold;
-}
-
-.name {
-  font-weight: bold;
-}
-
-/* ---------------- CARDS ---------------- */
-.cards {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 5px;
-}
-
-/* Card animation */
-.card {
-  width: 40px;
-  height: 60px;
-  background: white;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 18px;
-
-  opacity: 0;
-  transform: translateY(-40px) scale(0.6);
-  animation: dealCard 0.4s ease forwards;
-
-  /* subtle realism */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-}
-
-/* Slight card tilt for realism */
-.card:nth-child(odd) {
-  transform: rotate(-2deg);
-}
-
-.card:nth-child(even) {
-  transform: rotate(2deg);
-}
-
-.card.red { color: red; }
-.card.black { color: black; }
-
-@keyframes dealCard {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* ---------------- CENTER (POT + COMMUNITY) ---------------- */
-.pot {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -120%);
-  font-size: 22px;
-  font-weight: bold;
-  text-shadow: 0 0 12px rgba(255,215,0,0.8);
-}
-
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 0 0 25px rgba(255,255,255,0.08);
-}
-
-/* ---------------- MESSAGE ---------------- */
-.msg {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-/* ---------------- CHIP ANIMATION ---------------- */
-.chip-fly {
-  position: fixed;
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle, #ffd700, #b8860b);
-  border-radius: 50%;
-  z-index: 999;
-
-  box-shadow: 0 0 12px rgba(255,215,0,0.9);
-  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.7s;
-}
-
-/* ---------------- BRIEFING ---------------- */
-.briefing {
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 30px;
-  background: black;
-  color: #00ffcc;
-  font-family: "Courier New", monospace;
-  border: 1px solid #00ffcc;
-  box-shadow: 0 0 25px #00ffcc;
-}
-
-#typewriter {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  font-size: 16px;
-  text-shadow: 0 0 5px #00ffcc;
-}
-
-#continueBtn {
-  margin-top: 30px;
-  padding: 12px 20px;
-  background: #00ffcc;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-#continueBtn:hover {
-  background: #00e6b8;
-  transform: scale(1.05);
-}
-
-/* ---------------- TERMINAL ---------------- */
-.terminal {
-  max-width: 700px;
-  margin: 60px auto;
-  background: black;
-  border: 1px solid #00ffcc;
-  box-shadow: 0 0 25px #00ffcc;
-  font-family: "Courier New", monospace;
-  color: #00ffcc;
-}
-
-.terminal-header {
-  background: #001a17;
+.key {
   padding: 10px;
   font-weight: bold;
-  text-align: left;
-}
-
-.terminal-body {
-  padding: 20px;
-}
-
-.prompt {
-  margin-bottom: 10px;
-  opacity: 0.8;
-}
-
-/* ---------------- STATUS ---------------- */
-.status {
-  margin-top: 15px;
-  font-size: 18px;
-}
-
-.granted {
-  color: #00ffcc;
-  font-weight: bold;
-  animation: pulse 0.6s infinite alternate;
-}
-
-.denied {
-  color: red;
-  font-weight: bold;
-}
-
-@keyframes pulse {
-  from { opacity: 0.6; }
-  to { opacity: 1; }
-}
-
-/* ---------------- EFFECTS ---------------- */
-.flicker {
-  animation: flicker 0.15s;
-}
-
-@keyframes flicker {
-  0% { opacity: 1; }
-  50% { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-
-.glitch {
-  animation: glitch 0.3s;
-}
-
-@keyframes glitch {
-  0% { transform: translate(0); }
-  25% { transform: translate(-3px, 2px); }
-  50% { transform: translate(3px, -2px); }
-  75% { transform: translate(-2px, 1px); }
-  100% { transform: translate(0); }
-}
-.bond-style {
-  font-family: "Georgia", serif;
-  color: #e5e5e5;
-  background: #0b0b0b;
-  padding: 40px;
-  text-align: center;
-}
-
-/* Dossier styling */
-.dossier {
-  max-width: 600px;
-  margin: auto;
-  border: 1px solid #444;
-  padding: 30px;
-  background: rgba(0,0,0,0.7);
-}
-
-/* Divider line */
-.divider {
-  margin: 15px 0;
-  opacity: 0.4;
-}
-
-/* Button */
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: white;
-  color: black;
-  border: none;
   cursor: pointer;
-  font-weight: bold;
-}
-
-/* 🔥 Jason-only cinematic reveal */
-.dossier-reveal {
-  animation: fadeIn 2s ease forwards;
-}
-
-.classified {
-  font-size: 48px;
-  letter-spacing: 4px;
-  color: red;
-  animation: flicker 1s infinite;
-}
-
-.file-number {
-  opacity: 0.6;
-}
-
-/* Scanline effect */
-.scanline {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: rgba(255,0,0,0.5);
-  animation: scan 2s linear;
-}
-
-@keyframes scan {
-  from { top: 0; }
-  to { top: 100%; }
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(1.1); }
-  to { opacity: 1; transform: scale(1); }
-}
-.jason-zoom {
-  animation: zoomIn 2s ease forwards;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(1.3);
-    filter: blur(5px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    filter: blur(0);
-    opacity: 1;
-  }
-}
-body {
-  margin: 0;
-  background: black;
+  background: #222;
   color: white;
-  font-family: monospace;
+  border: 1px solid #444;
 }
 
-.briefing-container {
-  padding: 40px;
-  text-align: center;
+.keyboard-controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
 
-.dossier {
-  margin-top: 20px;
-  white-space: pre-wrap;
-  min-height: 200px;
+.keyboard-controls button {
+  flex: 1;
+  padding: 10px;
 }
 
-.hidden {
-  display: none;
-}
+/* =========================
+   FINAL WARNING
+========================= */
 
-button {
-  margin-top: 20px;
-  padding: 12px 20px;
-  background: gold;
-  border: none;
-  cursor: pointer;
-}
-
-/* 🎬 Jason cinematic zoom */
-.jason-zoom {
-  animation: zoomIn 1.5s ease forwards;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(1.2);
-    filter: blur(4px);
-  }
-  to {
-    transform: scale(1);
-    filter: blur(0);
-  }
-}
-.mission-info {
-  position: absolute;
-  top: 10px;
-  width: 100%;
-  text-align: center;
-  font-size: 14px;
-}
-.table {
-  position: relative;
-  width: 900px;
-  height: 550px;
-  margin: 0 auto;
-  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
-  border-radius: 50% / 40%;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6);
-}
-
-/* Seat container */
-.seat {
-  position: absolute;
-  width: 140px;
-  text-align: center;
-}
-
-/* OUTSIDE (names/codename/role) */
-.seat-label {
-  position: absolute;
-  width: 100%;
-  top: -70px;
-  font-size: 14px;
-}
-
-/* INSIDE (cards + chips) */
-.seat-hand {
-  position: absolute;
-  top: 10px;
-  width: 100%;
-}
-
-/* Oval positions */
-#p0 { top: 8%; left: 50%; transform: translateX(-50%); }
-#p1 { top: 25%; left: 82%; }
-#p2 { top: 65%; left: 82%; }
-#p3 { top: 85%; left: 50%; transform: translateX(-50%); }
-#p4 { top: 65%; left: 8%; }
-#p5 { top: 25%; left: 8%; }
-#p6 { top: 45%; left: 50%; transform: translateX(-50%); }
-
-/* Cards */
-.card {
-  display: inline-block;
-  background: white;
-  border-radius: 6px;
-  padding: 6px 8px;
-  margin: 2px;
-  font-weight: bold;
-}
-
-.card.red { color: red; }
-.card.black { color: black; }
-
-/* Chips */
-.chips {
-  margin-top: 5px;
-  font-size: 13px;
-}
-
-/* Community cards (center of table) */
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 .final-question {
   animation: pulse 1.5s infinite;
 }
@@ -685,67 +130,70 @@ button {
   50% { box-shadow: 0 0 20px red; }
   100% { box-shadow: 0 0 0px red; }
 }
-.answer-box {
-  font-size: 24px;
-  letter-spacing: 2px;
-  padding: 10px;
-  margin: 10px 0;
-  border: 2px solid #444;
-  min-height: 40px;
+
+/* =========================
+   POKER TABLE (FIXED)
+========================= */
+
+.table {
+  position: relative;
+  width: min(95vw, 900px);
+  aspect-ratio: 16 / 10;
+  margin: auto;
+  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
+  border-radius: 50% / 40%;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
 }
 
-.keyboard {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-top: 10px;
+/* seats */
+.seat {
+  position: absolute;
+  width: 120px;
+  text-align: center;
 }
 
-.key {
-  padding: 10px;
+/* community */
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* cards */
+.card {
+  display: inline-block;
+  background: white;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 2px;
   font-weight: bold;
-  cursor: pointer;
 }
 
-.keyboard-controls {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-}
-/* MOBILE RESPONSIVE FIX */
+.card.red { color: red; }
+.card.black { color: black; }
+
+/* =========================
+   MOBILE FIX
+========================= */
+
 @media (max-width: 768px) {
 
   .question-screen {
     padding: 15px;
   }
 
-  h2 {
-    font-size: 18px;
-  }
-
-  .question-text {
-    font-size: 16px;
-  }
-
-  input {
-    width: 100%;
-    font-size: 16px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 10px;
-  }
-
   .option-btn {
     width: 100%;
-    margin-bottom: 10px;
   }
 
-  /* keyboard fix */
+  .answer-box {
+    width: 100%;
+    font-size: 20px;
+  }
+
   .keyboard {
     grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
   }
 
   .key {
@@ -755,13 +203,5 @@ button {
 
   .keyboard-controls {
     flex-direction: column;
-  }
-
-  .keyboard-controls button {
-    width: 100%;
-  }
-
-  .answer-box {
-    font-size: 20px;
   }
 }
