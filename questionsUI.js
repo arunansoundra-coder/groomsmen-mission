@@ -68,9 +68,12 @@ export function startQuestions(app, onComplete, agentName){
      // =========================
 // FINAL MODE (KEYBOARD FIXED)
 // =========================
+// =========================
+// FINAL MODE (GLOBAL REVEAL)
+// =========================
 if (isFinal){
 
-  const answer = normalize(q.answer); // target phrase
+  const answer = normalize(q.answer);
   let current = Array(answer.length).fill("_");
 
   const answerBox = document.getElementById("answerBox");
@@ -88,21 +91,31 @@ if (isFinal){
 
   renderAnswer();
 
-  document.querySelectorAll(".key").forEach((btn, index) => {
+  document.querySelectorAll(".key").forEach(btn => {
     btn.onclick = () => {
 
       const letter = btn.innerText.toLowerCase();
 
-      // find next empty slot
-      const pos = answer.indexOf(letter);
+      let found = false;
 
-      if (pos !== -1){
-        current[pos] = letter;
-        renderAnswer();
+      // 🔥 reveal ALL matching letters
+      for (let i = 0; i < answer.length; i++){
+        if (answer[i] === letter){
+          current[i] = letter;
+          found = true;
+        }
       }
 
-      // optional: disable used key
+      renderAnswer();
+
+      // disable key after use
       btn.disabled = true;
+
+      // optional feedback
+      if (!found){
+        btn.style.background = "red";
+        setTimeout(() => btn.style.background = "", 300);
+      }
     };
   });
 
