@@ -712,3 +712,56 @@ button {
   display: flex;
   gap: 10px;
 }
+/* MOBILE RESPONSIVE FIX */
+@media (max-width: 768px) {
+
+  .question-screen {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .question-text {
+    font-size: 16px;
+  }
+
+  input {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .option-btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  /* keyboard fix */
+  .keyboard {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+
+  .key {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .keyboard-controls {
+    flex-direction: column;
+  }
+
+  .keyboard-controls button {
+    width: 100%;
+  }
+
+  .answer-box {
+    font-size: 20px;
+  }
+}
