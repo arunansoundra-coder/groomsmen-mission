@@ -99,6 +99,10 @@ body::after {
   border: 1px solid #444;
 }
 
+.key.used {
+  opacity: 0.4;
+}
+
 .keyboard-controls {
   margin-top: 10px;
   display: flex;
@@ -140,24 +144,45 @@ body::after {
   width: min(95vw, 900px);
   aspect-ratio: 16 / 10;
   margin: auto;
-  background: radial-gradient(ellipse at center, #0b5d3b 60%, #063826 100%);
+  background: radial-gradient(ellipse at center, #0f7a4d 50%, #063826 100%);
   border-radius: 50% / 40%;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  box-shadow:
+    0 0 40px rgba(0,0,0,0.6),
+    inset 0 0 30px rgba(0,0,0,0.4);
 }
 
-/* seats */
+/* =========================
+   SEATS (FIXED RING LAYOUT)
+========================= */
+
 .seat {
   position: absolute;
   width: 120px;
   text-align: center;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s ease;
 }
 
-/* community */
+/* ring layout */
+#p0 { top: 85%; left: 50%; }
+#p1 { top: 70%; left: 85%; }
+#p2 { top: 30%; left: 85%; }
+#p3 { top: 15%; left: 50%; }
+#p4 { top: 30%; left: 15%; }
+#p5 { top: 70%; left: 15%; }
+#p6 { top: 50%; left: 50%; }
+
+/* =========================
+   COMMUNITY CARDS
+========================= */
+
 .community {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  gap: 6px;
 }
 
 /* cards */
@@ -203,5 +228,15 @@ body::after {
 
   .keyboard-controls {
     flex-direction: column;
+  }
+
+  .seat {
+    width: 80px;
+    font-size: 12px;
+  }
+
+  .card {
+    font-size: 12px;
+    padding: 4px 6px;
   }
 }
