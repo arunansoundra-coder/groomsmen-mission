@@ -1,9 +1,14 @@
-  import { questions } from "./questions.js";
+ import { questions } from "./questions.js";
 
 export function startQuestions(app, onComplete, agentName){
 
   let index = 0;
   let stage = "Identity Authentication";
+
+  // =========================
+  // DEV MODE SWITCH
+  // =========================
+  const DEV_MODE = true;
 
   const normalize = str =>
     (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -28,9 +33,6 @@ export function startQuestions(app, onComplete, agentName){
 
     const agent = getAgent();
 
-    // =========================
-    // RENDER UI
-    // =========================
     app.innerHTML = `
       <div class="question-screen ${isFinal ? "final-question" : ""}">
         <h2>Welcome Agent ${agent}</h2>
@@ -43,9 +45,13 @@ export function startQuestions(app, onComplete, agentName){
         ${
           isFinal
             ? `
+              <div class="terminal-line">DECRYPTING MESSAGE...</div>
+
               <div id="answerBox" class="answer-box">
                 ${q.answerMask}
               </div>
+
+              <div class="status-line" id="status">SIGNAL LOCKED</div>
 
               <div class="keyboard" id="keyboard"></div>
 
@@ -53,6 +59,7 @@ export function startQuestions(app, onComplete, agentName){
                 <button id="reset">RESET</button>
                 <button id="clear">CLEAR</button>
                 <button id="submit">SUBMIT</button>
+                <button id="skip">DEV SKIP</button>
               </div>
             `
             : `
@@ -67,97 +74,121 @@ export function startQuestions(app, onComplete, agentName){
     `;
 
     // =========================
-    // FINAL MODE (KEYBOARD)
+    // NORMAL MODE
     // =========================
-    if (isFinal){
+    if (!isFinal){
 
-      const answer = normalize(q.answer);
-      let displayed = q.answerMask;
-
-      const answerBox = document.getElementById("answerBox");
-      const keyboard = document.getElementById("keyboard");
-
-      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-      keyboard.innerHTML = letters
-        .map(l => `<button class="key">${l}</button>`)
-        .join("");
-
-      function renderText(){
-        answerBox.innerText = displayed;
-      }
-
-      renderText();
-
-      document.querySelectorAll(".key").forEach(btn => {
+      document.querySelectorAll(".option-btn").forEach(btn => {
         btn.onclick = () => {
 
-          const letter = btn.innerText.toLowerCase();
-
-          let updated = "";
-
-          for (let i = 0; i < displayed.length; i++){
-            const correctChar = answer[i] || "";
-
-            if (correctChar === letter){
-              updated += letter;
-            } else {
-              updated += displayed[i];
-            }
+          if (normalize(btn.innerText) === normalize(q.answer)){
+            next();
+          } else {
+            btn.style.background = "red";
           }
-
-          displayed = updated;
-          renderText();
-
-          btn.disabled = true;
         };
       });
-
-      const reset = () => {
-        displayed = q.answerMask;
-        renderText();
-        document.querySelectorAll(".key").forEach(b => b.disabled = false);
-      };
-
-      document.getElementById("reset").onclick = reset;
-      document.getElementById("clear").onclick = reset;
-
-      document.getElementById("submit").onclick = () => {
-
-        if (normalize(displayed) === answer){
-
-          document.querySelectorAll(".key")
-            .forEach(b => b.disabled = true);
-
-          answerBox.classList.add("glitch");
-
-          setTimeout(() => next(), 900);
-
-        } else {
-          alert("Access Denied");
-        }
-      };
 
       return;
     }
 
     // =========================
-    // NORMAL MODE (MULTIPLE CHOICE)
+    // FINAL MODE (KEYBOARD)
     // =========================
-    document.querySelectorAll(".option-btn").forEach(btn => {
+
+    const answer = normalize(q.answer);
+    let displayed = q.answerMask;
+
+    const answerBox = document.getElementById("answerBox");
+    const keyboard = document.getElementById("keyboard");
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+    keyboard.innerHTML = letters
+      .map(l => `<button class="key">${l}</button>`)
+      .join("");
+
+    function renderText(){
+      answerBox.innerText = displayed;
+    }
+
+    renderText();
+
+    // LETTER INPUT
+    document.querySelectorAll(".key").forEach(btn => {
       btn.onclick = () => {
 
-        if (normalize(btn.innerText) === normalize(q.answer)){
-          next();
-        } else {
-          btn.style.background = "red";
+        const letter = btn.innerText.toLowerCase();
+
+        let updated = "";
+
+        for (let i = 0; i < displayed.length; i++){
+          const correctChar = answer[i] || "";
+
+          if (correctChar === letter){
+            updated += letter;
+          } else {
+            updated += displayed[i];
+          }
         }
+
+        displayed = updated;
+        renderText();
+
+        btn.disabled = true;
+        btn.classList.add("used");
       };
+    });
+
+    function reset(){
+      displayed = q.answerMask;
+      renderText();
+      document.querySelectorAll(".key").forEach(b => {
+        b.disabled = false;
+        b.classList.remove("used");
+      });
+    }
+
+    document.getElementById("reset").onclick = reset;
+    document.getElementById("clear").onclick = reset;
+
+    // =========================
+    // SUBMIT
+    // =========================
+    document.getElementById("submit").onclick = () => {
+
+      if (DEV_MODE){
+        next();
+        return;
+      }
+
+      if (normalize(displayed) === answer){
+        answerBox.classList.add("glitch");
+        setTimeout(() => next(), 900);
+      } else {
+        alert("Access Denied");
+      }
+    };
+
+    // =========================
+    // DEV SKIP BUTTON
+    // =========================
+    document.getElementById("skip").onclick = () => {
+      next();
+    };
+
+    // =========================
+    // KEYBOARD SHORTCUT (CTRL + ENTER)
+    // =========================
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "Enter"){
+        next();
+      }
     });
   }
 
   // =========================
-  // NEXT LOGIC
+  // NEXT QUESTION LOGIC
   // =========================
   function next(){
 
@@ -180,4 +211,4 @@ export function startQuestions(app, onComplete, agentName){
   }
 
   render();
-}   
+}
