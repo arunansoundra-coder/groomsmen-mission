@@ -70,7 +70,21 @@ export function startPoker(app){
       hand: [deck.pop(), deck.pop()]
     };
   });
+  
+const centerX = 450;
+const centerY = 300;
+const radius = 260;
 
+players.forEach((p, i) => {
+  const angle = (i / players.length) * 2 * Math.PI;
+
+  const x = centerX + radius * Math.cos(angle);
+  const y = centerY + radius * Math.sin(angle);
+
+  p.el.style.left = `${x}px`;
+  p.el.style.top = `${y}px`;
+});
+  
   function renderCard(card){
     const value = card.slice(0,-1);
     const suit = card.slice(-1);
