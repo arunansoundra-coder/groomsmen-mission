@@ -10,28 +10,50 @@ export function startBriefing(app, agentName, onComplete){
     <div class="briefing">
       <h2>Operation: Always and Forever</h2>
 
-      <p>
-        Agent ${agentName},<br><br>
-        You are tasked with assisting the Groom in an upcoming operation.<br><br>
-        ${roleText}
-      </p>
+      <p id="message"></p>
 
       <p><strong>Role: ${role}</strong></p>
 
-      <div class="choices">
-        <button class="choice">Pour the whiskey.</button>
-        <button class="choice">For King and Country.</button>
-        <button class="choice">Sounds like a job for 007.</button>
-        <button class="choice">The name’s Bond… let’s do it.</button>
-      </div>
+      <button id="acceptBtn" style="opacity: 0; pointer-events: none;">
+        ACCEPT MISSION
+      </button>
     </div>
   `;
 
-  document.querySelectorAll(".choice").forEach(btn=>{
-    btn.onclick = () => {
-      app.innerHTML = `<h2>Mission Accepted</h2>`;
-      setTimeout(() => onComplete(), 1000);
-    };
+  const messageEl = document.getElementById("message");
+  const acceptBtn = document.getElementById("acceptBtn");
+
+  const fullText = `
+    Agent ${agentName},\n\n
+    You are tasked with assisting the Groom in an upcoming operation.\n\n
+    ${roleText}
+  `;
+
+  function typeWriterEffect(element, text, speed = 25, onDone) {
+    element.innerHTML = "";
+    let i = 0;
+
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(interval);
+        onDone && onDone();
+      }
+    }, speed);
+  }
+
+  // Run typing, then reveal button
+  typeWriterEffect(messageEl, fullText, 25, () => {
+    acceptBtn.style.opacity = "1";
+    acceptBtn.style.pointerEvents = "auto";
   });
+
+  // Button click
+  acceptBtn.onclick = () => {
+    app.innerHTML = `<h2>Mission Accepted</h2>`;
+    setTimeout(() => onComplete(), 1000);
+  };
 
 }
