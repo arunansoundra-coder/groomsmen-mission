@@ -44,13 +44,11 @@ export function startBriefing(app, agentName, onComplete){
     }, speed);
   }
 
-  // Run typing, then reveal button
   typeWriterEffect(messageEl, fullText, 25, () => {
     acceptBtn.style.opacity = "1";
     acceptBtn.style.pointerEvents = "auto";
   });
 
-  // Button click
   acceptBtn.onclick = () => {
     app.innerHTML = `<h2>Mission Accepted</h2>`;
     setTimeout(() => onComplete(), 1000);
