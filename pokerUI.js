@@ -156,7 +156,6 @@ players.forEach((p, i) => {
       <p>Await further instructions via email.</p>
       <p>Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA</p>
       <p>Confirm with Agent Ghost</p>
-      <p>Hotel: The Hotel at Kirkwood Center</p>
     `;
   }, 5500);
 
