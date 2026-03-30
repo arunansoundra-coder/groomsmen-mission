@@ -240,3 +240,18 @@ body::after {
     padding: 4px 6px;
   }
 }
+.table {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  margin: auto;
+  border-radius: 50%;
+  background: #0b3d2e;
+}
+
+.seat {
+  position: absolute;
+  width: 140px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+}
