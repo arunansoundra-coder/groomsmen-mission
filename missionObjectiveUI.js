@@ -25,7 +25,6 @@ export function startMissionObjective(app, agentName, onAccept){
     `Await further instructions via email.`,
     `Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA`,
     `Confirm with Agent Ghost`,
-    `Hotel: The Hotel at Kirkwood Center`,
     ``,
     `The table awaits.`
   ];
