@@ -56,11 +56,6 @@ export function startBriefing(app, agentName, onComplete){
           Confirm your attendance with <strong>Agent Ghost</strong>.
         </p>
 
-        <p>
-          If accommodations are required, you may consider<br/>
-          <strong>The Hotel at Kirkwood Center</strong>.
-        </p>
-
         <p class="divider">--------------------------</p>
 
         <p class="accept-text">
