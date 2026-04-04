@@ -8,7 +8,7 @@ const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
-/* SIMPLE SCREEN RENDERER */
+/* SIMPLE SCREEN SWITCHER */
 function render(screenFn, nextFn) {
   app.innerHTML = "";
   screenFn(app, nextFn, agentName);
