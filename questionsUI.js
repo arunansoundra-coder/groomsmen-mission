@@ -2,48 +2,30 @@ import { questions } from "./questions.js";
 
 export function startQuestions(app, { next, agentName }) {
 
-  let index = 0;
+  console.log("QUESTIONS SCREEN LOADED");
 
-  function render() {
-    const q = questions[index];
-
-    // End of questions → go to next screen
-    if (!q) {
-      next();
-      return;
-    }
-
-    app.innerHTML = `
-      <div class="question-screen">
-        <h2>Welcome Agent ${agentName}</h2>
-
-        <div class="question-text">${q.q}</div>
-
-        <div class="options">
-          ${q.options
-            .map(
-              o => `<button class="option-btn">${o}</button>`
-            )
-            .join("")}
-        </div>
-      </div>
-    `;
-
-    document.querySelectorAll(".option-btn").forEach(btn => {
-      btn.onclick = () => {
-
-        // correct answer → move forward
-        if (btn.innerText === q.answer) {
-          index++;
-          render();
-        } 
-        // wrong answer → feedback
-        else {
-          btn.style.background = "red";
-        }
-      };
-    });
+  if (!questions) {
+    console.error("QUESTIONS IS UNDEFINED");
+    app.innerHTML = "<h2>Questions missing</h2>";
+    return;
   }
 
-  render();
+  app.innerHTML = `
+    <div class="question-screen">
+      <h2>Welcome ${agentName}</h2>
+      <button id="start">BEGIN</button>
+    </div>
+  `;
+
+  const btn = document.getElementById("start");
+
+  if (!btn) {
+    console.error("START BUTTON NOT FOUND");
+    return;
+  }
+
+  btn.onclick = () => {
+    console.log("BEGIN CLICKED → moving to proposal");
+    next();
+  };
 }
