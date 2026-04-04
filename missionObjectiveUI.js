@@ -1,7 +1,4 @@
-import { startPoker } from "./pokerUI.js";
-
-export function startMissionObjective(app, agentName, onAccept){
-
+export function startMissionObjective(app, agentName, onAccept) {
   app.innerHTML = `
     <div class="mission-screen">
       <h2>MISSION DOSSIER</h2>
@@ -32,15 +29,15 @@ export function startMissionObjective(app, agentName, onAccept){
   let line = 0;
   let char = 0;
 
-  function type(){
-    if (line >= dossierText.length){
+  function type() {
+    if (line >= dossierText.length) {
       btn.classList.remove("hidden");
       return;
     }
 
     const currentLine = dossierText[line];
 
-    if (char < currentLine.length){
+    if (char < currentLine.length) {
       textEl.innerHTML += currentLine.charAt(char);
       char++;
       setTimeout(type, 25);
