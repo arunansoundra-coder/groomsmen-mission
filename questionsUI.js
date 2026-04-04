@@ -1,14 +1,21 @@
 import { questions } from "./questions.js";
 
-export function startQuestions(app, onComplete, agentName) {
+export function startQuestions(app, { next, agentName }) {
 
-  let index = 0;
-  let stage = "Identity Authentication";
+  app.innerHTML = `
+    <div class="question-screen">
+      <h2>Welcome ${agentName}</h2>
 
-  const DEV_MODE = true;
+      <button id="start">BEGIN</button>
+    </div>
+  `;
 
-  const normalize = str =>
-    (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  document.getElementById("start").onclick = () => {
+    if (typeof next === "function") {
+      next();
+    }
+  };
+}
 
   function render() {
 
