@@ -314,3 +314,57 @@ body::after {
 #app {
   transition: opacity 0.3s ease;
 }
+/* --- BRIEFING SCREEN --- */
+
+.briefing {
+  text-align: left;
+}
+
+.mission-title {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+/* terminal typing effect */
+.terminal-text {
+  background: rgba(0,0,0,0.4);
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-left: 3px solid #66fcf1;
+  min-height: 120px;
+}
+
+/* role box */
+.role-box {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(102,252,241,0.08);
+  border: 1px solid rgba(102,252,241,0.3);
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* button states */
+.primary-btn {
+  margin-top: 20px;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.primary-btn:not(.hidden) {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/* success message */
+.success-text {
+  text-align: center;
+  color: #66fcf1;
+  font-size: 1.4rem;
+}
