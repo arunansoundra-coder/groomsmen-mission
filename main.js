@@ -5,27 +5,23 @@ import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
-/* =========================
-   GET AGENT NAME
-========================= */
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
 /* =========================
-   SAFE RENDER
+   SCREEN WRAPPER
 ========================= */
 function render(screenFn, nextFn = null) {
-  app.innerHTML = ""; // 🔥 IMPORTANT: always clear screen before render
+  app.innerHTML = "";
 
-  if (nextFn) {
-    screenFn(app, nextFn, agentName);
-  } else {
-    screenFn(app, agentName);
-  }
+  screenFn(app, {
+    next: nextFn,
+    agentName
+  });
 }
 
 /* =========================
-   FLOW CONTROL
+   FLOW
 ========================= */
 
 function goToQuestions() {
@@ -41,11 +37,10 @@ function goToMission() {
 }
 
 function goToPoker() {
-  app.innerHTML = ""; // extra safety for poker transition
-  startPoker(app, agentName);
+  render(startPoker, null);
 }
 
 /* =========================
-   START APP
+   START
 ========================= */
 goToQuestions();
