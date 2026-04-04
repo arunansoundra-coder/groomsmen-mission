@@ -2,16 +2,16 @@ import { roles } from "./roles.js";
 import { codenames } from "./codenames.js";
 
 export function startBriefing(app, state, onComplete) {
-  const agentName = state.agent;
+  const agent = state.agent;
 
-  const role = roles[agentName] || "Groomsman";
-  const codename = codenames[agentName] || "Unknown";
+  const role = roles[agent] || "Groomsman";
+  const codename = codenames[agent] || "Unknown";
 
   const roleText =
     role === "Best Man"
       ? "Will you stand as my Best Man in this operation?"
       : role === "Groom"
-      ? "This is your operation. All depends on you."
+      ? "This is your operation. Everything depends on you."
       : "Will you stand with me as a Groomsman in this operation?";
 
   app.innerHTML = `
@@ -20,62 +20,62 @@ export function startBriefing(app, state, onComplete) {
 
       <p id="message"></p>
 
-      <p class="codename" style="opacity:0.7; margin-top:10px;">
-        Codename: ${codename}
+      <p class="meta">
+        Codename: ${codename} <br/>
+        Role: ${role}
       </p>
 
-      <p><strong>Role: ${role}</strong></p>
-
-      <button id="acceptBtn" style="opacity: 0; pointer-events: none;">
+      <button id="acceptBtn" style="opacity:0; pointer-events:none;">
         ACCEPT MISSION
       </button>
     </div>
   `;
 
   const messageEl = document.getElementById("message");
-  const acceptBtn = document.getElementById("acceptBtn");
+  const btn = document.getElementById("acceptBtn");
 
-  const fullText = `
-Agent ${agentName},
+  const text = `
+Agent ${agent},
 
 Codename: ${codename}
 
-You are hereby assigned to assist in a classified operation involving the Groom.
+You are being called upon for a classified friendship operation involving the Groom.
 
 ${roleText}
 
-This is not just a request.
-This is a bond of loyalty, trust, and friendship.
+This is not a request.
+It is trust.
+It is loyalty.
+It is forever.
   `;
 
-  function typeWriterEffect(element, text, speed = 25, onDone) {
-    element.innerHTML = "";
+  function typeWriter(el, txt, speed = 20, done) {
     let i = 0;
+    el.innerHTML = "";
 
     const interval = setInterval(() => {
-      if (i < text.length) {
-        element.innerHTML += text.charAt(i);
-        i++;
+      if (i < txt.length) {
+        el.innerHTML += txt[i++];
       } else {
         clearInterval(interval);
-        onDone && onDone();
+        done?.();
       }
     }, speed);
   }
 
-  typeWriterEffect(messageEl, fullText, 25, () => {
-    acceptBtn.style.opacity = "1";
-    acceptBtn.style.pointerEvents = "auto";
+  typeWriter(messageEl, text, 20, () => {
+    btn.style.opacity = "1";
+    btn.style.pointerEvents = "auto";
   });
 
-  acceptBtn.onclick = () => {
+  btn.onclick = () => {
     app.innerHTML = `
       <div class="briefing">
         <h2>MISSION ACCEPTED</h2>
-        <p>Preparing deployment...</p>
+        <p>Initializing deployment...</p>
       </div>
     `;
 
-    setTimeout(() => onComplete(), 900);
+    setTimeout(onComplete, 900);
   };
 }
