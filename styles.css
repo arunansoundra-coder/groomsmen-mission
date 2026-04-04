@@ -1,59 +1,3 @@
-/* --- GLOBAL ENHANCEMENTS --- */
-
-body {
-  background: radial-gradient(circle at top, #0b0c10, #050608);
-  min-height:100vh;
-}
-
-/* glowing background */
-.background-glow {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: radial-gradient(circle at center, rgba(102,252,241,0.08), transparent 60%);
-  pointer-events:none;
-}
-
-/* title styling */
-.title {
-  font-size: 1.8rem;
-  letter-spacing: 2px;
-  margin-bottom: 5px;
-}
-
-.subtitle {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-bottom: 20px;
-}
-
-/* container upgrade */
-.container {
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 25px rgba(0,0,0,0.8);
-}
-
-/* button improvements */
-button {
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(69,162,158,0.4);
-}
-
-/* smooth fade for screens */
-.fade-in {
-  animation: fadeIn 0.4s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
 /* =========================
    GLOBAL BASE
 ========================= */
@@ -61,10 +5,18 @@ button:hover {
 body {
   margin: 0;
   padding: 0;
-  background: #0b0b0b;
-  color: white;
   font-family: Arial, sans-serif;
+  color: white;
+  background: radial-gradient(circle at top, #0b0c10, #050608);
   overflow-x: hidden;
+}
+
+/* glowing background */
+.background-glow {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(102,252,241,0.08), transparent 60%);
+  pointer-events: none;
 }
 
 /* vignette */
@@ -81,8 +33,12 @@ body::after {
 ========================= */
 
 #app {
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+/* =========================
+   QUESTION SCREEN
+========================= */
 
 .question-screen {
   display: flex;
@@ -92,10 +48,6 @@ body::after {
   min-height: 100vh;
   padding: 40px;
 }
-
-/* =========================
-   QUESTIONS
-========================= */
 
 .level {
   font-size: 24px;
@@ -116,7 +68,6 @@ body::after {
   border: 1px solid #555;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .option-btn:hover {
@@ -124,7 +75,7 @@ body::after {
 }
 
 /* =========================
-   FINAL KEYBOARD SYSTEM
+   KEYBOARD
 ========================= */
 
 .answer-box {
@@ -148,11 +99,9 @@ body::after {
 
 .key {
   padding: 10px;
-  font-weight: bold;
-  cursor: pointer;
   background: #222;
-  color: white;
   border: 1px solid #444;
+  cursor: pointer;
 }
 
 .key.used {
@@ -171,27 +120,6 @@ body::after {
 }
 
 /* =========================
-   FINAL WARNING
-========================= */
-
-.final-question {
-  animation: pulse 1.5s infinite;
-}
-
-.warning {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 10px;
-  letter-spacing: 2px;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 0px red; }
-  50% { box-shadow: 0 0 20px red; }
-  100% { box-shadow: 0 0 0px red; }
-}
-
-/* =========================
    POKER TABLE (FIXED)
 ========================= */
 
@@ -199,24 +127,20 @@ body::after {
   position: relative;
   width: min(95vw, 900px);
   aspect-ratio: 16 / 10;
-  margin: auto;
-  background: radial-gradient(ellipse at center, #0f7a4d 50%, #063826 100%);
+  margin: 40px auto;
   border-radius: 50% / 40%;
+  background: radial-gradient(ellipse at center, #0f7a4d 50%, #063826 100%);
   box-shadow:
     0 0 40px rgba(0,0,0,0.6),
     inset 0 0 30px rgba(0,0,0,0.4);
 }
 
-/* =========================
-   SEATS (FIXED RING LAYOUT)
-========================= */
-
+/* seats */
 .seat {
   position: absolute;
   width: 120px;
   text-align: center;
   transform: translate(-50%, -50%);
-  transition: all 0.4s ease;
 }
 
 /* ring layout */
@@ -228,10 +152,7 @@ body::after {
 #p5 { top: 70%; left: 15%; }
 #p6 { top: 50%; left: 50%; }
 
-/* =========================
-   COMMUNITY CARDS
-========================= */
-
+/* community cards */
 .community {
   position: absolute;
   top: 50%;
@@ -243,140 +164,25 @@ body::after {
 
 /* cards */
 .card {
-  display: inline-block;
   background: white;
-  border-radius: 6px;
+  color: black;
   padding: 6px 8px;
-  margin: 2px;
+  border-radius: 6px;
   font-weight: bold;
 }
 
-.card.red { color: red; }
-.card.black { color: black; }
-
 /* =========================
-   MOBILE FIX
+   BRIEFING / PROPOSAL
 ========================= */
 
-@media (max-width: 768px) {
-
-  .question-screen {
-    padding: 15px;
-  }
-
-  .option-btn {
-    width: 100%;
-  }
-
-  .answer-box {
-    width: 100%;
-    font-size: 20px;
-  }
-
-  .keyboard {
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .key {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .keyboard-controls {
-    flex-direction: column;
-  }
-
-  .seat {
-    width: 80px;
-    font-size: 12px;
-  }
-
-  .card {
-    font-size: 12px;
-    padding: 4px 6px;
-  }
-}
-.table {
-  position: relative;
-  width: 900px;
-  height: 600px;
-  margin: auto;
-  border-radius: 50%;
-  background: #0b3d2e;
-}
-
-.seat {
-  position: absolute;
-  width: 140px;
-  height: 120px;
-  transform: translate(-50%, -50%);
-}
-#app {
-  transition: opacity 0.3s ease;
-}
-/* --- BRIEFING SCREEN --- */
-
-.briefing {
-  text-align: left;
-}
-
-.mission-title {
-  text-align: center;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
-
-/* terminal typing effect */
-.terminal-text {
-  background: rgba(0,0,0,0.4);
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  border-left: 3px solid #66fcf1;
-  min-height: 120px;
-}
-
-/* role box */
-.role-box {
-  margin-top: 15px;
-  padding: 10px;
-  background: rgba(102,252,241,0.08);
-  border: 1px solid rgba(102,252,241,0.3);
-  border-radius: 6px;
-  text-align: center;
-}
-
-/* button states */
-.primary-btn {
-  margin-top: 20px;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.primary-btn:not(.hidden) {
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-
-/* success message */
-.success-text {
-  text-align: center;
-  color: #66fcf1;
-  font-size: 1.4rem;
-}
-/* --- PROPOSAL SCREEN --- */
-
+.briefing,
 .proposal {
   text-align: left;
 }
 
+.mission-title,
 .operation-title {
   text-align: center;
-  font-size: 1.4rem;
   margin-bottom: 20px;
   letter-spacing: 2px;
 }
@@ -386,11 +192,10 @@ body::after {
   padding: 15px;
   border-radius: 8px;
   border-left: 3px solid #66fcf1;
-  line-height: 1.6;
-  min-height: 140px;
+  min-height: 120px;
+  line-height: 1.5;
 }
 
-/* role box */
 .role-box {
   margin-top: 15px;
   padding: 12px;
@@ -400,55 +205,59 @@ body::after {
   border-radius: 6px;
 }
 
-.role-box span {
-  display:block;
-  font-size: 0.7rem;
-  opacity: 0.7;
-}
-
-.role-box strong {
-  font-size: 1.1rem;
-}
-
 /* buttons */
-.proposal-actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.primary-btn {
-  flex: 1;
+.primary-btn,
+.secondary-btn {
+  margin-top: 15px;
+  padding: 10px;
+  cursor: pointer;
 }
 
 .secondary-btn {
-  flex: 1;
   background: transparent;
   border: 1px solid #45a29e;
   color: #66fcf1;
 }
 
-/* hidden state */
+/* hidden */
 .hidden {
   opacity: 0;
   pointer-events: none;
 }
 
-.primary-btn:not(.hidden),
-.secondary-btn:not(.hidden) {
-  opacity: 1;
-  transition: opacity 0.5s ease;
+/* =========================
+   ANIMATIONS
+========================= */
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
 }
 
-/* result states */
-.center {
-  text-align:center;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.success-text {
-  color: #66fcf1;
-}
+/* =========================
+   MOBILE
+========================= */
 
-.fail-text {
-  color: #ff6b6b;
+@media (max-width: 768px) {
+  .option-btn,
+  .answer-box {
+    width: 100%;
+  }
+
+  .keyboard {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .seat {
+    width: 80px;
+    font-size: 12px;
+  }
+
+  .card {
+    font-size: 12px;
+  }
 }
