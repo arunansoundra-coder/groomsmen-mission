@@ -1,23 +1,37 @@
-import { startQuestions } from "./questionsUI.js";
-import { startBriefing } from "./briefingUI.js";
-import { startMissionObjective } from "./missionObjectiveUI.js";
-import { startPoker } from "./pokerUI.js";
+import { startBriefing } from "./modules/briefing.js";
+import { startMissionObjective } from "./modules/missionObjective.js";
+import { startQuestions } from "./modules/questionsUI.js";
+import { startProposal } from "./modules/proposalUI.js";
+import { startPoker } from "./modules/pokerUI.js";
 
 const app = document.getElementById("app");
 
-const params = new URLSearchParams(window.location.search);
-const agentName = params.get("agent") || "Agent";
+const state = {
+  agentName: "Agent",
+};
 
-startQuestions(app, () => {
+function next(screen) {
+  switch (screen) {
+    case "mission":
+      startMissionObjective(app, { next, ...state });
+      break;
 
-  startBriefing(app, agentName, () => {
+    case "questions":
+      startQuestions(app, { next, ...state });
+      break;
 
-    startMissionObjective(app, agentName, () => {
+    case "proposal":
+      startProposal(app, { next, ...state });
+      break;
 
-      startPoker(app);
+    case "poker":
+      startPoker(app, { next, ...state });
+      break;
+  }
+}
 
-    });
-
-  });
-
-}, agentName);
+// INIT
+startBriefing(app, {
+  next: () => next("mission"),
+  agentName: state.agentName
+});
