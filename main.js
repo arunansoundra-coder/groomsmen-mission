@@ -12,9 +12,11 @@ const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
 /* =========================
-   SAFE RENDER FUNCTION
+   SAFE RENDER
 ========================= */
 function render(screenFn, nextFn = null) {
+  app.innerHTML = ""; // 🔥 IMPORTANT: always clear screen before render
+
   if (nextFn) {
     screenFn(app, nextFn, agentName);
   } else {
@@ -39,6 +41,7 @@ function goToMission() {
 }
 
 function goToPoker() {
+  app.innerHTML = ""; // extra safety for poker transition
   startPoker(app, agentName);
 }
 
