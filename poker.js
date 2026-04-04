@@ -21,13 +21,14 @@ function shuffle(arr){
 /* ---------------- HELPERS ---------------- */
 function getValue(card){
   if (!card) return -1;
-  const value = card.replace(/[♠♥♦♣]/g, "");
-  return values.indexOf(value);
+  const value = card.replace(/[♠♥♦♣]/g, "").trim();
+  const index = values.indexOf(value);
+  return index === -1 ? -1 : index;
 }
 
 function getSuit(card){
   if (!card) return null;
-  return card.slice(-1);
+  return card.replace(/[2-9JQKA10]/g, "").trim();
 }
 
 /* ---------------- COMBINATIONS ---------------- */
@@ -39,6 +40,7 @@ function combinations(arr, k){
       result.push(combo);
       return;
     }
+
     for(let i = start; i < arr.length; i++){
       combine(i + 1, [...combo, arr[i]]);
     }
@@ -53,7 +55,6 @@ function isStraight(vals){
 
   if (unique.length < 5) return false;
 
-  // normal straights
   for (let i = 0; i <= unique.length - 5; i++){
     let ok = true;
 
@@ -67,14 +68,14 @@ function isStraight(vals){
     if (ok) return true;
   }
 
-  // wheel straight: A-2-3-4-5
+  // A-2-3-4-5
   const wheel = [0,1,2,3,12];
   return wheel.every(v => unique.includes(v));
 }
 
-/* ---------------- 5-CARD EVAL ---------------- */
+/* ---------------- 5 CARD EVAL ---------------- */
 function eval5(cards){
-  const vals = cards.map(getValue).filter(v => v !== -1).sort((a,b) => a - b);
+  const vals = cards.map(getValue).filter(v => v !== -1).sort((a,b)=>a-b);
   const suitsArr = cards.map(getSuit).filter(Boolean);
 
   if (vals.length < 5) return 0;
@@ -85,7 +86,7 @@ function eval5(cards){
   const counts = {};
   vals.forEach(v => counts[v] = (counts[v] || 0) + 1);
 
-  const freq = Object.values(counts).sort((a,b) => b - a);
+  const freq = Object.values(counts).sort((a,b)=>b-a);
 
   if (straight && isFlush) return 9;
   if (freq[0] === 4) return 8;
@@ -99,39 +100,45 @@ function eval5(cards){
   return 1;
 }
 
-/* ---------------- 7-CARD EVAL ---------------- */
+/* ---------------- 7 CARD EVAL (SAFE) ---------------- */
 export function eval7(cards){
 
-  if (!Array.isArray(cards) || cards.length < 5){
-    return { score: 0, name: "Invalid Hand" };
+  try {
+    if (!Array.isArray(cards) || cards.length < 5){
+      return { score: 0, name: "Invalid Hand" };
+    }
+
+    if (cards.some(c => !c)){
+      return { score: 0, name: "Invalid Hand" };
+    }
+
+    let best = 0;
+
+    combinations(cards, 5).forEach(combo => {
+      const score = eval5(combo);
+      if (score > best) best = score;
+    });
+
+    const names = {
+      9: "Straight Flush",
+      8: "Four of a Kind",
+      7: "Full House",
+      6: "Flush",
+      5: "Straight",
+      4: "Three of a Kind",
+      3: "Two Pair",
+      2: "Pair",
+      1: "High Card",
+      0: "Invalid Hand"
+    };
+
+    return {
+      score: best,
+      name: names[best] || "Invalid"
+    };
+
+  } catch (err) {
+    console.error("eval7 crashed:", err);
+    return { score: 0, name: "ERROR" };
   }
-
-  if (cards.some(c => !c)){
-    return { score: 0, name: "Invalid Hand" };
-  }
-
-  let best = 0;
-
-  combinations(cards, 5).forEach(combo => {
-    const score = eval5(combo);
-    if (score > best) best = score;
-  });
-
-  const names = {
-    9: "Straight Flush",
-    8: "Four of a Kind",
-    7: "Full House",
-    6: "Flush",
-    5: "Straight",
-    4: "Three of a Kind",
-    3: "Two Pair",
-    2: "Pair",
-    1: "High Card",
-    0: "Invalid Hand"
-  };
-
-  return {
-    score: best,
-    name: names[best] || "Invalid"
-  };
 }
