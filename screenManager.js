@@ -1,5 +1,3 @@
-// screenManager.js
-
 export function loadScreen(screenName) {
   const app = document.getElementById("app");
 
