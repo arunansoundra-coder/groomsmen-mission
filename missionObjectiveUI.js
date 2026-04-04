@@ -1,17 +1,17 @@
-export function startMissionObjective(app, onComplete, agentName) {
+export function startMissionObjective(app, { next, agentName }) {
 
   app.innerHTML = `
-    <div class="mission-objective">
-      <h2>Mission Objective</h2>
-      <p>Welcome Agent ${agentName}</p>
+    <div class="mission">
+      <h2>MISSION OBJECTIVE</h2>
+      <p>Prepare for high stakes operation, ${agentName}</p>
 
-      <button id="continue">Proceed</button>
+      <button id="continue">CONTINUE</button>
     </div>
   `;
 
   document.getElementById("continue").onclick = () => {
-    if (typeof onComplete === "function") {
-      onComplete();
+    if (typeof next === "function") {
+      next();
     }
   };
 }
