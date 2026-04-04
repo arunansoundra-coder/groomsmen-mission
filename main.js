@@ -10,11 +10,11 @@ const agentName = params.get("agent") || "Agent";
 
 /* SIMPLE SCREEN SWITCHER */
 function render(screenFn, nextFn) {
-  screenFn(app, agentName, nextFn);
+  // ✅ FIX: correct argument order
+  screenFn(app, nextFn, agentName);
 }
 
 /* FLOW */
-
 function goToQuestions() {
   render(startQuestions, goToProposal);
 }
