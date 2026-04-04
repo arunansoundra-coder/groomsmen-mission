@@ -1,16 +1,28 @@
-export function startBriefing(app, agentName, onComplete){
+import { roles } from "./roles.js";
+import { codenames } from "./codenames.js";
 
-  const isJason = agentName === "Jason";
-  const role = isJason ? "Best Man" : "Groomsman";
-  const roleText = isJason 
-    ? "Will you be my Best Man?" 
-    : "Will you be my Groomsman?";
+export function startBriefing(app, state, onComplete) {
+  const agentName = state.agent;
+
+  const role = roles[agentName] || "Groomsman";
+  const codename = codenames[agentName] || "Unknown";
+
+  const roleText =
+    role === "Best Man"
+      ? "Will you stand as my Best Man in this operation?"
+      : role === "Groom"
+      ? "This is your operation. All depends on you."
+      : "Will you stand with me as a Groomsman in this operation?";
 
   app.innerHTML = `
-    <div class="briefing">
-      <h2>Operation: Always and Forever</h2>
+    <div class="briefing cinematic">
+      <h2>OPERATION: ALWAYS AND FOREVER</h2>
 
       <p id="message"></p>
+
+      <p class="codename" style="opacity:0.7; margin-top:10px;">
+        Codename: ${codename}
+      </p>
 
       <p><strong>Role: ${role}</strong></p>
 
@@ -26,9 +38,14 @@ export function startBriefing(app, agentName, onComplete){
   const fullText = `
 Agent ${agentName},
 
-You are tasked with assisting the Groom in an upcoming operation.
+Codename: ${codename}
+
+You are hereby assigned to assist in a classified operation involving the Groom.
 
 ${roleText}
+
+This is not just a request.
+This is a bond of loyalty, trust, and friendship.
   `;
 
   function typeWriterEffect(element, text, speed = 25, onDone) {
@@ -52,8 +69,13 @@ ${roleText}
   });
 
   acceptBtn.onclick = () => {
-    app.innerHTML = `<h2>Mission Accepted</h2>`;
-    setTimeout(() => onComplete(), 1000);
-  };
+    app.innerHTML = `
+      <div class="briefing">
+        <h2>MISSION ACCEPTED</h2>
+        <p>Preparing deployment...</p>
+      </div>
+    `;
 
+    setTimeout(() => onComplete(), 900);
+  };
 }
