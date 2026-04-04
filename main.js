@@ -2,22 +2,30 @@ import { startQuestions } from "./questionsUI.js";
 import { startBriefing } from "./briefingUI.js";
 import { startMissionObjective } from "./missionObjectiveUI.js";
 import { startPoker } from "./pokerUI.js";
+import { loadScreen } from "./screenManager.js";
 
 const app = document.getElementById("app");
 
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
-startQuestions(app, () => {
+/* NAVIGATION FLOW */
 
-  startBriefing(app, agentName, () => {
+function goToQuestions() {
+  loadScreen(app, startQuestions, goToBriefing, agentName);
+}
 
-    startMissionObjective(app, agentName, () => {
+function goToBriefing() {
+  loadScreen(app, startBriefing, agentName, goToMission);
+}
 
-      startPoker(app);
+function goToMission() {
+  loadScreen(app, startMissionObjective, agentName, goToPoker);
+}
 
-    });
+function goToPoker() {
+  loadScreen(app, startPoker);
+}
 
-  });
-
-}, agentName);
+/* START */
+goToQuestions();
