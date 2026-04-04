@@ -1,37 +1,80 @@
-import { startBriefing } from "./briefing.js";
-import { startMissionObjective } from "./missionObjective.js";
-import { startQuestions } from "./questionsUI.js";
-import { startProposal } from "./proposalUI.js";
+import { state, loadState, saveState } from "./state.js";
+
+import { startIdentity, startSecurity } from "./questionsUI.js";
+import { startBriefing } from "./briefingUI.js";
 import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
-const state = {
-  agentName: "Agent",
-};
+function getAgent() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("agent") || "Unknown";
+}
 
-function next(screen) {
-  switch (screen) {
-    case "mission":
-      startMissionObjective(app, { next, ...state });
+function render() {
+  app.innerHTML = "";
+  saveState();
+
+  switch (state.stage) {
+    case "identity":
+      startIdentity(app, {
+        state,
+        onComplete: () => {
+          state.identityComplete = true;
+          state.stage = "security";
+          saveState();
+          render();
+        }
+      });
       break;
 
-    case "questions":
-      startQuestions(app, { next, ...state });
+    case "security":
+      startSecurity(app, {
+        state,
+        onComplete: () => {
+          state.securityComplete = true;
+          state.stage = "briefing";
+          saveState();
+          render();
+        }
+      });
       break;
 
-    case "proposal":
-      startProposal(app, { next, ...state });
+    case "briefing":
+      startBriefing(app, state, () => {
+        state.missionAccepted = true;
+        state.stage = "poker";
+        saveState();
+        render();
+      });
       break;
 
     case "poker":
-      startPoker(app, { next, ...state });
+      startPoker(app, {
+        state,
+        onComplete: (result) => {
+          state.poker.result = result;
+          saveState();
+          render();
+        }
+      });
       break;
+
+    default:
+      state.stage = "identity";
+      render();
   }
 }
 
-// INIT
-startBriefing(app, {
-  next: () => next("mission"),
-  agentName: state.agentName
-});
+function init() {
+  const agent = getAgent();
+
+  loadState(agent);
+
+  state.agent = agent;
+
+  saveState();
+  render();
+}
+
+init();
