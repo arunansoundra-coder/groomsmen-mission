@@ -20,12 +20,13 @@ function shuffle(arr){
 
 /* ---------------- HELPERS ---------------- */
 function getValue(card){
-  if (!card) return -1; // ✅ FIXED (no crash)
-  return values.indexOf(card.slice(0, -1));
+  if (!card) return -1;
+  const value = card.replace(/[♠♥♦♣]/g, "");
+  return values.indexOf(value);
 }
 
 function getSuit(card){
-  if (!card) return null; // ✅ FIXED
+  if (!card) return null;
   return card.slice(-1);
 }
 
@@ -52,17 +53,23 @@ function isStraight(vals){
 
   if (unique.length < 5) return false;
 
-  let isSeq = true;
-  for(let i = 1; i < unique.length; i++){
-    if(unique[i] !== unique[i-1] + 1){
-      isSeq = false;
-      break;
+  // normal straights
+  for (let i = 0; i <= unique.length - 5; i++){
+    let ok = true;
+
+    for (let j = 1; j < 5; j++){
+      if (unique[i + j] !== unique[i] + j){
+        ok = false;
+        break;
+      }
     }
+
+    if (ok) return true;
   }
 
-  const wheel = JSON.stringify(unique) === JSON.stringify([0,1,2,3,12]);
-
-  return isSeq || wheel;
+  // wheel straight: A-2-3-4-5
+  const wheel = [0,1,2,3,12];
+  return wheel.every(v => unique.includes(v));
 }
 
 /* ---------------- 5-CARD EVAL ---------------- */
@@ -70,7 +77,7 @@ function eval5(cards){
   const vals = cards.map(getValue).filter(v => v !== -1).sort((a,b) => a - b);
   const suitsArr = cards.map(getSuit).filter(Boolean);
 
-  if (vals.length < 5) return 0; // ✅ SAFE GUARD
+  if (vals.length < 5) return 0;
 
   const isFlush = suitsArr.every(s => s === suitsArr[0]);
   const straight = isStraight(vals);
@@ -99,8 +106,7 @@ export function eval7(cards){
     return { score: 0, name: "Invalid Hand" };
   }
 
-  // ✅ prevent crash from undefined cards
-  if (cards.some(c => !c)) {
+  if (cards.some(c => !c)){
     return { score: 0, name: "Invalid Hand" };
   }
 
