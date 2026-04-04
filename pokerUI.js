@@ -2,7 +2,10 @@ import { createDeck, eval7 } from "./poker.js";
 
 let gameState = null;
 
-function initGame(){
+/* =========================
+   INIT GAME
+========================= */
+function initGame() {
   const deck = createDeck();
 
   return {
@@ -14,17 +17,24 @@ function initGame(){
   };
 }
 
-function dealCards(state){
+/* =========================
+   DEAL CARDS
+========================= */
+function dealCards(state) {
   state.players.forEach(p => {
     p.hand = state.deck.splice(0, 7);
   });
 }
 
-function renderPlayer(player){
+/* =========================
+   PLAYER RENDER (INSIDE TABLE)
+========================= */
+function renderPlayer(player, index) {
   const div = document.createElement("div");
-  div.className = "player";
+  div.className = "seat";
+  div.id = `p${index}`;
 
-  const title = document.createElement("h3");
+  const title = document.createElement("div");
   title.textContent = player.name;
 
   const hand = document.createElement("div");
@@ -33,6 +43,12 @@ function renderPlayer(player){
   player.hand.slice(0, 2).forEach(card => {
     const c = document.createElement("div");
     c.className = "card";
+
+    // color logic (simple)
+    if (card.includes("♥") || card.includes("♦")) {
+      c.classList.add("red");
+    }
+
     c.textContent = card;
     hand.appendChild(c);
   });
@@ -43,7 +59,10 @@ function renderPlayer(player){
   return div;
 }
 
-export function startPoker(app, agentName){
+/* =========================
+   MAIN POKER SCREEN
+========================= */
+export function startPoker(app, agentName) {
 
   gameState = initGame();
   dealCards(gameState);
@@ -57,26 +76,31 @@ export function startPoker(app, agentName){
     yourResult = eval7(you.hand);
     oppResult = eval7(opp.hand);
 
-    if (yourResult.score > oppResult.score){
+    if (yourResult.score > oppResult.score) {
       resultText = "YOU WIN 🏆";
-    } else if (yourResult.score < oppResult.score){
+    } else if (yourResult.score < oppResult.score) {
       resultText = "YOU LOSE 💀";
     } else {
       resultText = "TIE 🤝";
     }
+
   } catch (e) {
     console.error(e);
-    yourResult = { name: "ERROR" };
-    oppResult = { name: "ERROR" };
+    yourResult = { name: "ERROR", score: 0 };
+    oppResult = { name: "ERROR", score: 0 };
     resultText = "GAME ERROR";
   }
 
+  /* =========================
+     RENDER
+  ========================= */
   app.innerHTML = `
-    <div class="poker-screen">
+    <div class="poker-screen fade-in">
       <h2>HIGH STAKES POKER - ${agentName}</h2>
 
-      <div class="table"></div>
-      <div class="players"></div>
+      <div class="table" id="table">
+        <div class="community"></div>
+      </div>
 
       <div class="results">
         <p>Your Hand: ${yourResult.name}</p>
@@ -84,16 +108,24 @@ export function startPoker(app, agentName){
         <h3>${resultText}</h3>
       </div>
 
-      <button id="nextRound">NEXT ROUND</button>
-      <button id="exitGame">EXIT</button>
+      <div class="controls">
+        <button id="nextRound">NEXT ROUND</button>
+        <button id="exitGame">EXIT</button>
+      </div>
     </div>
   `;
 
-  const playersDiv = app.querySelector(".players");
+  /* =========================
+     INSERT PLAYERS INTO TABLE
+  ========================= */
+  const table = app.querySelector(".table");
 
-  playersDiv.appendChild(renderPlayer(you));
-  playersDiv.appendChild(renderPlayer(opp));
+  table.appendChild(renderPlayer(you, 0));
+  table.appendChild(renderPlayer(opp, 3));
 
+  /* =========================
+     BUTTONS
+  ========================= */
   document.getElementById("nextRound").onclick = () => {
     startPoker(app, agentName);
   };
