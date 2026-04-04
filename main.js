@@ -37,7 +37,9 @@ function goToMission() {
 }
 
 function goToPoker() {
-  render(startPoker, null);
+  render(startPoker, () => {
+    app.innerHTML = "<h2>Mission Complete</h2>";
+  });
 }
 
 /* =========================
