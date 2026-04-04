@@ -39,7 +39,7 @@ function goToMission() {
 }
 
 function goToPoker() {
-  render(startPoker);
+  startPoker(app, agentName);
 }
 
 /* =========================
