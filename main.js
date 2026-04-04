@@ -15,8 +15,8 @@ function goToQuestions() {
   loadScreen(app, startQuestions, goToBriefing, agentName);
 }
 
-function goToBriefing() {
-  loadScreen(app, startBriefing, agentName, goToMission);
+function goToProposal() {
+  loadScreen(app, startProposal, agentName, goToMission);
 }
 
 function goToMission() {
