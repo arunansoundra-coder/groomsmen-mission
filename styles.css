@@ -311,3 +311,6 @@ body::after {
   height: 120px;
   transform: translate(-50%, -50%);
 }
+#app {
+  transition: opacity 0.3s ease;
+}
