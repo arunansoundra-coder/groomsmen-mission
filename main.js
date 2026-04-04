@@ -5,16 +5,27 @@ import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
+/* =========================
+   GET AGENT NAME
+========================= */
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
-/* SIMPLE SCREEN SWITCHER */
-function render(screenFn, nextFn) {
-  // ✅ FIX: correct argument order
-  screenFn(app, nextFn, agentName);
+/* =========================
+   SAFE RENDER FUNCTION
+========================= */
+function render(screenFn, nextFn = null) {
+  if (nextFn) {
+    screenFn(app, nextFn, agentName);
+  } else {
+    screenFn(app, agentName);
+  }
 }
 
-/* FLOW */
+/* =========================
+   FLOW CONTROL
+========================= */
+
 function goToQuestions() {
   render(startQuestions, goToProposal);
 }
@@ -31,5 +42,7 @@ function goToPoker() {
   render(startPoker);
 }
 
-/* START */
+/* =========================
+   START APP
+========================= */
 goToQuestions();
