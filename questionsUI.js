@@ -1,41 +1,33 @@
- import { questions } from "./questions.js";
+import { questions } from "./questions.js";
 
-export function startQuestions(app, onComplete, agentName){
+export function startQuestions(app, onComplete, agentName) {
 
   let index = 0;
   let stage = "Identity Authentication";
 
-  // =========================
-  // DEV MODE SWITCH
-  // =========================
   const DEV_MODE = true;
 
   const normalize = str =>
     (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
-  function getAgent(){
-    const params = new URLSearchParams(window.location.search);
-    return params.get("agent") || "Agent";
-  }
-
-  function render(){
+  function render() {
 
     const filtered = questions.filter(q => q.stage === stage);
     const q = filtered[index];
 
-    if (!q){
-      onComplete();
+    if (!q) {
+      if (typeof onComplete === "function") {
+        onComplete();
+      }
       return;
     }
 
     const isFinal =
       q.stage === "Security Clearance" && q.level === 3;
 
-    const agent = getAgent();
-
     app.innerHTML = `
       <div class="question-screen ${isFinal ? "final-question" : ""}">
-        <h2>Welcome Agent ${agent}</h2>
+        <h2>Welcome Agent ${agentName}</h2>
         <div class="level">${q.stage} - Level ${q.level}</div>
 
         ${isFinal ? `<div class="warning">⚠ FINAL CLEARANCE REQUIRED</div>` : ""}
@@ -64,24 +56,23 @@ export function startQuestions(app, onComplete, agentName){
             `
             : `
               <div class="options">
-                ${q.options.map(o =>
-                  `<button class="option-btn">${o}</button>`
-                ).join("")}
+                ${q.options
+                  .map(o => `<button class="option-btn">${o}</button>`)
+                  .join("")}
               </div>
             `
         }
       </div>
     `;
 
-    // =========================
-    // NORMAL MODE
-    // =========================
-    if (!isFinal){
+    /* =========================
+       NORMAL MODE
+    ========================= */
+    if (!isFinal) {
 
       document.querySelectorAll(".option-btn").forEach(btn => {
         btn.onclick = () => {
-
-          if (normalize(btn.innerText) === normalize(q.answer)){
+          if (normalize(btn.innerText) === normalize(q.answer)) {
             next();
           } else {
             btn.style.background = "red";
@@ -92,9 +83,9 @@ export function startQuestions(app, onComplete, agentName){
       return;
     }
 
-    // =========================
-    // FINAL MODE (KEYBOARD)
-    // =========================
+    /* =========================
+       FINAL MODE
+    ========================= */
 
     const answer = normalize(q.answer);
     let displayed = q.answerMask;
@@ -108,13 +99,12 @@ export function startQuestions(app, onComplete, agentName){
       .map(l => `<button class="key">${l}</button>`)
       .join("");
 
-    function renderText(){
+    function renderText() {
       answerBox.innerText = displayed;
     }
 
     renderText();
 
-    // LETTER INPUT
     document.querySelectorAll(".key").forEach(btn => {
       btn.onclick = () => {
 
@@ -122,10 +112,10 @@ export function startQuestions(app, onComplete, agentName){
 
         let updated = "";
 
-        for (let i = 0; i < displayed.length; i++){
+        for (let i = 0; i < displayed.length; i++) {
           const correctChar = answer[i] || "";
 
-          if (correctChar === letter){
+          if (correctChar === letter) {
             updated += letter;
           } else {
             updated += displayed[i];
@@ -140,9 +130,10 @@ export function startQuestions(app, onComplete, agentName){
       };
     });
 
-    function reset(){
+    function reset() {
       displayed = q.answerMask;
       renderText();
+
       document.querySelectorAll(".key").forEach(b => {
         b.disabled = false;
         b.classList.remove("used");
@@ -152,17 +143,14 @@ export function startQuestions(app, onComplete, agentName){
     document.getElementById("reset").onclick = reset;
     document.getElementById("clear").onclick = reset;
 
-    // =========================
-    // SUBMIT
-    // =========================
     document.getElementById("submit").onclick = () => {
 
-      if (DEV_MODE){
+      if (DEV_MODE) {
         next();
         return;
       }
 
-      if (normalize(displayed) === answer){
+      if (normalize(displayed) === answer) {
         answerBox.classList.add("glitch");
         setTimeout(() => next(), 900);
       } else {
@@ -170,39 +158,33 @@ export function startQuestions(app, onComplete, agentName){
       }
     };
 
-    // =========================
-    // DEV SKIP BUTTON
-    // =========================
-    document.getElementById("skip").onclick = () => {
-      next();
-    };
+    document.getElementById("skip").onclick = () => next();
 
-    // =========================
-    // KEYBOARD SHORTCUT (CTRL + ENTER)
-    // =========================
     document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && e.key === "Enter"){
+      if (e.ctrlKey && e.key === "Enter") {
         next();
       }
     });
   }
 
-  // =========================
-  // NEXT QUESTION LOGIC
-  // =========================
-  function next(){
+  /* =========================
+     NEXT QUESTION LOGIC
+  ========================= */
+  function next() {
 
     index++;
 
     const filtered = questions.filter(q => q.stage === stage);
 
-    if (index >= filtered.length){
+    if (index >= filtered.length) {
 
-      if (stage === "Identity Authentication"){
+      if (stage === "Identity Authentication") {
         stage = "Security Clearance";
         index = 0;
       } else {
-        onComplete();
+        if (typeof onComplete === "function") {
+          onComplete();
+        }
         return;
       }
     }
