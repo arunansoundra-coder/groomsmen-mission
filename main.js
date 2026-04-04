@@ -8,13 +8,13 @@ const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
-/* SIMPLE SCREEN SWITCHER */
+/* SIMPLE SCREEN RENDERER */
 function render(screenFn, nextFn) {
   app.innerHTML = "";
   screenFn(app, nextFn, agentName);
 }
 
-/* NAVIGATION FLOW */
+/* FLOW */
 
 function goToQuestions() {
   render(startQuestions, goToProposal);
