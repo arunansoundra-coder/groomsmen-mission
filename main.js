@@ -2,29 +2,34 @@ import { startQuestions } from "./questionsUI.js";
 import { startProposal } from "./proposalUI.js";
 import { startMissionObjective } from "./missionObjectiveUI.js";
 import { startPoker } from "./pokerUI.js";
-import { loadScreen } from "./screenManager.js";
 
 const app = document.getElementById("app");
 
 const params = new URLSearchParams(window.location.search);
 const agentName = params.get("agent") || "Agent";
 
+/* SIMPLE SCREEN SWITCHER */
+function render(screenFn, nextFn) {
+  app.innerHTML = "";
+  screenFn(app, nextFn, agentName);
+}
+
 /* NAVIGATION FLOW */
 
 function goToQuestions() {
-  loadScreen(app, startQuestions, goToBriefing, agentName);
+  render(startQuestions, goToProposal);
 }
 
 function goToProposal() {
-  loadScreen(app, startProposal, agentName, goToMission);
+  render(startProposal, goToMission);
 }
 
 function goToMission() {
-  loadScreen(app, startMissionObjective, agentName, goToPoker);
+  render(startMissionObjective, goToPoker);
 }
 
 function goToPoker() {
-  loadScreen(app, startPoker);
+  render(startPoker);
 }
 
 /* START */
