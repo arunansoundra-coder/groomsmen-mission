@@ -1,57 +1,24 @@
-export function startBriefing(app, agentName, onComplete){
+import { codenames } from "./codenames.js";
 
-  const isJason = agentName === "Jason";
-  const role = isJason ? "Best Man" : "Groomsman";
-  const roleText = isJason 
-    ? "Will you be my Best Man?" 
-    : "Will you be my Groomsman?";
+export function startBriefing(app, { next, agentName }) {
+  const codename = codenames[agentName] || "Unknown";
 
   app.innerHTML = `
-    <div class="briefing">
-      <h2>Operation: Always and Forever</h2>
+    <div class="screen briefing-screen">
+      <h1>OPERATION: GROOMSMEN</h1>
 
-      <p id="message"></p>
+      <p class="meta">
+        Agent: ${agentName} <br/>
+        Codename: ${codename}
+      </p>
 
-      <p><strong>Role: ${role}</strong></p>
+      <p class="line">
+        Your mission briefing is classified.
+      </p>
 
-      <button id="acceptBtn" style="opacity: 0; pointer-events: none;">
-        ACCEPT MISSION
-      </button>
+      <button id="startBtn">BEGIN BRIEFING</button>
     </div>
   `;
 
-  const messageEl = document.getElementById("message");
-  const acceptBtn = document.getElementById("acceptBtn");
-
-  const fullText = `
-Agent ${agentName},\n\n
-You are tasked with assisting the Groom in an upcoming operation.\n\n
-${roleText}
-  `;
-
-  function typeWriterEffect(element, text, speed = 25, onDone) {
-    element.innerHTML = "";
-    let i = 0;
-
-    const interval = setInterval(() => {
-      if (i < text.length) {
-        element.innerHTML += text.charAt(i);
-        i++;
-      } else {
-        clearInterval(interval);
-        onDone && onDone();
-      }
-    }, speed);
-  }
-
-  typeWriterEffect(messageEl, fullText, 25, () => {
-    acceptBtn.style.opacity = "1";
-    acceptBtn.style.pointerEvents = "auto";
-  });
-
-  acceptBtn.onclick = () => {
-    app.innerHTML = `<h2>Mission Accepted</h2>`;
-    setTimeout(() => onComplete(), 1000);
-  };
-
+  document.getElementById("startBtn").onclick = next;
 }
