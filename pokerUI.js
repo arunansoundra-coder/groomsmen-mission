@@ -2,37 +2,24 @@ import { createDeck, eval7 } from "./poker.js";
 
 let gameState = null;
 
-/* ---------------- INIT GAME ---------------- */
 function initGame(){
   const deck = createDeck();
 
   return {
     deck,
     players: [
-      { name: "You", hand: [], el: null },
-      { name: "Opponent", hand: [], el: null }
-    ],
-    pot: 0,
-    message: ""
+      { name: "You", hand: [] },
+      { name: "Opponent", hand: [] }
+    ]
   };
 }
 
-/* ---------------- DEAL ---------------- */
 function dealCards(state){
   state.players.forEach(p => {
-    p.hand = [state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop()];
+    p.hand = state.deck.splice(0, 7);
   });
 }
 
-/* ---------------- RENDER CARD ---------------- */
-function renderCard(card){
-  const div = document.createElement("div");
-  div.className = "card";
-  div.textContent = card;
-  return div;
-}
-
-/* ---------------- RENDER PLAYER ---------------- */
 function renderPlayer(player){
   const div = document.createElement("div");
   div.className = "player";
@@ -44,7 +31,10 @@ function renderPlayer(player){
   hand.className = "hand";
 
   player.hand.slice(0, 2).forEach(card => {
-    hand.appendChild(renderCard(card));
+    const c = document.createElement("div");
+    c.className = "card";
+    c.textContent = card;
+    hand.appendChild(c);
   });
 
   div.appendChild(title);
@@ -53,35 +43,39 @@ function renderPlayer(player){
   return div;
 }
 
-/* ---------------- MAIN START ---------------- */
-export function startPoker(app){
+export function startPoker(app, agentName){
 
-  // reset state every time
   gameState = initGame();
   dealCards(gameState);
 
   const you = gameState.players[0];
   const opp = gameState.players[1];
 
-  const yourResult = eval7(you.hand);
-  const oppResult = eval7(opp.hand);
+  let yourResult, oppResult, resultText;
 
-  let resultText = "";
+  try {
+    yourResult = eval7(you.hand);
+    oppResult = eval7(opp.hand);
 
-  if (yourResult.score > oppResult.score){
-    resultText = "YOU WIN 🏆";
-  } else if (yourResult.score < oppResult.score){
-    resultText = "YOU LOSE 💀";
-  } else {
-    resultText = "TIE 🤝";
+    if (yourResult.score > oppResult.score){
+      resultText = "YOU WIN 🏆";
+    } else if (yourResult.score < oppResult.score){
+      resultText = "YOU LOSE 💀";
+    } else {
+      resultText = "TIE 🤝";
+    }
+  } catch (e) {
+    console.error(e);
+    yourResult = { name: "ERROR" };
+    oppResult = { name: "ERROR" };
+    resultText = "GAME ERROR";
   }
 
   app.innerHTML = `
     <div class="poker-screen">
-      <h2>HIGH STAKES POKER</h2>
+      <h2>HIGH STAKES POKER - ${agentName}</h2>
 
       <div class="table"></div>
-
       <div class="players"></div>
 
       <div class="results">
@@ -95,21 +89,16 @@ export function startPoker(app){
     </div>
   `;
 
-  const table = app.querySelector(".table");
   const playersDiv = app.querySelector(".players");
 
   playersDiv.appendChild(renderPlayer(you));
   playersDiv.appendChild(renderPlayer(opp));
 
-  /* ---------------- NEXT ROUND ---------------- */
-  const nextBtn = document.getElementById("nextRound");
-  nextBtn.onclick = () => {
-    startPoker(app);
+  document.getElementById("nextRound").onclick = () => {
+    startPoker(app, agentName);
   };
 
-  /* ---------------- EXIT ---------------- */
-  const exitBtn = document.getElementById("exitGame");
-  exitBtn.onclick = () => {
+  document.getElementById("exitGame").onclick = () => {
     app.innerHTML = "<h2>Mission Paused</h2>";
   };
 }
