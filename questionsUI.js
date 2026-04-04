@@ -1,4 +1,5 @@
-import { startQuestions } from "./questionsUI.js";
+export function startQuestions(app, { next }) {
+
   const questions = [
     "How did you meet the groom?",
     "What is your funniest memory?",
@@ -17,7 +18,7 @@ import { startQuestions } from "./questionsUI.js";
       <div class="screen">
         <h2>INTERROGATION</h2>
         <p>${questions[index]}</p>
-        <button id="nextBtn">Answer</button>
+        <button id="nextBtn">ANSWER</button>
       </div>
     `;
 
