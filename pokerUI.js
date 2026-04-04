@@ -27,7 +27,7 @@ function dealCards(state) {
 }
 
 /* =========================
-   PLAYER RENDER (INSIDE TABLE)
+   PLAYER RENDER (TABLE SEATS)
 ========================= */
 function renderPlayer(player, index) {
   const div = document.createElement("div");
@@ -44,7 +44,6 @@ function renderPlayer(player, index) {
     const c = document.createElement("div");
     c.className = "card";
 
-    // color logic (simple)
     if (card.includes("♥") || card.includes("♦")) {
       c.classList.add("red");
     }
@@ -62,7 +61,7 @@ function renderPlayer(player, index) {
 /* =========================
    MAIN POKER SCREEN
 ========================= */
-export function startPoker(app, agentName) {
+export function startPoker(app, { agentName, next }) {
 
   gameState = initGame();
   dealCards(gameState);
@@ -86,13 +85,14 @@ export function startPoker(app, agentName) {
 
   } catch (e) {
     console.error(e);
+
     yourResult = { name: "ERROR", score: 0 };
     oppResult = { name: "ERROR", score: 0 };
     resultText = "GAME ERROR";
   }
 
   /* =========================
-     RENDER
+     RENDER UI
   ========================= */
   app.innerHTML = `
     <div class="poker-screen fade-in">
@@ -120,17 +120,23 @@ export function startPoker(app, agentName) {
   ========================= */
   const table = app.querySelector(".table");
 
-  table.appendChild(renderPlayer(you, 0));
-  table.appendChild(renderPlayer(opp, 3));
+  if (table) {
+    table.appendChild(renderPlayer(you, 0));
+    table.appendChild(renderPlayer(opp, 3));
+  }
 
   /* =========================
      BUTTONS
   ========================= */
   document.getElementById("nextRound").onclick = () => {
-    startPoker(app, agentName);
+    startPoker(app, { agentName, next });
   };
 
   document.getElementById("exitGame").onclick = () => {
-    app.innerHTML = "<h2>Mission Paused</h2>";
+    if (typeof next === "function") {
+      next();
+    } else {
+      app.innerHTML = "<h2>Mission Paused</h2>";
+    }
   };
 }
