@@ -24,9 +24,11 @@ export function startBriefing(app, agentName, onComplete){
   const acceptBtn = document.getElementById("acceptBtn");
 
   const fullText = `
-    Agent ${agentName},\n\n
-    You are tasked with assisting the Groom in an upcoming operation.\n\n
-    ${roleText}
+Agent ${agentName},
+
+You are tasked with assisting the Groom in an upcoming operation.
+
+${roleText}
   `;
 
   function typeWriterEffect(element, text, speed = 25, onDone) {
