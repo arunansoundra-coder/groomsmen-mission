@@ -16,6 +16,20 @@ export function startMissionObjective(app, onComplete, agentName) {
   };
 }
 
+
+/* ================================
+   MISSION DOSSIER TYPEWRITER SCREEN
+================================ */
+
+export function startMissionDossier(app, agentName, onAccept) {
+
+  app.innerHTML = `
+    <div class="mission-dossier">
+      <div id="typewriter"></div>
+      <button id="acceptBtn" class="hidden">Accept Mission</button>
+    </div>
+  `;
+
   const textEl = document.getElementById("typewriter");
   const btn = document.getElementById("acceptBtn");
 
@@ -37,15 +51,15 @@ export function startMissionObjective(app, onComplete, agentName) {
   let line = 0;
   let char = 0;
 
-  function type(){
-    if (line >= dossierText.length){
+  function type() {
+    if (line >= dossierText.length) {
       btn.classList.remove("hidden");
       return;
     }
 
     const currentLine = dossierText[line];
 
-    if (char < currentLine.length){
+    if (char < currentLine.length) {
       textEl.innerHTML += currentLine.charAt(char);
       char++;
       setTimeout(type, 25);
@@ -61,6 +75,9 @@ export function startMissionObjective(app, onComplete, agentName) {
 
   btn.onclick = () => {
     app.innerHTML = "";
-    onAccept();
+
+    if (typeof onAccept === "function") {
+      onAccept();
+    }
   };
 }
