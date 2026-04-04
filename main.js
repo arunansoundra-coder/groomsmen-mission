@@ -1,8 +1,8 @@
-import { startBriefing } from "./modules/briefing.js";
-import { startMissionObjective } from "./modules/missionObjective.js";
-import { startQuestions } from "./modules/questionsUI.js";
-import { startProposal } from "./modules/proposalUI.js";
-import { startPoker } from "./modules/pokerUI.js";
+import { startBriefing } from "./briefing.js";
+import { startMissionObjective } from "./missionObjective.js";
+import { startQuestions } from "./questionsUI.js";
+import { startProposal } from "./proposalUI.js";
+import { startPoker } from "./pokerUI.js";
 
 const app = document.getElementById("app");
 
