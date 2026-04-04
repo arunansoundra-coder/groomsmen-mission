@@ -1,5 +1,5 @@
 import { startQuestions } from "./questionsUI.js";
-import { startBriefing } from "./briefingUI.js";
+import { startProposal } from "./proposalUI.js";
 import { startMissionObjective } from "./missionObjectiveUI.js";
 import { startPoker } from "./pokerUI.js";
 import { loadScreen } from "./screenManager.js";
