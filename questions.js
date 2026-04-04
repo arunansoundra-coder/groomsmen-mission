@@ -2,15 +2,17 @@ export const questions = [
 
   // 🧠 IDENTITY AUTHENTICATION
   {
-    stage: "Identity Authentication",
+    stage: "identity",
     level: 1,
+    type: "mcq",
     q: "What poker hand did James Bond win with in Montenegro?",
     options: ["Royal Flush","Straight Flush","Full House","Four of a Kind"],
     answer: "Straight Flush"
   },
   {
-    stage: "Identity Authentication",
+    stage: "identity",
     level: 2,
+    type: "mcq",
     q: "What is James Bond’s favorite drink?",
     options: [
       "Vodka Martini — Shaken, not stirred",
@@ -21,8 +23,9 @@ export const questions = [
     answer: "Vodka Martini — Shaken, not stirred"
   },
   {
-    stage: "Identity Authentication",
+    stage: "identity",
     level: 3,
+    type: "mcq",
     q: "Name all of James Bond’s love interests.",
     options: [
       "Vesper Lynd, Tracy Bond, Madeleine Swann",
@@ -35,24 +38,29 @@ export const questions = [
 
   // 🔒 SECURITY CLEARANCE
   {
-    stage: "Security Clearance",
+    stage: "security",
     level: 1,
+    type: "mcq",
     q: "What was the name of the horse that Arunan had?",
     options: ["Luna","Bella","Maya","Shadow"],
     answer: "Maya"
   },
   {
-    stage: "Security Clearance",
+    stage: "security",
     level: 2,
+    type: "mcq",
     q: "Arunan had a Grey 2023 BMW 330i. What was its name?",
     options: ["Frost","Cloud","Phantom","Glacier"],
     answer: "Cloud"
   },
-{
-  stage: "Security Clearance",
-  level: 3,
-  q: "Reconstruct the phrase (no hints):",
-  answerMask: "B___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
-  answer: "blind message ur received , launch mission u follow and finish in failure"
-}
-]; // ✅ THIS LINE IS CRITICAL
+
+  // 🧩 FINAL RECONSTRUCTION (SPECIAL TYPE)
+  {
+    stage: "security",
+    level: 3,
+    type: "cipher",
+    q: "Reconstruct the classified transmission:",
+    answerMask: "B___d M____ u_ r______ , l______ m____ u_ f_____ a__ f_____ i_ f______",
+    answer: "blood makes us related, loyalty makes us family, and family is forever"
+  }
+];
