@@ -1,4 +1,4 @@
-export function startQuestions(app, { next }) {
+import { startQuestions } from "./questionsUI.js";
   const questions = [
     "How did you meet the groom?",
     "What is your funniest memory?",
