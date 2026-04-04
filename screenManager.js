@@ -1,22 +1,16 @@
 // screenManager.js
 
-export function loadScreen(screenName) {
-  const app = document.getElementById("app");
+export function loadScreen(app, screenFn, ...args) {
+  // fade out
+  app.style.opacity = 0;
 
-  switch (screenName) {
-    case "questions":
-      app.innerHTML = "<h2>Questions Screen</h2>";
-      break;
+  setTimeout(() => {
+    app.innerHTML = "";
 
-    case "briefing":
-      app.innerHTML = "<h2>Briefing Screen</h2>";
-      break;
+    // load new screen
+    screenFn(app, ...args);
 
-    case "poker":
-      app.innerHTML = "<h2>Poker Screen</h2>";
-      break;
-
-    default:
-      app.innerHTML = "<h2>Unknown Screen</h2>";
-  }
+    // fade in
+    app.style.opacity = 1;
+  }, 150);
 }
