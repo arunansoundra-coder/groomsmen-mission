@@ -1,15 +1,20 @@
-import { startPoker } from "./pokerUI.js";
-
-export function startMissionObjective(app, onAccept, agentName)
+export function startMissionObjective(app, onComplete, agentName) {
 
   app.innerHTML = `
-    <div class="mission-screen">
-      <h2>MISSION DOSSIER</h2>
-      <div id="typewriter" class="typewriter"></div>
+    <div class="mission-objective">
+      <h2>Mission Objective</h2>
+      <p>Welcome Agent ${agentName}</p>
 
-      <button id="acceptBtn" class="hidden">ACCEPT MISSION</button>
+      <button id="continue">Proceed</button>
     </div>
   `;
+
+  document.getElementById("continue").onclick = () => {
+    if (typeof onComplete === "function") {
+      onComplete();
+    }
+  };
+}
 
   const textEl = document.getElementById("typewriter");
   const btn = document.getElementById("acceptBtn");
