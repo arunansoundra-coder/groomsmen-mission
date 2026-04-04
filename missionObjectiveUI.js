@@ -1,6 +1,6 @@
 import { startPoker } from "./pokerUI.js";
 
-export function startMissionObjective(app, agentName, onAccept){
+export function startMissionObjective(app, onAccept, agentName)
 
   app.innerHTML = `
     <div class="mission-screen">
