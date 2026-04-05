@@ -266,3 +266,15 @@ button:hover {
   justify-content: center;
   font-weight: bold;
 }
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.community-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
