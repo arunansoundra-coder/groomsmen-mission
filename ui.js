@@ -90,52 +90,49 @@ export function renderBriefing(app, agent, role, next) {
 /* =========================
    POKER SCREEN (PLACEHOLDER)
 ========================= */
-export function renderPoker(app, agent, role) {
+export function renderPoker(app) {
   const agents = [
-const agents = [
-  { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
-  { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
-  { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
-  { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
-  { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
-  { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
-  { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
-];
+    { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
+    { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
+    { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
+    { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
+    { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
+    { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
+    { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
+  ];
 
   const communityCards = ["A♠", "K♦", "10♣", "7♥", "3♠"];
 
   const hands = {
-    Jason: ["A♥", "A♦"],
-    Arunan: ["K♠", "Q♠"],
-    Mia: ["10♦", "9♣"],
-    Alex: ["7♠", "7♦"]
+    Arunan: ["A♥", "A♦"],
+    Jason: ["K♠", "Q♠"],
+    Gill: ["10♦", "9♣"],
+    Prathap: ["7♠", "7♦"],
+    Taylor: ["Q♥", "J♦"],
+    Duran: ["9♠", "8♠"],
+    Josh: ["5♣", "5♦"]
   };
 
   const results = {
-    Jason: "WINNER 🏆 Full House",
-    Arunan: "Strong Hand – Pair of Kings",
-    Mia: "Straight Draw",
-    Alex: "Pair of Sevens"
+    Arunan: "WINNER 🏆 Full House",
+    Jason: "Strong Hand – Kings High",
+    Gill: "Straight Draw",
+    Prathap: "Pair of Sevens",
+    Taylor: "Straight Draw",
+    Duran: "Flush Draw",
+    Josh: "Pair of Fives"
   };
 
-  function renderAgent(a, index) {
-    return `
-      <div class="seat seat-${index}">
-        <div class="agent-card">
-          <h3>${a.name}</h3>
-          <p class="codename">Codename: ${a.codename}</p>
-          <p class="role">${a.role}</p>
+  function getSeatStyle(index, total) {
+    const angle = (index / total) * 2 * Math.PI;
+    const radius = 320;
 
-          <div class="chips">💰 ${a.chips}</div>
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
 
-          <div class="cards">
-            ${(hands[a.name] || ["?", "?"]).map(c => `<div class="card">${c}</div>`).join("")}
-          </div>
-
-          <div class="result">${results[a.name]}</div>
-        </div>
-      </div>
-    `;
+    return {
+      transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
+    };
   }
 
   app.innerHTML = `
@@ -153,11 +150,30 @@ const agents = [
           </div>
         </div>
 
-        <!-- PLAYERS -->
-        ${agents.map(renderAgent).join("")}
+        <!-- PLAYERS IN CIRCLE -->
+        ${agents.map((a, i) => {
+          const style = getSeatStyle(i, agents.length);
+
+          return `
+            <div class="seat" style="top:50%; left:50%; position:absolute; ${Object.entries(style).map(([k,v]) => `${k}:${v}`).join(';')}">
+              <div class="agent-card">
+                <h3>${a.name}</h3>
+                <p class="codename">Codename: ${a.codename}</p>
+                <p class="role">${a.role}</p>
+
+                <div class="chips">💰 ${a.chips}</div>
+
+                <div class="cards">
+                  ${(hands[a.name] || ["?", "?"]).map(c => `<div class="card">${c}</div>`).join("")}
+                </div>
+
+                <div class="result">${results[a.name]}</div>
+              </div>
+            </div>
+          `;
+        }).join("")}
 
       </div>
-
     </div>
   `;
 }
