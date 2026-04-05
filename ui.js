@@ -235,10 +235,8 @@ export function renderPoker(app) {
     <div class="poker-table-container">
       <div class="poker-table">
 
-      <div class="community">
-  <div class="community-cards">
-    ${community.map(c=>`<div class="card">${c}</div>`).join("")}
-  </div>
+<div class="community">
+  <div class="community-cards" id="community-cards"></div>
 </div>
 
         ${agents.map((a,i)=>`
@@ -260,3 +258,22 @@ export function renderPoker(app) {
     </div>
   `;
 }
+const container = document.getElementById("community-cards");
+
+const cards = ["A♠","K♦","10♣","7♥","3♠"];
+
+cards.forEach((card, index) => {
+  setTimeout(() => {
+    const el = document.createElement("div");
+    el.className = "card deal";
+    el.innerText = card;
+
+    container.appendChild(el);
+
+    // trigger animation
+    setTimeout(() => {
+      el.classList.add("show");
+    }, 50);
+
+  }, index * 500); // delay between each card
+});
