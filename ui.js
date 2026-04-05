@@ -1,3 +1,52 @@
+  
+export function renderAuth(app, next) {
+  app.innerHTML = `
+    <div class="screen">
+      <h1>Identity Authentication</h1>
+      <p>Agent, proceed with authentication</p>
+      <button id="start">Begin</button>
+    </div>
+  `;
+
+  document.getElementById("start").onclick = next;
+}
+
+export function renderBriefing(app, agent, role, next) {
+  const isJason = agent === "Jason";
+
+  const roleText = isJason
+    ? "Will you assist as Best Man?"
+    : "Will you assist as Groomsman?";
+
+  app.innerHTML = `
+    <div class="briefing">
+      <h1>Operation Always and Forever</h1>
+
+      <h2>Agent ${agent}</h2>
+      <p>Role: ${role}</p>
+
+      <div class="mission-box">
+        <p>Prepare for mission assignment.</p>
+        <p class="prompt">${roleText}</p>
+      </div>
+
+      <button id="accept">Accept Mission</button>
+      <button id="decline">Decline</button>
+    </div>
+  `;
+
+  document.getElementById("accept").onclick = next;
+
+  document.getElementById("decline").onclick = () => {
+    app.innerHTML = `
+      <div class="decline-screen">
+        <h1>ACCESS DENIED</h1>
+        <p>Mission rejected.</p>
+      </div>
+    `;
+  };
+}
+
 export function renderPoker(app) {
   const agents = [
     { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
@@ -23,7 +72,7 @@ export function renderPoker(app) {
 
   const results = {
     Arunan: "WINNER 🏆 Full House",
-    Jason: "Strong Hand – Kings High",
+    Jason: "Kings High",
     Gill: "Straight Draw",
     Prathap: "Pair of Sevens",
     Taylor: "Straight Draw",
@@ -38,7 +87,6 @@ export function renderPoker(app) {
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
 
-    // ❌ NO ROTATION (FIX)
     return {
       transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
     };
@@ -46,12 +94,10 @@ export function renderPoker(app) {
 
   app.innerHTML = `
     <div class="poker-table-container">
-
-      <h1 class="table-title">Operation: Final Showdown</h1>
+      <h1 class="table-title">Final Showdown</h1>
 
       <div class="poker-table">
 
-        <!-- COMMUNITY CARDS -->
         <div class="community">
           <h3>Community Cards</h3>
           <div class="community-cards">
@@ -59,37 +105,34 @@ export function renderPoker(app) {
           </div>
         </div>
 
-        <!-- PLAYERS -->
-        ${agents
-          .map((a, i) => {
-            const style = getSeatStyle(i, agents.length);
+        ${agents.map((a, i) => {
+          const style = getSeatStyle(i, agents.length);
 
-            return `
-              <div class="seat" style="
-                top:50%;
-                left:50%;
-                position:absolute;
-                transform: ${style.transform};
-              ">
-                <div class="agent-card">
-                  <h3>${a.name}</h3>
-                  <p class="codename">Codename: ${a.codename}</p>
-                  <p class="role">${a.role}</p>
+          return `
+            <div class="seat" style="
+              top:50%;
+              left:50%;
+              position:absolute;
+              transform:${style.transform};
+            ">
+              <div class="agent-card">
+                <h3>${a.name}</h3>
+                <p>${a.codename}</p>
+                <p>${a.role}</p>
 
-                  <div class="chips">💰 ${a.chips}</div>
+                <div class="chips">💰 ${a.chips}</div>
 
-                  <div class="cards">
-                    ${(hands[a.name] || ["?", "?"])
-                      .map((c) => `<div class="card">${c}</div>`)
-                      .join("")}
-                  </div>
-
-                  <div class="result">${results[a.name]}</div>
+                <div class="cards">
+                  ${(hands[a.name] || ["?", "?"])
+                    .map(c => `<div class="card">${c}</div>`)
+                    .join("")}
                 </div>
+
+                <div class="result">${results[a.name]}</div>
               </div>
-            `;
-          })
-          .join("")}
+            </div>
+          `;
+        }).join("")}
 
       </div>
     </div>
