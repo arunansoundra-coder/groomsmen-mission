@@ -98,3 +98,70 @@ export function renderPoker(app) {
     </div>
   `;
 }
+export function renderPoker(app, agent, role) {
+  const agents = [
+    { name: "Jason", codename: "Spectre", role: "Best Man", chips: 1200 },
+    { name: "Arunan", codename: "Viper", role: "Groom", chips: 1500 },
+    { name: "Mia", codename: "Blackbird", role: "Groomsman", chips: 900 },
+    { name: "Alex", codename: "Ghost", role: "Groomsman", chips: 1100 }
+  ];
+
+  const communityCards = ["A♠", "K♦", "10♣", "7♥", "3♠"];
+
+  const hands = {
+    Jason: ["A♥", "A♦"],
+    Arunan: ["K♠", "Q♠"],
+    Mia: ["10♦", "9♣"],
+    Alex: ["7♠", "7♦"]
+  };
+
+  const results = {
+    Jason: "WINNER 🏆 Full House",
+    Arunan: "Strong Hand – Pair of Kings",
+    Mia: "Straight Draw",
+    Alex: "Pair of Sevens"
+  };
+
+  function renderAgent(a, index) {
+    return `
+      <div class="seat seat-${index}">
+        <div class="agent-card">
+          <h3>${a.name}</h3>
+          <p class="codename">Codename: ${a.codename}</p>
+          <p class="role">${a.role}</p>
+
+          <div class="chips">💰 ${a.chips}</div>
+
+          <div class="cards">
+            ${(hands[a.name] || ["?", "?"]).map(c => `<div class="card">${c}</div>`).join("")}
+          </div>
+
+          <div class="result">${results[a.name]}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  app.innerHTML = `
+    <div class="poker-table-container">
+
+      <h1 class="table-title">Operation: Final Showdown</h1>
+
+      <div class="poker-table">
+
+        <!-- COMMUNITY CARDS -->
+        <div class="community">
+          <h3>Community Cards</h3>
+          <div class="community-cards">
+            ${communityCards.map(c => `<div class="card">${c}</div>`).join("")}
+          </div>
+        </div>
+
+        <!-- PLAYERS -->
+        ${agents.map(renderAgent).join("")}
+
+      </div>
+
+    </div>
+  `;
+}
