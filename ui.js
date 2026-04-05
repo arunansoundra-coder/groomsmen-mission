@@ -90,14 +90,6 @@ export function renderBriefing(app, agent, role, next) {
 /* =========================
    POKER SCREEN (PLACEHOLDER)
 ========================= */
-export function renderPoker(app) {
-  app.innerHTML = `
-    <div class="screen">
-      <h1>Poker Table</h1>
-      <p>Mission in progress...</p>
-    </div>
-  `;
-}
 export function renderPoker(app, agent, role) {
   const agents = [
     { name: "Jason", codename: "Spectre", role: "Best Man", chips: 1200 },
