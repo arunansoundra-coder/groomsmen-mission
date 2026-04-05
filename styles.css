@@ -1,258 +1,69 @@
-/* =========================
-   GLOBAL RESET
-========================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Arial", sans-serif;
-}
-
 body {
-  background: radial-gradient(circle at center, #0b0f14, #050608);
-  color: #fff;
-  overflow-x: hidden;
+  margin: 0;
+  background: #0b0f19;
+  color: white;
+  font-family: Arial;
+  text-align: center;
 }
 
-/* =========================
-   SCREEN BASE
-========================= */
-.screen,
-.briefing,
-.decline-screen {
+.screen, .briefing, .decline-screen {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  text-align: center;
-  padding: 20px;
 }
 
-/* =========================
-   BUTTONS
-========================= */
 button {
-  padding: 12px 24px;
+  padding: 10px 20px;
   margin: 10px;
-  border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  background: #1f6feb;
-  color: white;
-  transition: 0.2s;
 }
 
-button:hover {
-  background: #388bfd;
-  transform: scale(1.05);
+/* TYPEWRITER */
+.cinematic p {
+  margin: 6px 0;
 }
 
-/* =========================
-   BRIEFING SCREEN
-========================= */
-.briefing h1 {
-  font-size: 2.2rem;
-  margin-bottom: 10px;
-  color: #4cc9f0;
-}
-
-.briefing .subtitle {
-  opacity: 0.7;
-  margin-bottom: 10px;
-}
-
-.mission-box {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 500px;
-  margin: 20px 0;
-  backdrop-filter: blur(10px);
-}
-
-.prompt {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #ffd166;
+.hidden {
+  opacity: 0;
 }
 
 .options {
-  display: flex;
-  gap: 10px;
+  transition: opacity 0.5s;
 }
 
-/* =========================
-   DECLINE SCREEN
-========================= */
-.decline-screen {
-  animation: fadeIn 0.5s ease-in;
-}
-
-.warning {
-  color: #ff4d4d;
-  font-size: 2rem;
-}
-
-.terminated {
-  color: #ff0000;
-  font-size: 2rem;
-}
-
-.fade {
-  opacity: 0.7;
-}
-
-.small {
-  font-size: 0.8rem;
-}
-
-/* =========================
-   POKER TABLE CONTAINER
-========================= */
-.poker-table-container {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.table-title {
-  margin-bottom: 10px;
-  color: #4cc9f0;
-}
-
-/* =========================
-   POKER TABLE BASE
-========================= */
+/* POKER */
 .poker-table {
   position: relative;
-  width: 700px;
-  height: 700px;
+  width: 600px;
+  height: 600px;
+  margin: auto;
   border-radius: 50%;
-  background: radial-gradient(circle at center, #14532d, #0b3d2e, #061a14);
-  box-shadow: 0 0 60px rgba(0, 255, 150, 0.15);
+  background: radial-gradient(circle, #0b6b3a, #063d22);
 }
 
-/* =========================
-   COMMUNITY CARDS
-========================= */
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.community h3 {
-  margin-bottom: 10px;
-  opacity: 0.8;
-}
-
-.community-cards {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-/* =========================
-   CARDS
-========================= */
-.card {
-  width: 40px;
-  height: 55px;
-  background: white;
-  color: black;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-
-/* =========================
-   PLAYER SEATS
-========================= */
 .seat {
   position: absolute;
   top: 50%;
   left: 50%;
-  transition: all 0.3s ease;
 }
 
-/* agent card */
 .agent-card {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0,0,0,0.6);
   padding: 10px;
-  border-radius: 12px;
-  width: 150px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  border-radius: 10px;
 }
 
-/* ensure text stays readable */
-.agent-card h3 {
-  font-size: 0.9rem;
-  color: #4cc9f0;
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }
 
-.codename {
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
-.role {
-  font-size: 0.75rem;
-  opacity: 0.6;
-}
-
-/* chips */
-.chips {
-  margin: 5px 0;
-  font-size: 0.85rem;
-  color: #ffd166;
-}
-
-/* cards in hand */
-.cards {
+.community-cards {
   display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-/* result text */
-.result {
-  margin-top: 5px;
-  font-size: 0.7rem;
-  color: #a0ffa0;
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.agent-card {
-  background: rgba(0, 0, 0, 0.65);
-  padding: 10px;
-  border-radius: 12px;
-  width: 150px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  gap: 10px;
 }
 
 .card {
@@ -260,55 +71,20 @@ button:hover {
   height: 55px;
   background: white;
   color: black;
-  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-}
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  border-radius: 6px;
 }
 
-.community-cards {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-.community-cards .card {
-  margin-left: -8px;
-}
-
-/* container stays centered */
-.community {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* horizontal layout */
-.community-cards {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-/* initial state (before dealing) */
+/* DEAL ANIMATION */
 .card.deal {
   opacity: 0;
-  transform: translateY(-80px) scale(0.8);
+  transform: translateY(-80px);
   transition: all 0.4s ease;
 }
 
-/* animated state */
 .card.deal.show {
   opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.community-cards .card:first-child {
-  margin-left: 0;
+  transform: translateY(0);
 }
