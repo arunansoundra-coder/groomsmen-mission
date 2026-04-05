@@ -278,3 +278,10 @@ button:hover {
   gap: 10px;
   justify-content: center;
 }
+.community-cards .card {
+  margin-left: -8px;
+}
+
+.community-cards .card:first-child {
+  margin-left: 0;
+}
