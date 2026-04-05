@@ -1,4 +1,3 @@
-
 /* =========================
    AUTH FLOW (IDENTITY + SECURITY)
 ========================= */
@@ -125,33 +124,89 @@ export function renderAuth(app, next, agent) {
 }
 
 /* =========================
-   BRIEFING
+   CINEMATIC BRIEFING
 ========================= */
 export function renderBriefing(app, agent, role, next) {
+  const roleLabel = agent === "Jason" ? "Best Man" : "Groomsman";
+
   app.innerHTML = `
-    <div class="briefing">
-      <h1>Operation Always and Forever</h1>
-      <h2>Agent ${agent}</h2>
-      <p>Role: ${role}</p>
+    <div class="briefing cinematic">
+      <h1>Operation: Always and Forever</h1>
+      <p class="subtitle">MI6 Secure Transmission</p>
 
-      <div class="mission-box">
-        <p>Assist the groom in a high-stakes operation.</p>
+      <div id="typewriter"></div>
+
+      <div class="options hidden" id="actions">
+        <button id="accept">Accept Mission</button>
+        <button id="decline">Decline</button>
       </div>
-
-      <button id="accept">Accept Mission</button>
-      <button id="decline">Decline</button>
     </div>
   `;
 
-  document.getElementById("accept").onclick = next;
+  const lines = [
+    `Agent ${agent}...`,
+    `You have been selected for a high-priority assignment.`,
+    `You are to assist Agent Ghost.`,
+    `Operation: Always and Forever.`,
+    `Your role: ${roleLabel}.`,
+    `Will you accept your mission?`,
+    `The table awaits...`
+  ];
 
-  document.getElementById("decline").onclick = () => {
-    app.innerHTML = `
-      <div class="decline-screen">
-        <h1>ACCESS DENIED</h1>
-      </div>
-    `;
-  };
+  const container = document.getElementById("typewriter");
+  let lineIndex = 0;
+
+  function typeLine(text, callback) {
+    let i = 0;
+    const el = document.createElement("p");
+    container.appendChild(el);
+
+    function typing() {
+      if (i < text.length) {
+        el.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typing, 25);
+      } else {
+        setTimeout(callback, 500);
+      }
+    }
+
+    typing();
+  }
+
+  function nextLine() {
+    if (lineIndex < lines.length) {
+      typeLine(lines[lineIndex], () => {
+        lineIndex++;
+        nextLine();
+      });
+    } else {
+      document.getElementById("actions").classList.remove("hidden");
+    }
+  }
+
+  nextLine();
+
+  setTimeout(() => {
+    document.getElementById("accept").onclick = () => {
+      app.innerHTML = `
+        <div class="screen fade-out">
+          <h1>Mission Accepted</h1>
+          <p>Initializing operation...</p>
+        </div>
+      `;
+      setTimeout(next, 1200);
+    };
+
+    document.getElementById("decline").onclick = () => {
+      app.innerHTML = `
+        <div class="decline-screen">
+          <h1 class="warning">⚠ ACCESS DENIED</h1>
+          <p>Agent ${agent}, you have declined the mission.</p>
+        </div>
+      `;
+    };
+  }, 1000);
 }
 
 /* =========================
