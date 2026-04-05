@@ -1,89 +1,103 @@
-body {
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0f19;
-  color: white;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0b0f14, #050608);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* =========================
+   SCREEN BASE
+========================= */
+.screen,
+.briefing,
+.decline-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   text-align: center;
+  padding: 20px;
 }
 
 /* =========================
-   GENERAL SCREEN
+   BUTTONS
 ========================= */
-.screen {
-  padding: 50px;
-}
-
-/* =========================
-   BRIEFING
-========================= */
-.briefing {
-  max-width: 650px;
-  margin: auto;
-  padding: 40px;
-}
-
-.subtitle {
-  opacity: 0.6;
-  letter-spacing: 2px;
-}
-
-.role {
+button {
+  padding: 12px 24px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
   font-weight: bold;
-  margin: 10px 0;
+  background: #1f6feb;
+  color: white;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #388bfd;
+  transform: scale(1.05);
+}
+
+/* =========================
+   BRIEFING SCREEN
+========================= */
+.briefing h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #4cc9f0;
+}
+
+.briefing .subtitle {
+  opacity: 0.7;
+  margin-bottom: 10px;
 }
 
 .mission-box {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   padding: 20px;
   border-radius: 12px;
+  max-width: 500px;
   margin: 20px 0;
+  backdrop-filter: blur(10px);
 }
 
 .prompt {
   margin-top: 10px;
-  font-style: italic;
+  font-weight: bold;
+  color: #ffd166;
 }
 
-.options button {
-  margin: 10px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-
-#accept {
-  background: #22c55e;
-  color: black;
-}
-
-#decline {
-  background: transparent;
-  border: 1px solid #ef4444;
-  color: #ef4444;
+.options {
+  display: flex;
+  gap: 10px;
 }
 
 /* =========================
    DECLINE SCREEN
 ========================= */
 .decline-screen {
-  padding: 50px;
+  animation: fadeIn 0.5s ease-in;
 }
 
 .warning {
-  color: #ef4444;
-  font-size: 2.5rem;
-}
-
-.terminated {
-  color: #ef4444;
+  color: #ff4d4d;
   font-size: 2rem;
 }
 
-#countdown {
-  font-size: 4rem;
-  margin: 20px 0;
-  color: #f87171;
+.terminated {
+  color: #ff0000;
+  font-size: 2rem;
 }
 
 .fade {
@@ -91,31 +105,79 @@ body {
 }
 
 .small {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
-/* =========================
-   POKER TABLE BACKGROUND
-========================= */
 
+/* =========================
+   POKER TABLE CONTAINER
+========================= */
 .poker-table-container {
-  padding: 30px;
-  color: white;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-title {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  color: #4cc9f0;
 }
 
+/* =========================
+   POKER TABLE BASE
+========================= */
 .poker-table {
   position: relative;
-  width: 900px;
-  height: 900px;
-  margin: auto;
-  background: radial-gradient(circle, #0b6b3a, #063d22);
+  width: 700px;
+  height: 700px;
   border-radius: 50%;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  background: radial-gradient(circle at center, #14532d, #0b3d2e, #061a14);
+  box-shadow: 0 0 60px rgba(0, 255, 150, 0.15);
 }
 
+/* =========================
+   COMMUNITY CARDS
+========================= */
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.community h3 {
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.community-cards {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* =========================
+   CARDS
+========================= */
+.card {
+  width: 40px;
+  height: 55px;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* =========================
+   PLAYER SEATS
+========================= */
 .seat {
   position: absolute;
   top: 50%;
@@ -123,124 +185,64 @@ body {
   transition: all 0.3s ease;
 }
 
+/* agent card */
 .agent-card {
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.65);
   padding: 10px;
-  border-radius: 10px;
-  width: 140px;
-  transform: translate(-50%, -50%);
-}
-
-/* =========================
-   COMMUNITY CARDS (CENTER)
-========================= */
-
-.community {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  width: 150px;
   text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-.community-cards {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-/* =========================
-   SEATS AROUND TABLE
-========================= */
-
-.seat {
-  position: absolute;
-  width: 200px;
-  text-align: center;
-}
-
-/* Top */
-.seat-0 {
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Right */
-.seat-1 {
-  right: -60px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Bottom */
-.seat-2 {
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Left */
-.seat-3 {
-  left: -60px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* =========================
-   AGENT CARD
-========================= */
-
-.agent-card {
-  background: rgba(0,0,0,0.5);
-  padding: 10px;
-  border-radius: 10px;
+/* ensure text stays readable */
+.agent-card h3 {
+  font-size: 0.9rem;
+  color: #4cc9f0;
 }
 
 .codename {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .role {
-  font-size: 12px;
-  color: #ccc;
+  font-size: 0.75rem;
+  opacity: 0.6;
 }
 
+/* chips */
 .chips {
   margin: 5px 0;
-  color: gold;
+  font-size: 0.85rem;
+  color: #ffd166;
 }
 
-/* =========================
-   CARDS
-========================= */
-
+/* cards in hand */
 .cards {
   display: flex;
   justify-content: center;
   gap: 5px;
-  margin: 5px 0;
+  margin-top: 5px;
 }
 
-.card {
-  width: 35px;
-  height: 50px;
-  background: white;
-  color: black;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+/* result text */
+.result {
+  margin-top: 5px;
+  font-size: 0.7rem;
+  color: #a0ffa0;
 }
 
 /* =========================
-   RESULTS
+   ANIMATIONS
 ========================= */
-
-.result {
-  font-size: 12px;
-  margin-top: 5px;
-  color: #a7f3d0;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
