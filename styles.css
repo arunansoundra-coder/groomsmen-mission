@@ -93,3 +93,139 @@ body {
 .small {
   font-size: 0.9rem;
 }
+/* =========================
+   POKER TABLE BACKGROUND
+========================= */
+
+.poker-table-container {
+  padding: 30px;
+  color: white;
+}
+
+.table-title {
+  margin-bottom: 20px;
+}
+
+.poker-table {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  margin: auto;
+  background: radial-gradient(circle, #0b6b3a, #063d22);
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+/* =========================
+   COMMUNITY CARDS (CENTER)
+========================= */
+
+.community {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.community-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* =========================
+   SEATS AROUND TABLE
+========================= */
+
+.seat {
+  position: absolute;
+  width: 200px;
+  text-align: center;
+}
+
+/* Top */
+.seat-0 {
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Right */
+.seat-1 {
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Bottom */
+.seat-2 {
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Left */
+.seat-3 {
+  left: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* =========================
+   AGENT CARD
+========================= */
+
+.agent-card {
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.codename {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.role {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.chips {
+  margin: 5px 0;
+  color: gold;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.card {
+  width: 35px;
+  height: 50px;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* =========================
+   RESULTS
+========================= */
+
+.result {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #a7f3d0;
+}
