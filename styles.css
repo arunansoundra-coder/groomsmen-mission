@@ -109,11 +109,26 @@ body {
 .poker-table {
   position: relative;
   width: 900px;
-  height: 600px;
+  height: 900px;
   margin: auto;
   background: radial-gradient(circle, #0b6b3a, #063d22);
   border-radius: 50%;
   box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+.seat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition: all 0.3s ease;
+}
+
+.agent-card {
+  background: rgba(0,0,0,0.55);
+  padding: 10px;
+  border-radius: 10px;
+  width: 140px;
+  transform: translate(-50%, -50%);
 }
 
 /* =========================
