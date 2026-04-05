@@ -92,11 +92,15 @@ export function renderBriefing(app, agent, role, next) {
 ========================= */
 export function renderPoker(app, agent, role) {
   const agents = [
-    { name: "Jason", codename: "Spectre", role: "Best Man", chips: 1200 },
-    { name: "Arunan", codename: "Viper", role: "Groom", chips: 1500 },
-    { name: "Mia", codename: "Blackbird", role: "Groomsman", chips: 900 },
-    { name: "Alex", codename: "Ghost", role: "Groomsman", chips: 1100 }
-  ];
+const agents = [
+  { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
+  { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
+  { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
+  { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
+  { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
+  { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
+  { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
+];
 
   const communityCards = ["A♠", "K♦", "10♣", "7♥", "3♠"];
 
