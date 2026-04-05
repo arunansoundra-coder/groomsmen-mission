@@ -1,4 +1,4 @@
-import { renderAuth, renderBriefing, renderPoker } from "./ui.js";
+import { startAuthFlow, renderBriefing, renderPoker } from "./ui.js";
 
 const app = document.getElementById("app");
 
@@ -26,5 +26,10 @@ function nextStage() {
   }
 }
 
-// START APP
-renderAuth(app, nextStage);
+/* =========================
+   START APP
+========================= */
+
+startAuthFlow(app, agent, () => {
+  nextStage();
+});
