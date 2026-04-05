@@ -1,5 +1,5 @@
 /* =========================
-   AUTH FLOW (IDENTITY + SECURITY)
+   AUTH FLOW
 ========================= */
 export function renderAuth(app, next, agent) {
   let step = 0;
@@ -46,7 +46,7 @@ export function renderAuth(app, next, agent) {
     app.innerHTML = `
       <div class="screen">
         <h1>Agent Authentication</h1>
-        <p>Agent, proceed with identity authentication</p>
+        <p>Proceed with identity authentication</p>
         <button id="start">Begin</button>
       </div>
     `;
@@ -95,16 +95,14 @@ export function renderAuth(app, next, agent) {
     app.innerHTML = `
       <div class="screen">
         <h2>Final Verification</h2>
-        <p>Complete the phrase:</p>
         <p><i>Blood makes us related, loyalty makes us family, and family is ______.</i></p>
-        <input id="answer" placeholder="Type answer"/>
+        <input id="answer"/>
         <button id="submit">Submit</button>
       </div>
     `;
 
     document.getElementById("submit").onclick = () => {
-      const val = document.getElementById("answer").value.toLowerCase();
-      if (val.includes("forever")) {
+      if (document.getElementById("answer").value.toLowerCase().includes("forever")) {
         renderSuccess();
       }
     };
@@ -154,6 +152,8 @@ export function renderBriefing(app, agent, role, next) {
   ];
 
   const container = document.getElementById("typewriter");
+  const actions = document.getElementById("actions");
+
   let lineIndex = 0;
 
   function typeLine(text, callback) {
@@ -167,7 +167,7 @@ export function renderBriefing(app, agent, role, next) {
         i++;
         setTimeout(typing, 25);
       } else {
-        setTimeout(callback, 500);
+        setTimeout(callback, 400);
       }
     }
 
@@ -181,53 +181,41 @@ export function renderBriefing(app, agent, role, next) {
         nextLine();
       });
     } else {
-      document.getElementById("actions").classList.remove("hidden");
+      actions.classList.remove("hidden");
+
+      document.getElementById("accept").onclick = () => {
+        app.innerHTML = `
+          <div class="screen fade-out">
+            <h1>Mission Accepted</h1>
+            <p>Initializing operation...</p>
+          </div>
+        `;
+        setTimeout(next, 1200);
+      };
+
+      document.getElementById("decline").onclick = () => {
+        app.innerHTML = `
+          <div class="decline-screen">
+            <h1 class="warning">⚠ ACCESS DENIED</h1>
+          </div>
+        `;
+      };
     }
   }
 
   nextLine();
-
-  setTimeout(() => {
-    document.getElementById("accept").onclick = () => {
-      app.innerHTML = `
-        <div class="screen fade-out">
-          <h1>Mission Accepted</h1>
-          <p>Initializing operation...</p>
-        </div>
-      `;
-      setTimeout(next, 1200);
-    };
-
-    document.getElementById("decline").onclick = () => {
-      app.innerHTML = `
-        <div class="decline-screen">
-          <h1 class="warning">⚠ ACCESS DENIED</h1>
-          <p>Agent ${agent}, you have declined the mission.</p>
-        </div>
-      `;
-    };
-  }, 1000);
 }
 
 /* =========================
    POKER TABLE
 ========================= */
 export function renderPoker(app) {
-  const agents = [
-    { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
-    { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
-    { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
-    { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
-    { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
-    { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
-    { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
-  ];
-
+  const agents = ["Arunan","Jason","Gill","Prathap","Taylor","Duran","Josh"];
   const community = ["A♠","K♦","10♣","7♥","3♠"];
 
   function pos(i, total){
     const angle = (i/total)*2*Math.PI;
-    const r = 280;
+    const r = 260;
     return `translate(-50%,-50%) translate(${Math.cos(angle)*r}px, ${Math.sin(angle)*r}px)`;
   }
 
@@ -235,17 +223,14 @@ export function renderPoker(app) {
     <div class="poker-table-container">
       <div class="poker-table">
 
-<div class="community">
-  <div class="community-cards" id="community-cards"></div>
-</div>
+        <div class="community">
+          <div class="community-cards" id="community-cards"></div>
+        </div>
 
         ${agents.map((a,i)=>`
           <div class="seat" style="transform:${pos(i,agents.length)}">
             <div class="agent-card">
-              <h3>${a.name}</h3>
-              <p>${a.codename}</p>
-              <p>${a.role}</p>
-              <div class="chips">💰 ${a.chips}</div>
+              <h3>${a}</h3>
               <div class="cards">
                 <div class="card">A</div>
                 <div class="card">K</div>
@@ -257,23 +242,19 @@ export function renderPoker(app) {
       </div>
     </div>
   `;
-}
-const container = document.getElementById("community-cards");
 
-const cards = ["A♠","K♦","10♣","7♥","3♠"];
+  // DEAL ANIMATION
+  const container = document.getElementById("community-cards");
 
-cards.forEach((card, index) => {
-  setTimeout(() => {
-    const el = document.createElement("div");
-    el.className = "card deal";
-    el.innerText = card;
-
-    container.appendChild(el);
-
-    // trigger animation
+  community.forEach((card, i) => {
     setTimeout(() => {
-      el.classList.add("show");
-    }, 50);
+      const el = document.createElement("div");
+      el.className = "card deal";
+      el.innerText = card;
 
-  }, index * 500); // delay between each card
-});
+      container.appendChild(el);
+
+      setTimeout(() => el.classList.add("show"), 50);
+    }, i * 500);
+  });
+}
