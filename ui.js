@@ -1,209 +1,100 @@
 /* =========================
-   AUTH + SECURITY FLOW
+   AUTH SCREEN
 ========================= */
-
-export function startAuthFlow(app, agent, onComplete) {
-  showAuthIntro();
-
-  function showAuthIntro() {
-    app.innerHTML = `
-      <h1>Agent Authentication</h1>
+export function renderAuth(app, next) {
+  app.innerHTML = `
+    <div class="screen">
+      <h1>Identity Authentication</h1>
       <p>Agent, proceed with identity authentication</p>
-      <button id="start">Start</button>
-    `;
+      <button id="start">Begin</button>
+    </div>
+  `;
 
-    document.getElementById("start").onclick = showQ1;
-  }
-
-  function showQ1() {
-    renderMCQ(
-      "What poker hand did James Bond win with in Montenegro?",
-      ["Royal Flush", "Straight Flush", "Full House"],
-      "Straight Flush",
-      showQ2
-    );
-  }
-
-  function showQ2() {
-    renderMCQ(
-      "What is James Bond’s favorite drink?",
-      ["Vodka Martini — Shaken, not stirred", "Scotch Neat", "Old Fashioned"],
-      "Vodka Martini — Shaken, not stirred",
-      showQ3
-    );
-  }
-
-  function showQ3() {
-    renderMCQ(
-      "Name all of James Bond’s love interests.",
-      [
-        "Vesper Lynd, Tracy Bond, Madeleine Swann",
-        "Domino, Tiffany Case, Natalya Simonova",
-        "Honey Ryder, Kissy Suzuki, Wai Lin"
-      ],
-      "Vesper Lynd, Tracy Bond, Madeleine Swann",
-      showAuthSuccess
-    );
-  }
-
-  function showAuthSuccess() {
-    app.innerHTML = `
-      <h1>Identity Authentication Successful</h1>
-      <h2>Welcome Agent ${agent}</h2>
-      <button id="continue">Continue</button>
-    `;
-
-    document.getElementById("continue").onclick = showSecurityIntro;
-  }
-
-  /* =========================
-     SECURITY CLEARANCE
-  ========================= */
-
-  function showSecurityIntro() {
-    app.innerHTML = `
-      <h1>Security Clearance</h1>
-      <p>Agent ${agent}, confirm security clearance</p>
-      <button id="startSec">Begin</button>
-    `;
-
-    document.getElementById("startSec").onclick = showS1;
-  }
-
-  function showS1() {
-    renderMCQ(
-      "What was the name of the horse that Arunan had?",
-      ["Luna", "Bella", "Maya", "Shadow"],
-      "Maya",
-      showS2
-    );
-  }
-
-  function showS2() {
-    renderMCQ(
-      "Arunan had a Grey 2023 BMW 330i. What was its name?",
-      ["Frost", "Cloud", "Phantom", "Glacier"],
-      "Cloud",
-      showS3
-    );
-  }
-
-  function showS3() {
-    app.innerHTML = `
-      <h2>Final Verification</h2>
-      <p>Complete the phrase:</p>
-      <p><i>Blood makes us related, loyalty makes us family, and family is ______.</i></p>
-      <input id="answer" placeholder="Type answer"/>
-      <br/><br/>
-      <button id="submit">Submit</button>
-    `;
-
-    document.getElementById("submit").onclick = () => {
-      const val = document.getElementById("answer").value.toLowerCase().trim();
-      if (val === "forever") {
-        showSecuritySuccess();
-      } else {
-        alert("Incorrect. Try again.");
-      }
-    };
-  }
-
-  function showSecuritySuccess() {
-    app.innerHTML = `
-      <h1>Security Clearance Approved</h1>
-      <p>Access Granted</p>
-      <button id="continue">Proceed to Mission</button>
-    `;
-
-    document.getElementById("continue").onclick = onComplete;
-  }
-
-  /* =========================
-     REUSABLE MCQ FUNCTION
-  ========================= */
-
-  function renderMCQ(question, options, correct, next) {
-    app.innerHTML = `
-      <h2>${question}</h2>
-      ${options
-        .map(opt => `<button class="opt">${opt}</button>`)
-        .join("<br/>")}
-    `;
-
-    document.querySelectorAll(".opt").forEach((btn) => {
-      btn.onclick = () => {
-        if (btn.innerText === correct) {
-          next();
-        } else {
-          alert("Incorrect. Try again.");
-        }
-      };
-    });
-  }
+  document.getElementById("start").onclick = next;
 }
 
 /* =========================
-   MISSION BRIEFING
+   BRIEFING SCREEN
 ========================= */
-
 export function renderBriefing(app, agent, role, next) {
   const isJason = agent === "Jason";
 
   const roleText = isJason
-    ? "Will you assist the groom as Best Man?"
-    : "Will you assist the groom as Groomsman?";
+    ? "Will you assist the groom in Operation Always and Forever as Best Man?"
+    : "Will you assist the groom in Operation Always and Forever as Groomsman?";
 
   app.innerHTML = `
-    <h1>Operation Always and Forever</h1>
-    <h2>Agent ${agent}</h2>
-    <p>${roleText}</p>
+    <div class="briefing">
+      <h1>Operation Always and Forever</h1>
 
-    <button id="accept">Pour the whiskey.</button>
-    <button class="alt">For King and Country</button>
-    <button class="alt">Sounds like a job for 007</button>
-    <button class="alt">The name’s Bond… Let’s do it!</button>
+      <p class="subtitle">Mission Briefing</p>
+
+      <h2>Welcome Agent ${agent}</h2>
+      <p class="role">Role: ${role}</p>
+
+      <div class="mission-box">
+        <p>Agents are tasked with assisting the groom in an upcoming high-stakes operation.</p>
+        <p class="prompt">${roleText}</p>
+      </div>
+
+      <div class="options">
+        <button id="accept">Accept Mission</button>
+        <button id="decline">Decline</button>
+      </div>
+    </div>
   `;
 
   document.getElementById("accept").onclick = next;
+
+  document.getElementById("decline").onclick = () => {
+    showDeclineSequence();
+  };
+
+  function showDeclineSequence() {
+    let countdown = 5;
+
+    app.innerHTML = `
+      <div class="decline-screen">
+        <h1 class="warning">⚠ ACCESS DENIED</h1>
+        <p>Agent ${agent}, you have declined the mission.</p>
+        <p class="fade">Self-destruct sequence in</p>
+        <h2 id="countdown">${countdown}</h2>
+        <p class="fade small">(Just kidding… or are we?)</p>
+      </div>
+    `;
+
+    const timer = setInterval(() => {
+      countdown--;
+      const el = document.getElementById("countdown");
+      if (el) el.innerText = countdown;
+
+      if (countdown === 0) {
+        clearInterval(timer);
+
+        app.innerHTML = `
+          <div class="decline-screen">
+            <h1 class="terminated">💀 SESSION TERMINATED</h1>
+            <p>Mission access revoked.</p>
+            <button id="retry">Request Reinstatement</button>
+          </div>
+        `;
+
+        document.getElementById("retry").onclick = () => {
+          renderBriefing(app, agent, role, next);
+        };
+      }
+    }, 1000);
+  }
 }
 
 /* =========================
-   POKER TABLE
+   POKER SCREEN (PLACEHOLDER)
 ========================= */
-
-export function renderPoker(app, agent, role) {
-  const players = [
-    { name: "Josh", code: "Mirage" },
-    { name: "Taylor", code: "Shadow" },
-    { name: "Duran", code: "Anomaly" },
-    { name: "Gill", code: "Architect" },
-    { name: "Prathap", code: "Midnight" },
-    { name: "Jason", code: "Viper" },
-    { name: "Arunan", code: "Ghost" }
-  ];
-
+export function renderPoker(app) {
   app.innerHTML = `
-    <h1>Poker Table</h1>
-
-    <p>The mission will begin at noon on September 18, 2026</p>
-
-    <h3>Agent ${agent} (${role})</h3>
-
-    <div>
-      ${players.map(p => `
-        <div class="card">
-          <b>${p.name}</b><br/>
-          ${p.code}
-        </div>
-      `).join("")}
+    <div class="screen">
+      <h1>Poker Table</h1>
+      <p>Mission in progress...</p>
     </div>
-
-    <p style="margin-top:20px;">
-      Objective: Defeat the Groom
-    </p>
-
-    <p>
-      Safe House: 6233 Muirfield Dr SW, Cedar Rapids, IA
-    </p>
   `;
 }
