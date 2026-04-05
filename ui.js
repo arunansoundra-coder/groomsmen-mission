@@ -1,3 +1,4 @@
+
 /* =========================
    AUTH SCREEN
 ========================= */
@@ -14,7 +15,7 @@ export function renderAuth(app, next) {
 }
 
 /* =========================
-   BRIEFING SCREEN
+   BRIEFING + DECLINE FLOW
 ========================= */
 export function renderBriefing(app, agent, role, next) {
   const isJason = agent === "Jason";
@@ -33,7 +34,10 @@ export function renderBriefing(app, agent, role, next) {
       <p class="role">Role: ${role}</p>
 
       <div class="mission-box">
-        <p>Agents are tasked with assisting the groom in an upcoming high-stakes operation.</p>
+        <p>
+          Agents are tasked with assisting the groom in an upcoming high-stakes operation.
+        </p>
+
         <p class="prompt">${roleText}</p>
       </div>
 
@@ -46,9 +50,7 @@ export function renderBriefing(app, agent, role, next) {
 
   document.getElementById("accept").onclick = next;
 
-  document.getElementById("decline").onclick = () => {
-    showDeclineSequence();
-  };
+  document.getElementById("decline").onclick = showDeclineSequence;
 
   function showDeclineSequence() {
     let countdown = 5;
@@ -88,7 +90,7 @@ export function renderBriefing(app, agent, role, next) {
 }
 
 /* =========================
-   POKER SCREEN (PLACEHOLDER)
+   POKER TABLE (7 PLAYER CIRCLE)
 ========================= */
 export function renderPoker(app) {
   const agents = [
@@ -130,8 +132,14 @@ export function renderPoker(app) {
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
 
+    const rotation = (angle * 180) / Math.PI + 90;
+
     return {
-      transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
+      transform: `
+        translate(-50%, -50%)
+        translate(${x}px, ${y}px)
+        rotate(${rotation}deg)
+      `
     };
   }
 
@@ -150,28 +158,39 @@ export function renderPoker(app) {
           </div>
         </div>
 
-        <!-- PLAYERS IN CIRCLE -->
-        ${agents.map((a, i) => {
-          const style = getSeatStyle(i, agents.length);
+        <!-- PLAYERS -->
+        ${agents
+          .map((a, i) => {
+            const style = getSeatStyle(i, agents.length);
 
-          return `
-            <div class="seat" style="top:50%; left:50%; position:absolute; ${Object.entries(style).map(([k,v]) => `${k}:${v}`).join(';')}">
-              <div class="agent-card">
-                <h3>${a.name}</h3>
-                <p class="codename">Codename: ${a.codename}</p>
-                <p class="role">${a.role}</p>
+            return `
+              <div class="seat" style="
+                top:50%;
+                left:50%;
+                position:absolute;
+                ${Object.entries(style)
+                  .map(([k, v]) => `${k}:${v}`)
+                  .join(";")}
+              ">
+                <div class="agent-card">
+                  <h3>${a.name}</h3>
+                  <p class="codename">Codename: ${a.codename}</p>
+                  <p class="role">${a.role}</p>
 
-                <div class="chips">💰 ${a.chips}</div>
+                  <div class="chips">💰 ${a.chips}</div>
 
-                <div class="cards">
-                  ${(hands[a.name] || ["?", "?"]).map(c => `<div class="card">${c}</div>`).join("")}
+                  <div class="cards">
+                    ${(hands[a.name] || ["?", "?"])
+                      .map((c) => `<div class="card">${c}</div>`)
+                      .join("")}
+                  </div>
+
+                  <div class="result">${results[a.name]}</div>
                 </div>
-
-                <div class="result">${results[a.name]}</div>
               </div>
-            </div>
-          `;
-        }).join("")}
+            `;
+          })
+          .join("")}
 
       </div>
     </div>
