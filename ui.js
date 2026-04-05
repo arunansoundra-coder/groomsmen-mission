@@ -235,9 +235,11 @@ export function renderPoker(app) {
     <div class="poker-table-container">
       <div class="poker-table">
 
-        <div class="community">
-          ${community.map(c=>`<div class="card">${c}</div>`).join("")}
-        </div>
+      <div class="community">
+  <div class="community-cards">
+    ${community.map(c=>`<div class="card">${c}</div>`).join("")}
+  </div>
+</div>
 
         ${agents.map((a,i)=>`
           <div class="seat" style="transform:${pos(i,agents.length)}">
