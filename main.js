@@ -22,9 +22,9 @@ function nextStage() {
     renderBriefing(app, agent, getRole(agent), nextStage);
   } else if (stage === "briefing") {
     stage = "poker";
-    renderPoker(app, agent, getRole(agent));
+    renderPoker(app);
   }
 }
 
 // START
-renderAuth(app, nextStage);
+renderAuth(app, nextStage, agent);
