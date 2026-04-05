@@ -282,6 +282,33 @@ button:hover {
   margin-left: -8px;
 }
 
+/* container stays centered */
+.community {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* horizontal layout */
+.community-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* initial state (before dealing) */
+.card.deal {
+  opacity: 0;
+  transform: translateY(-80px) scale(0.8);
+  transition: all 0.4s ease;
+}
+
+/* animated state */
+.card.deal.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 .community-cards .card:first-child {
   margin-left: 0;
 }
