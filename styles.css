@@ -1,8 +1,8 @@
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
   background: #0b0f19;
   color: white;
-  font-family: Arial;
   text-align: center;
 }
 
@@ -19,24 +19,20 @@ button {
   cursor: pointer;
 }
 
-/* TYPEWRITER */
-.cinematic p {
-  margin: 6px 0;
-}
-
 .hidden {
   opacity: 0;
+  pointer-events: none;
 }
 
 .options {
   transition: opacity 0.5s;
 }
 
-/* POKER */
+/* POKER TABLE */
 .poker-table {
   position: relative;
-  width: 600px;
-  height: 600px;
+  width: 900px;
+  height: 900px;
   margin: auto;
   border-radius: 50%;
   background: radial-gradient(circle, #0b6b3a, #063d22);
@@ -49,11 +45,44 @@ button {
 }
 
 .agent-card {
+  width: 150px;
   background: rgba(0,0,0,0.6);
   padding: 10px;
   border-radius: 10px;
 }
 
+.codename {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.role {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.chips {
+  color: gold;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.card {
+  width: 35px;
+  height: 50px;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* COMMUNITY */
 .community {
   position: absolute;
   top: 50%;
@@ -64,17 +93,6 @@ button {
 .community-cards {
   display: flex;
   gap: 10px;
-}
-
-.card {
-  width: 40px;
-  height: 55px;
-  background: white;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
 }
 
 /* DEAL ANIMATION */
