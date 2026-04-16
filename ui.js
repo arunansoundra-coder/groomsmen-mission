@@ -177,6 +177,12 @@ export function renderPoker(app) {
 
   app.innerHTML = `
     <div class="poker-table-container">
+
+      <!-- MI6 SYSTEM BANNER -->
+      <div class="system-banner">
+        OPERATION SCHEDULED: 12:00 PM — SEPTEMBER 18, 2026
+      </div>
+
       <div class="poker-table">
 
         <div class="community">
@@ -185,10 +191,12 @@ export function renderPoker(app) {
 
         ${agents.map((a, i) => {
           const pos = getPosition(i, agents.length);
+
           return `
           <div class="seat"
             style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
             <div class="agent-card">
+
               <h3>${a.name}</h3>
               <div class="codename">${a.codename}</div>
               <div class="role">${a.role}</div>
@@ -199,7 +207,9 @@ export function renderPoker(app) {
                 <div class="card">K</div>
               </div>
 
-              <div class="result">Waiting...</div>
+              <!-- MI6-style live system status -->
+              <div class="result">ASSESSING THREAT LEVEL...</div>
+
             </div>
           </div>`;
         }).join("")}
