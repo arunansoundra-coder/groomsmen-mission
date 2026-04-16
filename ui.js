@@ -1,278 +1,223 @@
-/* =========================
-   AUTH FLOW
-========================= */
-export function renderAuth(app, next, agent) {
-  let step = 0;
+export function MI6MissionOS(app, agent, next) {
+  let state = {
+    clearance: 0,
+    agent,
+    codename: null
+  };
 
-  const questions = [
-    {
-      q: "What poker hand did James Bond win with in Montenegro?",
-      options: ["Royal Flush", "Straight Flush", "Full House", "Straight Flush"],
-      correct: "Straight Flush"
-    },
-    {
-      q: "What is James Bond’s favorite drink?",
-      options: [
-        "Vodka Martini — Shaken, not stirred",
-        "Scotch Neat",
-        "Old Fashioned",
-        "Gin and Tonic"
-      ],
-      correct: "Vodka Martini — Shaken, not stirred"
-    },
-    {
-      q: "Name all of James Bond’s love interests.",
-      options: [
-        "Vesper Lynd, Tracy Bond, Madeleine Swann",
-        "Domino, Tiffany Case, Natalya Simonova",
-        "Honey Ryder, Kissy Suzuki, Wai Lin",
-        "Solitaire, Natalya Simonova, Camille Montes"
-      ],
-      correct: "Vesper Lynd, Tracy Bond, Madeleine Swann"
-    },
-    {
-      q: "What was the name of the horse that Arunan had?",
-      options: ["Luna", "Bella", "Maya", "Shadow"],
-      correct: "Maya"
-    },
-    {
-      q: "Arunan had a Grey 2023 BMW 330i. What was its name?",
-      options: ["Frost", "Cloud", "Phantom", "Glacier"],
-      correct: "Cloud"
-    }
-  ];
+  /* =========================
+     SYSTEM BOOT
+  ========================= */
+  async function boot() {
+    await type(`
+MI6 // CLASSIFIED OPERATING SYSTEM v9.1
+Initializing secure environment...
+Encrypting session... ██████████ 100%
+Satellite uplink: ACTIVE
+Threat detection: NONE
+`);
 
-  function renderIntro() {
-    app.innerHTML = `
-      <div class="screen">
-        <h1>Agent Authentication</h1>
-        <p>Proceed with identity authentication</p>
-        <button id="start">Begin</button>
-      </div>
-    `;
-    document.getElementById("start").onclick = renderQuestion;
+    await delay(600);
+
+    await identityLayer();
   }
 
-  function renderQuestion() {
-    const current = questions[step];
+  /* =========================
+     IDENTITY LAYER
+  ========================= */
+  async function identityLayer() {
+    await type(`
+IDENTITY CHECK REQUIRED
+Cross-referencing global agent registry...
+`);
 
+    await delay(800);
+
+    state.codename = assignCodename(agent);
+
+    await type(`
+MATCH FOUND
+Agent: ${agent}
+Codename: ${state.codename}
+Status: ACTIVE
+Clearance: ALPHA-0
+`);
+
+    await delay(800);
+
+    await loyaltyProtocol();
+  }
+
+  /* =========================
+     LOYALTY AUTH PROTOCOL
+  ========================= */
+  async function loyaltyProtocol() {
+    await type(`
+LOYALTY PROTOCOL 01
+This is not a test.
+This is a trust evaluation.
+`);
+
+    await delay(500);
+
+    renderQuestion();
+  }
+
+  const question = {
+    q: "When the mission fails and all exits are compromised… who do you stand beside?",
+    options: ["No one", "Myself", "Arunan", "The highest bidder"],
+    correct: "Arunan"
+  };
+
+  function renderQuestion() {
     app.innerHTML = `
-      <div class="screen">
-        <h2>Challenge ${step + 1}</h2>
-        <p>${current.q}</p>
-        ${current.options.map(o => `<button class="opt">${o}</button>`).join("")}
+      <div class="terminal">
+        <div id="log"></div>
+        <div id="options"></div>
       </div>
     `;
 
+    const log = document.getElementById("log");
+    const options = document.getElementById("options");
+
+    typeTo(log, question.q);
+
+    options.innerHTML = question.options
+      .map(o => `<button class="opt">${o}</button>`)
+      .join("");
+
     document.querySelectorAll(".opt").forEach(btn => {
-      btn.onclick = () => {
-        if (btn.innerText === current.correct) {
-          step++;
-
-          if (step === 3) return renderIdentitySuccess();
-          if (step === questions.length) return renderFinalInput();
-
-          renderQuestion();
-        } else {
-          btn.style.background = "red";
-        }
-      };
+      btn.onclick = () => handleAnswer(btn.innerText);
     });
   }
 
-  function renderIdentitySuccess() {
-    app.innerHTML = `
-      <div class="screen">
-        <h1>Identity Authentication Successful</h1>
-        <h2>Welcome Agent ${agent}</h2>
-        <button id="next">Proceed</button>
-      </div>
-    `;
-    document.getElementById("next").onclick = renderQuestion;
-  }
+  /* =========================
+     RESPONSE ENGINE
+  ========================= */
+  async function handleAnswer(answer) {
+    const log = document.getElementById("log");
 
-  function renderFinalInput() {
-    app.innerHTML = `
-      <div class="screen">
-        <h2>Final Verification</h2>
-        <p><i>Blood makes us related, loyalty makes us family, and family is ______.</i></p>
-        <input id="answer"/>
-        <button id="submit">Submit</button>
-      </div>
-    `;
+    await typeTo(log, `> ${answer}`);
+    await typeTo(log, "ANALYZING RESPONSE...");
 
-    document.getElementById("submit").onclick = () => {
-      if (document.getElementById("answer").value.toLowerCase().includes("forever")) {
-        renderSuccess();
-      }
-    };
-  }
+    if (answer === question.correct) {
+      state.clearance++;
 
-  function renderSuccess() {
-    app.innerHTML = `
-      <div class="screen">
-        <h1>Security Clearance Approved</h1>
-        <button id="continue">Proceed to Mission</button>
-      </div>
-    `;
-    document.getElementById("continue").onclick = next;
-  }
+      await typeTo(log, "EMOTIONAL CONSISTENCY: VERIFIED");
+      await typeTo(log, "TRUST INDEX: INCREASING");
+      await typeTo(log, "CLEARANCE UPGRADE: ALPHA → BETA");
 
-  renderIntro();
-}
+      await delay(800);
 
-/* =========================
-   CINEMATIC BRIEFING
-========================= */
-export function renderBriefing(app, agent, role, next) {
-  const roleLabel = agent === "Jason" ? "Best Man" : "Groomsman";
-
-  app.innerHTML = `
-    <div class="briefing cinematic">
-      <h1>Operation: Always and Forever</h1>
-      <p class="subtitle">MI6 Secure Transmission</p>
-
-      <div id="typewriter"></div>
-
-      <div class="options hidden" id="actions">
-        <button id="accept">Accept Mission</button>
-        <button id="decline">Decline</button>
-      </div>
-    </div>
-  `;
-
-  const lines = [
-    `Agent ${agent}...`,
-    `You have been selected for a high-priority assignment.`,
-    `You are to assist Agent Ghost.`,
-    `Operation: Always and Forever.`,
-    `Your role: ${roleLabel}.`,
-    `Will you accept your mission?`,
-    `The table awaits...`
-  ];
-
-  const container = document.getElementById("typewriter");
-  const actions = document.getElementById("actions");
-
-  let lineIndex = 0;
-
-  function typeLine(text, callback) {
-    let i = 0;
-    const el = document.createElement("p");
-    container.appendChild(el);
-
-    function typing() {
-      if (i < text.length) {
-        el.innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typing, 25);
-      } else {
-        setTimeout(callback, 400);
-      }
-    }
-
-    typing();
-  }
-
-  function nextLine() {
-    if (lineIndex < lines.length) {
-      typeLine(lines[lineIndex], () => {
-        lineIndex++;
-        nextLine();
-      });
+      missionBriefing();
     } else {
-      actions.classList.remove("hidden");
+      await typeTo(log, "INCONSISTENT RESPONSE DETECTED");
+      await typeTo(log, "CLEARANCE STABLE: ALPHA-0");
 
-      document.getElementById("accept").onclick = () => {
-        app.innerHTML = `
-          <div class="screen fade-out">
-            <h1>Mission Accepted</h1>
-            <p>Initializing operation...</p>
-          </div>
-        `;
-        setTimeout(next, 1200);
-      };
+      await delay(800);
 
-      document.getElementById("decline").onclick = () => {
-        app.innerHTML = `
-          <div class="decline-screen">
-            <h1 class="warning">⚠ ACCESS DENIED</h1>
-          </div>
-        `;
-      };
+      loyaltyProtocol();
     }
   }
 
-  nextLine();
-}
+  /* =========================
+     MISSION BRIEFING
+  ========================= */
+  async function missionBriefing() {
+    app.innerHTML = `
+      <div class="terminal">
+        <div id="brief"></div>
+        <button id="enter">ACCEPT MISSION</button>
+      </div>
+    `;
 
-/* =========================
-   POKER TABLE (RESTORED)
-========================= */
-export function renderPoker(app) {
-  const agents = [
-    { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
-    { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
-    { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
-    { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
-    { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
-    { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
-    { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
-  ];
+    const brief = document.getElementById("brief");
 
-  const community = ["A♠","K♦","10♣","7♥","3♠"];
+    await typeTo(brief, `
+OPERATION: ALWAYS AND FOREVER
 
-  function getPosition(i, total) {
-    const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
-    const r = 300;
-    return {
-      x: Math.cos(angle) * r,
-      y: Math.sin(angle) * r
-    };
+Agent ${agent},
+Codename: ${state.codename}
+
+You are hereby assigned to:
+- Secure the perimeter
+- Maintain operational secrecy
+- Support Agent Ghost (Arunan)
+
+Status: MISSION ACTIVE
+`);
+
+    document.getElementById("enter").onclick = operationNode;
   }
 
-  app.innerHTML = `
-    <div class="poker-table-container">
-      <div class="poker-table">
-
-        <div class="community">
-          <div class="community-cards" id="community-cards"></div>
-        </div>
-
-        ${agents.map((a,i)=>{
-          const pos = getPosition(i,agents.length);
-          return `
-          <div class="seat" style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
-            <div class="agent-card">
-              <h3>${a.name}</h3>
-              <div class="codename">${a.codename}</div>
-              <div class="role">${a.role}</div>
-              <div class="chips">💰 ${a.chips}</div>
-
-              <div class="cards">
-                <div class="card">A</div>
-                <div class="card">K</div>
-              </div>
-
-              <div class="result">Waiting...</div>
-            </div>
-          </div>`;
-        }).join("")}
-
+  /* =========================
+     OPERATION NODE (POKER TABLE)
+  ========================= */
+  function operationNode() {
+    app.innerHTML = `
+      <div class="mission-node">
+        <h1>OPERATION NODE: ACTIVE</h1>
+        <p>Initializing poker table environment...</p>
       </div>
-    </div>
-  `;
+    `;
 
-  const container = document.getElementById("community-cards");
+    setTimeout(next, 1500);
+  }
 
-  community.forEach((card,i)=>{
-    setTimeout(()=>{
-      const el = document.createElement("div");
-      el.className = "card deal";
-      el.innerText = card;
-      container.appendChild(el);
+  /* =========================
+     UTILITIES
+  ========================= */
+  function assignCodename(name) {
+    const map = {
+      Jason: "Viper",
+      Gill: "Architect",
+      Prathap: "Midnight",
+      Taylor: "Shadow",
+      Duran: "Anomaly",
+      Josh: "Mirage"
+    };
+    return map[name] || "Ghost";
+  }
 
-      setTimeout(()=>el.classList.add("show"),50);
-    }, i*500);
-  });
+  function delay(ms) {
+    return new Promise(res => setTimeout(res, ms));
+  }
+
+  function type(text, speed = 15) {
+    return new Promise(resolve => {
+      const log = document.getElementById("log") || document.createElement("div");
+      let i = 0;
+
+      function step() {
+        if (i < text.length) {
+          log.innerHTML += text[i++];
+          setTimeout(step, speed);
+        } else {
+          log.innerHTML += "\n";
+          resolve();
+        }
+      }
+
+      step();
+    });
+  }
+
+  function typeTo(el, text, speed = 15) {
+    return new Promise(resolve => {
+      let i = 0;
+      function step() {
+        if (i < text.length) {
+          el.innerHTML += text[i++];
+          setTimeout(step, speed);
+        } else {
+          el.innerHTML += "\n";
+          resolve();
+        }
+      }
+      step();
+    });
+  }
+
+  /* START */
+  boot();
 }
