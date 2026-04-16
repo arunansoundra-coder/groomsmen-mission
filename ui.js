@@ -151,7 +151,7 @@ export function renderBriefing(app, agent, role, next) {
 
 
 /* =========================
-   POKER TABLE
+   POKER TABLE (MI6 HYBRID SYSTEM)
 ========================= */
 export function renderPoker(app) {
   const agents = [
@@ -166,6 +166,18 @@ export function renderPoker(app) {
 
   const community = ["A♠", "K♦", "10♣", "7♥", "3♠"];
 
+  /* =========================
+     GLOBAL MI6 REGISTRY
+  ========================= */
+  window.MI6_REGISTRY = window.MI6_REGISTRY || {
+    activeAgents: new Set()
+  };
+
+  const activeSet = window.MI6_REGISTRY.activeAgents;
+
+  /* =========================
+     POSITION CALC
+  ========================= */
   function getPosition(i, total) {
     const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
     const r = 300;
@@ -175,10 +187,21 @@ export function renderPoker(app) {
     };
   }
 
+  /* =========================
+     STATUS RESOLUTION
+  ========================= */
+  function getStatus(agentName) {
+    if (agentName === "Arunan") return "ACTIVE"; // always host
+    if (activeSet.has(agentName)) return "ACTIVE";
+    return "PENDING";
+  }
+
+  /* =========================
+     RENDER TABLE
+  ========================= */
   app.innerHTML = `
     <div class="poker-table-container">
 
-      <!-- MI6 SYSTEM BANNER -->
       <div class="system-banner">
         OPERATION SCHEDULED: 12:00 PM — SEPTEMBER 18, 2026
       </div>
@@ -191,10 +214,12 @@ export function renderPoker(app) {
 
         ${agents.map((a, i) => {
           const pos = getPosition(i, agents.length);
+          const status = getStatus(a.name);
 
           return `
-          <div class="seat"
+          <div class="seat ${status.toLowerCase()}"
             style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
+
             <div class="agent-card">
 
               <h3>${a.name}</h3>
@@ -207,8 +232,9 @@ export function renderPoker(app) {
                 <div class="card">K</div>
               </div>
 
-              <!-- MI6-style live system status -->
-              <div class="result">ASSESSING THREAT LEVEL...</div>
+              <div class="status-line">
+                STATUS: ${status === "ACTIVE" ? "CLEARED" : "AWAITING RESPONSE"}
+              </div>
 
             </div>
           </div>`;
@@ -218,6 +244,9 @@ export function renderPoker(app) {
     </div>
   `;
 
+  /* =========================
+     COMMUNITY CARD DEAL
+  ========================= */
   const container = document.getElementById("community-cards");
 
   community.forEach((card, i) => {
