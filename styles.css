@@ -106,3 +106,12 @@ button {
   opacity: 1;
   transform: translateY(0);
 }
+.system-banner {
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ff9f;
+  text-align: center;
+  padding: 12px;
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #00ff9f;
+}
