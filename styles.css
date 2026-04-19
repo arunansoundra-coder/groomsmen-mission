@@ -115,3 +115,24 @@ button {
   letter-spacing: 2px;
   border-bottom: 1px solid #00ff9f;
 }
+.screen {
+  text-align: center;
+  padding: 40px;
+  font-family: monospace;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+#log {
+  margin: 20px 0;
+  font-size: 12px;
+  color: #00ff9f;
+}
+
+#table div {
+  margin: 5px;
+}
