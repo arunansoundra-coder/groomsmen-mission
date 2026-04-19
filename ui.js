@@ -34,6 +34,8 @@ export function renderAuth(app, next) {
 // =========================
 export function renderBriefing(app, agent, next) {
 
+  const role = agent === "Jason" ? "Best Man" : "Groomsman";
+
   app.innerHTML = `
     <div class="briefing">
       <h1>Operation: Always and Forever</h1>
@@ -41,8 +43,15 @@ export function renderBriefing(app, agent, next) {
       <p>Agent ${agent}, you are cleared for briefing.</p>
       <p>You are entering a controlled environment.</p>
 
-      <button id="accept">Accept Mission</button>
-      <button id="decline">Decline</button>
+      <br/>
+
+      <p>
+        Do you accept the mission of serving as
+        <b>${role}</b>?
+      </p>
+
+      <button id="accept">I Accept</button>
+      <button id="decline">I Decline</button>
     </div>
   `;
 
@@ -51,6 +60,11 @@ export function renderBriefing(app, agent, next) {
   };
 
   document.getElementById("decline").onclick = () => {
-    app.innerHTML = `<h1>ACCESS DENIED</h1>`;
+    app.innerHTML = `
+      <div class="decline-screen">
+        <h1>ACCESS DENIED</h1>
+        <p>Mission rejected.</p>
+      </div>
+    `;
   };
 }
