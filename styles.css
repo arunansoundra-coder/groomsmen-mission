@@ -185,3 +185,13 @@ button {
 .reveal-line {
   margin: 8px 0;
 }
+.hidden {
+  display: none;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 999;
+}
