@@ -59,3 +59,5 @@ setTimeout(() => {
   }, 800);
 
 }, 1200);
+   
+logLine(">> Operation: Always and Forever");
