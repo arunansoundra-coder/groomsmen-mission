@@ -50,10 +50,12 @@ export function renderPoker(app) {
   logLine(">> TABLE READY");
 
   // 🔥 FINAL CINEMATIC MESSAGE
-  setTimeout(() => {
-    logLine(" ");
-    logLine(">> You were not invited...");
-    logLine(">> You were selected.");
-  }, 1200);
+setTimeout(() => {
+  logLine(" ");
+  logLine(">> You were not invited...");
 
-}, delay + 300);
+  setTimeout(() => {
+    logLine(">> You were selected.");
+  }, 800);
+
+}, 1200);
