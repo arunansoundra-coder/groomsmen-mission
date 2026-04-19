@@ -37,21 +37,44 @@ export function renderBriefing(app, agent, next) {
   const role = agent === "Jason" ? "Best Man" : "Groomsman";
 
   app.innerHTML = `
-    <div class="briefing">
-      <h1>Operation: Always and Forever</h1>
+    <div class="briefing-container">
 
-      <p>Agent ${agent}, you are cleared for briefing.</p>
-      <p>You are entering a controlled environment.</p>
+      <div class="briefing-card">
 
-      <br/>
+        <h1>Operation: Always and Forever</h1>
 
-      <p>
-        Do you accept the mission of serving as
-        <b>${role}</b>?
-      </p>
+        <p><b>Agent ${agent}</b>, you are cleared for briefing.</p>
+        <p>You are entering a controlled environment.</p>
 
-      <button id="accept">I Accept</button>
-      <button id="decline">I Decline</button>
+        <hr/>
+
+        <p>
+          🎯 <b>Mission Objective:</b><br/>
+          Participate in a poker game on <b>September 18th, 2026 at 12:00 PM</b>  
+          with the objective of beating the groom.
+        </p>
+
+        <p>
+          🏠 <b>Safe House Protocol:</b><br/>
+          A secure residence is available for all agents during the mission.
+          You are advised to stay on-site for coordination and readiness.
+        </p>
+
+        <p>
+          ⚠️ You must confirm whether you will be staying at the safe house.
+        </p>
+
+        <p>
+          Do you accept the mission of serving as <b>${role}</b>?
+        </p>
+
+        <div class="button-group">
+          <button id="accept">Accept Mission</button>
+          <button id="decline">Decline</button>
+        </div>
+
+      </div>
+
     </div>
   `;
 
