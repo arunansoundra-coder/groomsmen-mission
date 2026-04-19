@@ -1,117 +1,73 @@
 export function renderPoker(app) {
 
-  const agents = ["Arunan","Jason","Gill","Prathap","Taylor","Duran","Josh"];
-  const registry = window.MI6_REGISTRY;
+  const agents = [
+    { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
+    { name: "Jason", codename: "Viper", role: "Best Man", chips: 1200 },
+    { name: "Gill", codename: "Architect", role: "Groomsman", chips: 1100 },
+    { name: "Prathap", codename: "Midnight", role: "Groomsman", chips: 1000 },
+    { name: "Taylor", codename: "Shadow", role: "Groomsman", chips: 1000 },
+    { name: "Duran", codename: "Anomaly", role: "Groomsman", chips: 950 },
+    { name: "Josh", codename: "Mirage", role: "Groomsman", chips: 900 }
+  ];
+
+  const community = ["A♠", "K♦", "10♣", "7♥", "3♠"];
+
+  function getPosition(i, total) {
+    const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    const r = 300;
+    return {
+      x: Math.cos(angle) * r,
+      y: Math.sin(angle) * r
+    };
+  }
 
   app.innerHTML = `
-    <div class="screen cinematic">
-      <h2>OPERATION SCHEDULED: SEPT 18, 2026 @ 12:00 PM</h2>
+    <div class="poker-table-container">
+      <div class="poker-table">
 
-      <div id="log" class="log"></div>
-      <div id="table" class="table"></div>
+        <div class="community">
+          <div class="community-cards" id="community-cards"></div>
+        </div>
 
-      <div id="overlay" class="overlay hidden">
-        <div class="reveal-text" id="revealText"></div>
+        ${agents.map((a, i) => {
+          const pos = getPosition(i, agents.length);
+
+          return `
+            <div class="seat"
+              style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
+              
+              <div class="agent-card">
+                <h3>${a.name}</h3>
+                <div class="codename">${a.codename}</div>
+                <div class="role">${a.role}</div>
+                <div class="chips">💰 ${a.chips}</div>
+
+                <div class="cards">
+                  <div class="card">A</div>
+                  <div class="card">K</div>
+                </div>
+
+                <div class="result">Waiting...</div>
+              </div>
+
+            </div>
+          `;
+        }).join("")}
+
       </div>
     </div>
   `;
 
-  const table = document.getElementById("table");
-  const log = document.getElementById("log");
-  const overlay = document.getElementById("overlay");
-  const revealText = document.getElementById("revealText");
+  const container = document.getElementById("community-cards");
 
-  function logLine(t) {
-    const d = document.createElement("div");
-    d.innerText = t;
-    log.appendChild(d);
-  }
-
-  // =========================
-  // LOAD AGENTS
-  // =========================
-  let activeCount = 0;
-
-  agents.forEach((a, i) => {
-    const active = registry.activeAgents.has(a) || a === "Arunan";
-
-    const el = document.createElement("div");
-    el.className = `agent ${active ? "active" : "pending"}`;
-
-    el.innerHTML = `
-      <b>${a}</b>
-      <span>${active ? "ACTIVE" : "AWAITING CLEARANCE"}</span>
-    `;
-
-    table.appendChild(el);
-
+  community.forEach((card, i) => {
     setTimeout(() => {
-      if (active) {
-        logLine(`>> Agent ${a} has entered the operation`);
-        activeCount++;
-      }
-    }, 500 + i * 400);
+      const el = document.createElement("div");
+      el.className = "card deal";
+      el.innerText = card;
+      container.appendChild(el);
+
+      setTimeout(() => el.classList.add("show"), 50);
+    }, i * 500);
   });
-
-  // =========================
-  // FINAL SEQUENCE TRIGGER
-  // =========================
-  const totalDelay = 500 + agents.length * 400;
-
-  setTimeout(() => {
-
-    logLine(" ");
-    logLine(">> ALL ACTIVE AGENTS SYNCED");
-    logLine(">> SYSTEM LOCKED");
-
-    setTimeout(() => {
-      // fade into reveal mode
-      overlay.classList.remove("hidden");
-
-      typeReveal([
-        "SYSTEM OVERRIDE COMPLETE",
-        "",
-        "This was never just a mission.",
-        "It was a gathering of those who matter.",
-        "",
-        "You were not invited.",
-        "You were selected.",
-        "",
-        "Operation: Always and Forever"
-      ]);
-
-    }, 1200);
-
-  }, totalDelay + 800);
-
-  // =========================
-  // TYPE REVEAL ANIMATION
-  // =========================
-  function typeReveal(lines) {
-    let i = 0;
-
-    function next() {
-      if (i >= lines.length) return;
-
-      const line = document.createElement("div");
-      line.className = "reveal-line";
-      revealText.appendChild(line);
-
-      let j = 0;
-
-      function typeChar() {
-        if (j < lines[i].length) {
-          line.innerHTML += lines[i][j++];
-          setTimeout(typeChar, 25);
-        } else {
-          i++;
-          setTimeout(next, 500);
-        }
-      }
-
-      typeChar();
-    }
-
-    next();
-  }
 }
