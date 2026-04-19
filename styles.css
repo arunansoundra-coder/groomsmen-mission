@@ -102,3 +102,54 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+.briefing-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.briefing-card {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+  border-radius: 12px;
+  font-family: monospace;
+  text-align: left;
+}
+
+.briefing-card h1 {
+  text-align: center;
+  color: #00ff9f;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+  .briefing-card {
+    font-size: 14px;
+    padding: 16px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
