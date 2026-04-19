@@ -136,3 +136,52 @@ button {
 #table div {
   margin: 5px;
 }
+.cinematic {
+  background: black;
+  color: #00ff9f;
+  font-family: monospace;
+}
+
+.log {
+  font-size: 12px;
+  margin: 10px 0;
+  height: 80px;
+  overflow: hidden;
+}
+
+.table {
+  margin-top: 20px;
+}
+
+.agent {
+  opacity: 0.4;
+  margin: 6px 0;
+}
+
+.agent.active {
+  opacity: 1;
+  color: #00ff9f;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.reveal-text {
+  text-align: center;
+  font-size: 18px;
+  max-width: 600px;
+}
+
+.reveal-line {
+  margin: 8px 0;
+}
