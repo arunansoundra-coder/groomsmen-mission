@@ -1,3 +1,7 @@
+
+/* =========================
+   BASE THEME
+========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -6,29 +10,128 @@ body {
   text-align: center;
 }
 
-.screen, .briefing, .decline-screen {
+/* =========================
+   SCREENS
+========================= */
+.screen,
+.briefing,
+.decline-screen {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-family: monospace;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 button {
-  padding: 10px 20px;
-  margin: 10px;
+  padding: 10px 15px;
+  margin: 5px;
   cursor: pointer;
 }
 
+/* =========================
+   GLOBAL HIDDEN STATE
+   (ONLY ONE VERSION — FIXED)
+========================= */
 .hidden {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
-.options {
-  transition: opacity 0.5s;
+/* =========================
+   SYSTEM / TERMINAL LOG
+========================= */
+#log {
+  margin: 20px 0;
+  font-size: 12px;
+  color: #00ff9f;
 }
 
-/* POKER TABLE */
+/* =========================
+   CINEMATIC MODE
+========================= */
+.cinematic {
+  background: black;
+  color: #00ff9f;
+  font-family: monospace;
+}
+
+/* =========================
+   TABLE CONTAINER
+========================= */
+.table {
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================
+   AGENTS
+========================= */
+.agent {
+  opacity: 0.4;
+  margin: 6px 0;
+  transition: all 0.3s ease;
+}
+
+.agent.active {
+  opacity: 1;
+  color: #00ff9f;
+}
+
+/* =========================
+   SAFEHOUSE / STATUS
+========================= */
+.status-line {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* =========================
+   OVERLAY (FIXED - SINGLE SOURCE)
+========================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   REVEAL TEXT
+========================= */
+.reveal-text {
+  text-align: center;
+  font-size: 18px;
+  max-width: 600px;
+}
+
+.reveal-line {
+  margin: 8px 0;
+}
+
+/* =========================
+   SYSTEM BANNER
+========================= */
+.system-banner {
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ff9f;
+  text-align: center;
+  padding: 12px;
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #00ff9f;
+}
+
+/* =========================
+   POKER TABLE BASE
+========================= */
 .poker-table {
   position: relative;
   width: 900px;
@@ -38,6 +141,9 @@ button {
   background: radial-gradient(circle, #0b6b3a, #063d22);
 }
 
+/* =========================
+   SEATS / AGENTS VISUAL
+========================= */
 .seat {
   position: absolute;
   top: 50%;
@@ -46,25 +152,14 @@ button {
 
 .agent-card {
   width: 150px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   padding: 10px;
   border-radius: 10px;
 }
 
-.codename {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.role {
-  font-size: 12px;
-  color: #ccc;
-}
-
-.chips {
-  color: gold;
-}
-
+/* =========================
+   CARD UI
+========================= */
 .cards {
   display: flex;
   justify-content: center;
@@ -82,12 +177,14 @@ button {
   justify-content: center;
 }
 
-/* COMMUNITY */
+/* =========================
+   COMMUNITY CARDS
+========================= */
 .community {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 
 .community-cards {
@@ -95,7 +192,9 @@ button {
   gap: 10px;
 }
 
-/* DEAL ANIMATION */
+/* =========================
+   DEAL ANIMATION
+========================= */
 .card.deal {
   opacity: 0;
   transform: translateY(-80px);
@@ -105,93 +204,4 @@ button {
 .card.deal.show {
   opacity: 1;
   transform: translateY(0);
-}
-.system-banner {
-  background: rgba(0, 0, 0, 0.9);
-  color: #00ff9f;
-  text-align: center;
-  padding: 12px;
-  font-family: "Courier New", monospace;
-  letter-spacing: 2px;
-  border-bottom: 1px solid #00ff9f;
-}
-.screen {
-  text-align: center;
-  padding: 40px;
-  font-family: monospace;
-}
-
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  cursor: pointer;
-}
-
-#log {
-  margin: 20px 0;
-  font-size: 12px;
-  color: #00ff9f;
-}
-
-#table div {
-  margin: 5px;
-}
-.cinematic {
-  background: black;
-  color: #00ff9f;
-  font-family: monospace;
-}
-
-.log {
-  font-size: 12px;
-  margin: 10px 0;
-  height: 80px;
-  overflow: hidden;
-}
-
-.table {
-  margin-top: 20px;
-}
-
-.agent {
-  opacity: 0.4;
-  margin: 6px 0;
-}
-
-.agent.active {
-  opacity: 1;
-  color: #00ff9f;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hidden {
-  display: none;
-}
-
-.reveal-text {
-  text-align: center;
-  font-size: 18px;
-  max-width: 600px;
-}
-
-.reveal-line {
-  margin: 8px 0;
-}
-.hidden {
-  display: none;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: black;
-  z-index: 999;
 }
