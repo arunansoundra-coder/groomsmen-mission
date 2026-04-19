@@ -45,8 +45,15 @@ export function renderPoker(app) {
     }
   });
 
+ setTimeout(() => {
+  logLine(">> ALL ACTIVE AGENTS SYNCED");
+  logLine(">> TABLE READY");
+
+  // 🔥 FINAL CINEMATIC MESSAGE
   setTimeout(() => {
-    logLine(">> ALL ACTIVE AGENTS SYNCED");
-    logLine(">> TABLE READY");
-  }, delay + 300);
-}
+    logLine(" ");
+    logLine(">> You were not invited...");
+    logLine(">> You were selected.");
+  }, 1200);
+
+}, delay + 300);
