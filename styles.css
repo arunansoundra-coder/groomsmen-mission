@@ -1,7 +1,3 @@
-
-/* =========================
-   BASE THEME
-========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -11,126 +7,7 @@ body {
 }
 
 /* =========================
-   SCREENS
-========================= */
-.screen,
-.briefing,
-.decline-screen {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-family: monospace;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-button {
-  padding: 10px 15px;
-  margin: 5px;
-  cursor: pointer;
-}
-
-/* =========================
-   GLOBAL HIDDEN STATE
-   (ONLY ONE VERSION — FIXED)
-========================= */
-.hidden {
-  display: none;
-}
-
-/* =========================
-   SYSTEM / TERMINAL LOG
-========================= */
-#log {
-  margin: 20px 0;
-  font-size: 12px;
-  color: #00ff9f;
-}
-
-/* =========================
-   CINEMATIC MODE
-========================= */
-.cinematic {
-  background: black;
-  color: #00ff9f;
-  font-family: monospace;
-}
-
-/* =========================
-   TABLE CONTAINER
-========================= */
-.table {
-  margin-top: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-/* =========================
-   AGENTS
-========================= */
-.agent {
-  opacity: 0.4;
-  margin: 6px 0;
-  transition: all 0.3s ease;
-}
-
-.agent.active {
-  opacity: 1;
-  color: #00ff9f;
-}
-
-/* =========================
-   SAFEHOUSE / STATUS
-========================= */
-.status-line {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-/* =========================
-   OVERLAY (FIXED - SINGLE SOURCE)
-========================= */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.92);
-  z-index: 999;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* =========================
-   REVEAL TEXT
-========================= */
-.reveal-text {
-  text-align: center;
-  font-size: 18px;
-  max-width: 600px;
-}
-
-.reveal-line {
-  margin: 8px 0;
-}
-
-/* =========================
-   SYSTEM BANNER
-========================= */
-.system-banner {
-  background: rgba(0, 0, 0, 0.9);
-  color: #00ff9f;
-  text-align: center;
-  padding: 12px;
-  font-family: "Courier New", monospace;
-  letter-spacing: 2px;
-  border-bottom: 1px solid #00ff9f;
-}
-
-/* =========================
-   POKER TABLE BASE
+   POKER TABLE
 ========================= */
 .poker-table {
   position: relative;
@@ -142,7 +19,7 @@ button {
 }
 
 /* =========================
-   SEATS / AGENTS VISUAL
+   SEATS
 ========================= */
 .seat {
   position: absolute;
@@ -150,15 +27,35 @@ button {
   left: 50%;
 }
 
+/* =========================
+   AGENT CARD
+========================= */
 .agent-card {
   width: 150px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0,0,0,0.6);
   padding: 10px;
   border-radius: 10px;
 }
 
 /* =========================
-   CARD UI
+   TEXT STYLES
+========================= */
+.codename {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.role {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.chips {
+  color: gold;
+}
+
+/* =========================
+   CARDS
 ========================= */
 .cards {
   display: flex;
@@ -178,13 +75,13 @@ button {
 }
 
 /* =========================
-   COMMUNITY CARDS
+   COMMUNITY
 ========================= */
 .community {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,-50%);
 }
 
 .community-cards {
