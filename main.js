@@ -1,30 +1,32 @@
-import { renderAuth, renderBriefing, renderPoker } from "./ui.js";
-
-const app = document.getElementById("app");
-
-const params = new URLSearchParams(window.location.search);
-const agent = params.get("agent") || "Agent";
-
-const roles = {
-  Jason: "Best Man",
-  Arunan: "Groom"
+// =========================
+// GLOBAL STATE (MI6 REGISTRY)
+// =========================
+window.MI6_REGISTRY = {
+  activeAgents: new Set(),
+  responses: {}
 };
 
-function getRole(name) {
-  return roles[name] || "Groomsman";
-}
+// =========================
+// IMPORT SCREENS
+// =========================
+import { renderAuth, renderBriefing, renderSafehouse } from "./ui.js";
+import { renderPoker } from "./poker.js";
 
-let stage = "auth";
+// =========================
+// APP INIT
+// =========================
+const app = document.getElementById("app");
 
-function nextStage() {
-  if (stage === "auth") {
-    stage = "briefing";
-    renderBriefing(app, agent, getRole(agent), nextStage);
-  } else if (stage === "briefing") {
-    stage = "poker";
-    renderPoker(app);
-  }
-}
+// 🔥 CHANGE THIS PER PERSON
+const agent = "Jason";
 
-// START
-renderAuth(app, nextStage, agent);
+// =========================
+// FLOW
+// =========================
+renderAuth(app, () => {
+  renderBriefing(app, agent, () => {
+    renderSafehouse(app, agent, () => {
+      renderPoker(app);
+    });
+  });
+}, agent);
