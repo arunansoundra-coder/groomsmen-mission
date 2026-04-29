@@ -128,37 +128,3 @@ body {
   font-size: 12px;
   color: lightgreen;
 }
-
-/* ===== MOBILE RESPONSIVENESS ===== */
-@media (max-width: 768px) {
-
-  .agent-card {
-    width: 90px;
-    font-size: 10px;
-    padding: 6px;
-  }
-
-  .agent-card h3 {
-    font-size: 12px;
-  }
-
-  .chips {
-    font-size: 11px;
-  }
-
-  .card {
-    width: 28px;
-    height: 40px;
-    font-size: 10px;
-  }
-
-  .community-cards {
-    gap: 4px;
-  }
-
-  .poker-subtext {
-    font-size: 16px;
-    margin-top: 6px;
-  }
-
-}
