@@ -30,11 +30,14 @@ export function renderAuth(app, next) {
 }
 
 // =========================
-// BRIEFING SCREEN
+// BRIEFING SCREEN (FIXED)
 // =========================
 export function renderBriefing(app, agent, next) {
 
-  const role = agent === "Jason" ? "Best Man" : "Groomsman";
+  // ✅ FIX: no hardcoded Jason logic
+  const role = agent === "Arunan" ? "Groom" :
+               agent === "Jason" ? "Best Man" :
+               "Groomsman";
 
   app.innerHTML = `
     <div class="briefing-container">
