@@ -30,7 +30,13 @@ export function renderPoker(app) {
         <div class="community">
           <div class="community-cards" id="community-cards"></div>
         </div>
+        <div class="community-cards">
+         <!-- cards -->
+        </div>
 
+        <div class="poker-subtext">
+        Salud mi familia 🍻
+        </div>
         ${agents.map((a, i) => {
           const pos = getPosition(i, agents.length);
 
