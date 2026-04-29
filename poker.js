@@ -21,50 +21,47 @@ export function renderPoker(app) {
     };
   }
 
-  app.innerHTML = `
-    <div class="poker-table-container">
-      <div class="poker-table">
-      <div class="poker-center-text">
-        Salud mi familia 🍻
-      </div>
-        <div class="community">
-          <div class="community-cards" id="community-cards"></div>
-        </div>
-        <div class="community-cards">
-         <!-- cards -->
-        </div>
+app.innerHTML = `
+  <div class="poker-table-container">
+    <div class="poker-table">
 
+      <div class="community">
+        <div class="community-cards" id="community-cards"></div>
+
+        <!-- ✅ TEXT DIRECTLY UNDER THE CARDS -->
         <div class="poker-subtext">
-        Salud mi familia 🍻
+          Salud mi familia 🍻
         </div>
-        ${agents.map((a, i) => {
-          const pos = getPosition(i, agents.length);
+      </div>
 
-          return `
-            <div class="seat"
-              style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
-              
-              <div class="agent-card">
-                <h3>${a.name}</h3>
-                <div class="codename">${a.codename}</div>
-                <div class="role">${a.role}</div>
-                <div class="chips">💰 ${a.chips}</div>
+      ${agents.map((a, i) => {
+        const pos = getPosition(i, agents.length);
 
-                <div class="cards">
-                  <div class="card">A</div>
-                  <div class="card">K</div>
-                </div>
+        return `
+          <div class="seat"
+            style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
+            
+            <div class="agent-card">
+              <h3>${a.name}</h3>
+              <div class="codename">${a.codename}</div>
+              <div class="role">${a.role}</div>
+              <div class="chips">💰 ${a.chips}</div>
 
-                <div class="result">Waiting...</div>
+              <div class="cards">
+                <div class="card">A</div>
+                <div class="card">K</div>
               </div>
 
+              <div class="result">Waiting...</div>
             </div>
-          `;
-        }).join("")}
 
-      </div>
+          </div>
+        `;
+      }).join("")}
+
     </div>
-  `;
+  </div>
+`;
 
   const container = document.getElementById("community-cards");
 
