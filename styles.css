@@ -177,3 +177,28 @@ button {
 
   text-shadow: 0 0 8px black;
 }
+/* 📱 MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+
+  .agent-card {
+    width: 90px;
+    font-size: 10px;
+    padding: 6px;
+  }
+
+  .card {
+    width: 24px;
+    height: 34px;
+    font-size: 10px;
+  }
+
+  .community-cards {
+    gap: 4px;
+  }
+
+  .poker-subtext {
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+}
