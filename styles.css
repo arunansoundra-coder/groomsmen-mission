@@ -1,87 +1,40 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: Arial, sans-serif;
-  background: #0b0f19;
+  background: radial-gradient(circle at center, #0b3d2e, #07251c);
   color: white;
-  text-align: center;
 }
 
-/* =========================
-   POKER TABLE
-========================= */
+/* ===== TABLE LAYOUT ===== */
+.poker-table-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .poker-table {
   position: relative;
-  width: 900px;
-  height: 900px;
-  margin: auto;
-  border-radius: 50%;
-  background: radial-gradient(circle, #0b6b3a, #063d22);
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
 }
 
-/* =========================
-   SEATS
-========================= */
-.seat {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-}
-
-/* =========================
-   AGENT CARD
-========================= */
-.agent-card {
-  width: 150px;
-  background: rgba(0,0,0,0.6);
-  padding: 10px;
-  border-radius: 10px;
-}
-
-/* =========================
-   TEXT STYLES
-========================= */
-.codename {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.role {
-  font-size: 12px;
-  color: #ccc;
-}
-
-.chips {
-  color: gold;
-}
-
-/* =========================
-   CARDS
-========================= */
-.cards {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-}
-
-.card {
-  width: 35px;
-  height: 50px;
-  background: white;
-  color: black;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* =========================
-   COMMUNITY
-========================= */
+/* ===== COMMUNITY CARDS ===== */
 .community {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .community-cards {
@@ -91,95 +44,92 @@ body {
   gap: 8px;
 }
 
-/* =========================
-   DEAL ANIMATION
-========================= */
-.card.deal {
-  opacity: 0;
-  transform: translateY(-80px);
-  transition: all 0.4s ease;
-}
-
-.card.deal.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-.briefing-container {
-  min-height: 100vh;
+/* ===== CARDS ===== */
+.card {
+  width: 50px;
+  height: 70px;
+  background: white;
+  color: black;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-}
-
-.briefing-card {
-  max-width: 600px;
-  width: 100%;
-  background: rgba(0,0,0,0.6);
-  padding: 20px;
-  border-radius: 12px;
-  font-family: monospace;
-  text-align: left;
-}
-
-.briefing-card h1 {
-  text-align: center;
-  color: #00ff9f;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 10px;
-}
-
-button {
-  flex: 1;
-  padding: 12px;
-  font-size: 14px;
-}
-
-/* Mobile optimization */
-@media (max-width: 600px) {
-  .briefing-card {
-    font-size: 14px;
-    padding: 16px;
-  }
-
-  .button-group {
-    flex-direction: column;
-  }
-
-  button {
-    width: 100%;
-  }
-}
-.poker-center-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  font-size: 36px;
   font-weight: bold;
-  color: gold;
-  text-align: center;
+  font-size: 16px;
 
-  text-shadow: 0 0 10px black, 0 0 20px black;
-  pointer-events: none; /* prevents blocking clicks */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
 }
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== SUBTEXT (Salud mi familia) ===== */
 .poker-subtext {
   margin-top: 12px;
-  text-align: center;
-
   font-size: 24px;
   font-weight: bold;
   color: gold;
-
+  text-align: center;
   text-shadow: 0 0 8px black;
 }
-/* 📱 MOBILE RESPONSIVENESS */
+
+/* ===== PLAYER SEATS ===== */
+.seat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+/* ===== AGENT CARDS ===== */
+.agent-card {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid gold;
+  border-radius: 10px;
+  padding: 10px;
+  width: 140px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.agent-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.codename {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.role {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.chips {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* ===== PLAYER HAND CARDS ===== */
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.result {
+  margin-top: 5px;
+  font-size: 12px;
+  color: lightgreen;
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
 @media (max-width: 768px) {
 
   .agent-card {
@@ -188,9 +138,17 @@ button {
     padding: 6px;
   }
 
+  .agent-card h3 {
+    font-size: 12px;
+  }
+
+  .chips {
+    font-size: 11px;
+  }
+
   .card {
-    width: 24px;
-    height: 34px;
+    width: 28px;
+    height: 40px;
     font-size: 10px;
   }
 
