@@ -11,66 +11,82 @@ export function renderPoker(app) {
   ];
 
   const community = ["A♠", "K♦", "10♣", "7♥", "3♠"];
-  
-  // ✅ READ URL PARAMETER
-  const urlParams = new URLSearchParams(window.location.search);
-  const selectedAgent = urlParams.get("agent");
 
-  // ✅ FIND ACTIVE AGENT (fallback to first if invalid)
-  const activeAgent = agents.find(
-    a => a.name.toLowerCase() === (selectedAgent || "").toLowerCase()
-  ) || agents[0];
-  
+  // ✅ READ URL PARAM
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedAgent = (urlParams.get("agent") || "").trim().toLowerCase();
+
+  // ✅ FIND ACTIVE AGENT (fallback = Arunan)
+  const activeAgent =
+    agents.find(a => a.name.toLowerCase() === selectedAgent) || agents[0];
+
   function getPosition(i, total) {
     const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
     const r = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+
     return {
       x: Math.cos(angle) * r,
       y: Math.sin(angle) * r
     };
   }
 
-app.innerHTML = `
-  <div class="poker-table-container">
-    <div class="poker-table">
+  app.innerHTML = `
+    <div class="poker-table-container">
+      <div class="poker-table">
 
-      <div class="community">
-        <div class="community-cards" id="community-cards"></div>
+        <!-- COMMUNITY AREA -->
+        <div class="community">
+          <div class="community-cards" id="community-cards"></div>
 
-        <!-- ✅ TEXT DIRECTLY UNDER THE CARDS -->
-        <div class="poker-subtext">
-          Salud mi familia 🍻
+          <div class="poker-subtext">
+            Salud mi familia 🍻
+          </div>
         </div>
-      </div>
 
-      ${agents.map((a, i) => {
-        const pos = getPosition(i, agents.length);
+        <!-- AGENTS -->
+        ${agents.map((a) => {
 
-        return `
-          <div class="seat"
-            style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
-            
-            <div class="agent-card">
-              <h3>${a.name}</h3>
-              <div class="codename">${a.codename}</div>
-              <div class="role">${a.role}</div>
-              <div class="chips">💰 ${a.chips}</div>
+          const pos = getPosition(
+            agents.indexOf(a),
+            agents.length
+          );
 
-              <div class="cards">
-                <div class="card">A</div>
-                <div class="card">K</div>
+          const isActive =
+            a.name.toLowerCase() === activeAgent.name.toLowerCase();
+
+          return `
+            <div class="seat ${isActive ? "active-agent" : ""}"
+              data-agent="${a.name}"
+              style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
+              
+              <div class="agent-card">
+                <h3>
+                  ${a.name} ${isActive ? "⭐" : ""}
+                </h3>
+
+                <div class="codename">${a.codename}</div>
+                <div class="role">${a.role}</div>
+                <div class="chips">💰 ${a.chips}</div>
+
+                <div class="cards">
+                  <div class="card">A</div>
+                  <div class="card">K</div>
+                </div>
+
+                <div class="result">
+                  ${isActive ? "ACTIVE PLAYER" : "Waiting..."}
+                </div>
               </div>
 
-              <div class="result">Waiting...</div>
             </div>
+          `;
+        }).join("")}
 
-          </div>
-        `;
-      }).join("")}
-
+      </div>
     </div>
-  </div>
-`;
+  `;
+
+  // ===== COMMUNITY CARD DEAL ANIMATION =====
   const container = document.getElementById("community-cards");
 
   community.forEach((card, i) => {
