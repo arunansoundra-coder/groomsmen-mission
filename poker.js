@@ -24,7 +24,9 @@ export function renderPoker(app) {
   app.innerHTML = `
     <div class="poker-table-container">
       <div class="poker-table">
-
+      <div class="poker-center-text">
+        Salud mi familia 🍻
+      </div>
         <div class="community">
           <div class="community-cards" id="community-cards"></div>
         </div>
