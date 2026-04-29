@@ -1,4 +1,4 @@
-export function renderPoker(app) {
+export function renderPoker(app, selectedAgent) {
 
   const agents = [
     { name: "Arunan", codename: "Ghost", role: "Groom", chips: 1500 },
@@ -12,13 +12,9 @@ export function renderPoker(app) {
 
   const community = ["A♠", "K♦", "10♣", "7♥", "3♠"];
 
-  // ✅ READ URL PARAM
-  const urlParams = new URLSearchParams(window.location.search);
-  const selectedAgent = (urlParams.get("agent") || "").trim().toLowerCase();
-
-  // ✅ FIND ACTIVE AGENT (fallback = Arunan)
+  // ✅ SINGLE SOURCE OF TRUTH
   const activeAgent =
-    agents.find(a => a.name.toLowerCase() === selectedAgent) || agents[0];
+    agents.find(a => a.name === selectedAgent) || agents[0];
 
   function getPosition(i, total) {
     const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
@@ -34,7 +30,6 @@ export function renderPoker(app) {
     <div class="poker-table-container">
       <div class="poker-table">
 
-        <!-- COMMUNITY AREA -->
         <div class="community">
           <div class="community-cards" id="community-cards"></div>
 
@@ -43,22 +38,15 @@ export function renderPoker(app) {
           </div>
         </div>
 
-        <!-- AGENTS -->
-        ${agents.map((a) => {
+        ${agents.map((a, i) => {
 
-          const pos = getPosition(
-            agents.indexOf(a),
-            agents.length
-          );
-
-          const isActive =
-            a.name.toLowerCase() === activeAgent.name.toLowerCase();
+          const pos = getPosition(i, agents.length);
+          const isActive = a.name === activeAgent.name;
 
           return `
             <div class="seat ${isActive ? "active-agent" : ""}"
-              data-agent="${a.name}"
               style="transform:translate(-50%,-50%) translate(${pos.x}px,${pos.y}px)">
-              
+
               <div class="agent-card">
                 <h3>
                   ${a.name} ${isActive ? "⭐" : ""}
@@ -86,7 +74,6 @@ export function renderPoker(app) {
     </div>
   `;
 
-  // ===== COMMUNITY CARD DEAL ANIMATION =====
   const container = document.getElementById("community-cards");
 
   community.forEach((card, i) => {
