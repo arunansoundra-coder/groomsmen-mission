@@ -11,7 +11,16 @@ export function renderPoker(app) {
   ];
 
   const community = ["A♠", "K♦", "10♣", "7♥", "3♠"];
+  
+  // ✅ READ URL PARAMETER
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedAgent = urlParams.get("agent");
 
+  // ✅ FIND ACTIVE AGENT (fallback to first if invalid)
+  const activeAgent = agents.find(
+    a => a.name.toLowerCase() === (selectedAgent || "").toLowerCase()
+  ) || agents[0];
+  
   function getPosition(i, total) {
     const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
     const r = Math.min(window.innerWidth, window.innerHeight) * 0.35;
