@@ -14,7 +14,7 @@ export function renderPoker(app) {
 
   function getPosition(i, total) {
     const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
-    const r = 300;
+    const r = Math.min(window.innerWidth, window.innerHeight) * 0.35;
     return {
       x: Math.cos(angle) * r,
       y: Math.sin(angle) * r
