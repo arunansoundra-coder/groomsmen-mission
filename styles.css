@@ -167,3 +167,8 @@ button {
   text-shadow: 0 0 10px black, 0 0 20px black;
   pointer-events: none; /* prevents blocking clicks */
 }
+.active-agent .agent-card {
+  border: 2px solid gold;
+  box-shadow: 0 0 20px gold;
+  transform: translate(-50%, -50%) scale(1.08);
+}
