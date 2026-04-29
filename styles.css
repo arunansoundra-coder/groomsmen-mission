@@ -167,3 +167,13 @@ button {
   text-shadow: 0 0 10px black, 0 0 20px black;
   pointer-events: none; /* prevents blocking clicks */
 }
+.poker-subtext {
+  margin-top: 12px;
+  text-align: center;
+
+  font-size: 24px;
+  font-weight: bold;
+  color: gold;
+
+  text-shadow: 0 0 8px black;
+}
