@@ -102,6 +102,10 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* =========================
+   BRIEFING
+========================= */
 .briefing-container {
   min-height: 100vh;
   display: flex;
@@ -153,6 +157,10 @@ button {
     width: 100%;
   }
 }
+
+/* =========================
+   CENTER TEXT
+========================= */
 .poker-center-text {
   position: absolute;
   top: 50%;
@@ -165,10 +173,5 @@ button {
   text-align: center;
 
   text-shadow: 0 0 10px black, 0 0 20px black;
-  pointer-events: none; /* prevents blocking clicks */
-}
-.active-agent .agent-card {
-  border: 2px solid gold;
-  box-shadow: 0 0 20px gold;
-  transform: translate(-50%, -50%) scale(1.08);
+  pointer-events: none;
 }
