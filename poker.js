@@ -62,7 +62,6 @@ app.innerHTML = `
     </div>
   </div>
 `;
-
   const container = document.getElementById("community-cards");
 
   community.forEach((card, i) => {
